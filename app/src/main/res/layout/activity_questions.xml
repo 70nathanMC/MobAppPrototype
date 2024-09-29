@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ui.QuestionsActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/appWhite"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="General Math"
+            app:titleTextColor="@color/appBlack"
+            app:titleCentered="true"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/appGray3"
+        android:alpha=".3"
+        app:layout_constraintBottom_toBottomOf="@+id/appBarLayout" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="top|center"
+            android:layout_marginTop="0dp"
+            android:padding="16dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="10">
+
+                <TextView
+                    android:id="@+id/tvProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Question 6/10"
+                    android:textSize="15sp"
+                    android:textColor="@color/appBlack"
+                    android:layout_gravity="start"
+                    android:layout_marginBottom="0dp" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:max="10"
+                    android:minHeight="50dp"
+                    android:indeterminate="false"
+                    android:progress="6"/>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <TextView
+                android:id="@+id/tvQuestion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="normal"
+                android:gravity="center"
+                android:textColor="@color/appBlack"
+                android:background="@drawable/default_options_border_bg"
+                tools:text="What is the square root of 49?"
+                android:textAlignment="center"
+                android:minHeight="180dp"/>
+
+            <TextView
+                android:id="@+id/tvOptionOne"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                android:elegantTextHeight="true"
+                android:textColor="@color/appBlack"
+                android:gravity="center"
+                tools:text="Option 1"
+                android:background="@drawable/default_options_border_bg"
+                android:layout_marginTop="15dp"
+                android:textAlignment="center"
+                android:minHeight="55dp"/>
+
+            <TextView
+                android:elegantTextHeight="true"
+                android:id="@+id/tvOptionTwo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                android:textColor="@color/appBlack"
+                android:gravity="center"
+                tools:text="Option 2"
+                android:background="@drawable/default_options_border_bg"
+                android:layout_marginTop="10dp"
+                android:textAlignment="center"
+                android:minHeight="55dp"/>
+
+            <TextView
+                android:elegantTextHeight="true"
+                android:id="@+id/tvOptionThree"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                android:textColor="@color/appBlack"
+                android:gravity="center"
+                tools:text="Option 3"
+                android:background="@drawable/default_options_border_bg"
+                android:layout_marginTop="10dp"
+                android:textAlignment="center"
+                android:minHeight="55dp"/>
+
+            <TextView
+                android:elegantTextHeight="true"
+                android:id="@+id/tvOptionFour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                android:textColor="@color/appBlack"
+                android:gravity="center"
+                tools:text="Option 4"
+                android:textAlignment="center"
+                android:background="@drawable/default_options_border_bg"
+                android:layout_marginTop="10dp"
+                android:minHeight="55dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNext"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="@string/next"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:layout_marginTop="50dp"
+                android:backgroundTint="@color/appGreen"
+                app:cornerRadius="10dp"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
