@@ -16,7 +16,7 @@
             android:name=".ui.TutorSchedAndSubsListActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.Tutor_Profile_Activity"
+            android:name=".ui.TutorProfileActivity"
             android:exported="false" />
         <activity
             android:name=".ui.TutorListActivity"
@@ -31,7 +31,7 @@
             android:name=".ui.QuestionsActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

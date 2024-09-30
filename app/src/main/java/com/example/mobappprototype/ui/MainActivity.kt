@@ -1,4 +1,4 @@
-package com.example.mobappprototype
+package com.example.mobappprototype.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,9 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.mobappprototype.ui.QuestionsActivity
-import com.example.mobappprototype.ui.TutorSearchActivity
-import com.example.mobappprototype.utils.Constants
+import com.example.mobappprototype.R
 
 class MainActivity : AppCompatActivity() {
     private lateinit var btnFindTutor: Button

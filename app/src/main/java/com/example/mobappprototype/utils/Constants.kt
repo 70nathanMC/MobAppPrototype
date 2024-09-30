@@ -4,7 +4,7 @@ import com.example.mobappprototype.model.Question
 
 object Constants {
 
-//    const val USER_NAME = "user_name"
+    const val SEARCHED_TEXT = "searched_text"
     const val TOTAL_QUESTIONS = "total_questions"
     const val SCORE = "correct_answers"
 

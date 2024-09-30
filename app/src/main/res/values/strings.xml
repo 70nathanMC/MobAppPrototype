@@ -2,4 +2,8 @@
     <string name="app_name">MobAppPrototype</string>
     <string name="btnFindTutor_text">Find Tutor</string>
     <string name="next">Next</string>
+    <string name="search">Search</string>
+    <string name="what_you_have_searched_for">What you have searched for.</string>
+    <string name="tutor_image">Tutor Image</string>
+    <string name="tutor_name">Tutor Name</string>
 </resources>

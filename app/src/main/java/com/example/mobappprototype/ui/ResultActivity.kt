@@ -1,7 +1,6 @@
 package com.example.mobappprototype.ui
 
 import android.content.Intent
-import android.media.Image
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.TextView
@@ -9,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.mobappprototype.MainActivity
 import com.example.mobappprototype.R
 import com.example.mobappprototype.utils.Constants
 
