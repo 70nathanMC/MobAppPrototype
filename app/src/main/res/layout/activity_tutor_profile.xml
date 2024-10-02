@@ -80,7 +80,7 @@
                 android:textColor="@color/appGray6"
                 android:layout_gravity="center"/>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:orientation="horizontal"
@@ -91,51 +91,53 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginStart="60dp"
                     android:fontFamily="@font/light"
+                    android:gravity="center"
                     android:text="@string/rating"
                     android:textColor="@color/appBlack"
                     android:textSize="18sp"
-                    />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/detailRating2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/detailRating"
+                    android:id="@+id/detailRating2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="60dp"
-                    android:fontFamily="@font/bold"
                     android:layout_gravity="center"
+                    android:fontFamily="@font/bold"
                     android:gravity="center"
                     android:text="4.5"
                     android:textColor="@color/appBlack"
                     android:textSize="25sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ratingBar"
-                    app:layout_constraintTop_toTopOf="@+id/ratingBar" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <RatingBar
                     android:id="@+id/ratingBar"
                     style="@android:style/Widget.DeviceDefault.Light.RatingBar.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:maxHeight="20dp"
                     android:minHeight="20dp"
                     android:numStars="5"
                     android:progress="5"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginStart="60dp"
                     android:progressTint="@color/stars"
                     android:rating="4.5"
-                    android:layout_toEndOf="@+id/listTutorImage"
-                    app:layout_constraintStart_toStartOf="@+id/degreeTutor"
-                    app:layout_constraintTop_toBottomOf="@+id/degreeTutor" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/detailRating2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.533" />
 
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnBook"

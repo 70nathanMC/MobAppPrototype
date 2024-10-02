@@ -15,6 +15,7 @@ import com.example.mobappprototype.databinding.ActivityTutorProfileBinding
 import com.google.android.material.button.MaterialButton
 
 class TutorProfileActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityTutorProfileBinding
     private lateinit var ibtnHomeFFindTutorProfile: ImageButton
     private lateinit var btnBook: MaterialButton
@@ -39,7 +40,7 @@ class TutorProfileActivity : AppCompatActivity() {
             binding.detailTutorName.text = tutorName
             binding.detailDegree.text = degree
 //            binding.detailRating.rating = rating
-            binding.detailRating.text = ratingDesc
+//            binding.detailRating.text = ratingDesc
             binding.detailDesc.setText(tutorDesc)
             binding.detailImage.setImageResource(tutorImage)
             binding.detailStrength.setText(tutorStrength)

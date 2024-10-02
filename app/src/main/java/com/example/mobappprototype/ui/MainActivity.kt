@@ -3,6 +3,7 @@ package com.example.mobappprototype.ui
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.HorizontalScrollView
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -16,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnFindTutor: Button
     private lateinit var ivGenMath: ImageView
     private lateinit var ivJumpToMeetings: ImageView
+    private lateinit var hsvDashboard: HorizontalScrollView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,6 +30,9 @@ class MainActivity : AppCompatActivity() {
         btnFindTutor = findViewById(R.id.btnFindTutor)
         ivGenMath = findViewById(R.id.ivGenMath)
         ivJumpToMeetings = findViewById(R.id.ivJumpToMeetings)
+
+        hsvDashboard = findViewById(R.id.hsvDashboard);
+        hsvDashboard.setHorizontalScrollBarEnabled(false)
 
         ivGenMath.setOnClickListener{
             Intent(this@MainActivity, QuestionsActivity::class.java).also {
