@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -22,6 +23,7 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var progressBar: ProgressBar
     private lateinit var tvProgress: TextView
     private lateinit var tvQuestion: TextView
+    private lateinit var ibtnHomeFQuiz: ImageButton
 
     private lateinit var tvOptionOne: TextView
     private lateinit var tvOptionTwo: TextView
@@ -51,6 +53,7 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
         tvProgress = findViewById(R.id.tvProgress)
         tvQuestion = findViewById(R.id.tvQuestion)
         btnNext = findViewById(R.id.btnNext)
+        ibtnHomeFQuiz = findViewById(R.id.ibtnHomeFQuiz)
 
         tvOptionOne = findViewById(R.id.tvOptionOne)
         tvOptionTwo = findViewById(R.id.tvOptionTwo)
@@ -67,6 +70,12 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
         Log.d("QuestionSize", "${questionsList.size}")
 
         showNextQuestion()
+
+        ibtnHomeFQuiz.setOnClickListener{
+            Intent(this, MainActivity::class.java).also {
+                startActivity(it)
+            }
+        }
 
 //        if (intent.hasExtra(Constants.USER_NAME)){
 //            name = intent.getStringExtra(Constants.USER_NAME)!!

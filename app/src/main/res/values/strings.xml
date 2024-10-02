@@ -6,4 +6,25 @@
     <string name="what_you_have_searched_for">What you have searched for.</string>
     <string name="tutor_image">Tutor Image</string>
     <string name="tutor_name">Tutor Name</string>
+    <string name="book">Book</string>
+
+    <string name="tutor_about1">Hi! I am a 23 year old Computer Science student passionate about teaching.
+\n
+\nAs a peer tutor, I strive to make learning engaging and effective, helping students tackle coding challenges and develop problem-solving skills. I am committed to refining my tutoring and building a strong reputation
+    </string>
+    <string name="strength1">Gen Math
+\nPhysics
+\nMachine Learning</string>
+    <string name="schedule1">Monday\t\t\t\t\t\t\t\t\t\t|\t\t\t\t\t\t\t\t7:30 AM - 1:30 PM
+\nTuesday\t\t\t\t\t\t\t\t\t\t|\t\t\t\t\t\t\t\t8:30 AM - 4:30 PM
+\nWednesday\t\t\t\t\t\t\t|\t\t\t\t\t\t\t\t7:30 AM - 2:30 PM
+\nThursday\t\t\t\t\t\t\t\t\t|\t\t\t\t\t\t\t\t11:30 AM - 6:30 PM
+\nFriday\t\t\t\t\t\t\t\t\t\t\t\t|\t\t\t\t\t\t\t\t10:30 AM - 1:30 PM
+\nSaturday\t\t\t\t\t\t\t\t\t|\t\t\t\t\t\t\t\t12:30 AM - 7:30 PM
+    </string>
+    <string name="tutors">Tutors:</string>
+    <string name="join">Join</string>
+    <string name="james_bautista">James Bautista</string>
+    <string name="bachelor_of_science_in">Bachelor of Science in</string>
+    <string name="rating">Rating</string>
 </resources>

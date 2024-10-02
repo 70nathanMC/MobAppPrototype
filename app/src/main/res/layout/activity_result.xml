@@ -5,80 +5,81 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/appGreen"
     tools:context=".ui.ResultActivity"
-    android:background="@color/appGreen">
-
-    <TextView
-        android:id="@+id/tvScoreResult"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
-        android:gravity="center_horizontal"
-        android:text="6/10"
-        android:textColor="@color/white"
-        android:textSize="42sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="277dp"
-        android:layout_height="198dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/tvScoreResult"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/tvCongratulations"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Congratulations!"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:textSize="25dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
-    <TextView
-        android:id="@+id/tvCongratulations2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delve deeper for more"
-        android:textColor="@color/white"
-        android:textSize="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCongratulations" />
-
-    <TextView
-        android:id="@+id/tvCongratulations3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="knowledge"
-        android:textColor="@color/white"
-        android:textSize="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCongratulations2" />
+    tools:layout_editor_absoluteY="24dp">
 
     <ImageButton
-        android:id="@+id/ibtnHomeFResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="30dp"
+    android:id="@+id/ibtnHomeFResult"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="40dp" android:layout_marginTop="40dp"
+    android:background="@color/white" app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="70dp"
+    app:layout_constraintVertical_bias="1.0" android:backgroundTint="@color/appGreen"
+    app:srcCompat="@drawable/x" />
+
+    <LinearLayout
+        android:id="@+id/llScore"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_revert" />
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:id="@+id/tvScoreResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:fontFamily="@font/extra_bold"
+            android:gravity="center_horizontal"
+            android:text="6/10"
+            android:textColor="@color/appWhite"
+            android:textSize="42sp" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="294dp"
+            tools:srcCompat="@drawable/trophy" />
+
+        <TextView
+            android:id="@+id/tvCongratulations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/extra_bold"
+            android:gravity="center_horizontal"
+            android:text="Congratulations!"
+            android:textColor="@color/appWhite"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/tvCongratulations2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/regular"
+            android:gravity="center_horizontal"
+            android:text="Delve deeper for more"
+            android:textColor="@color/appWhite"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvCongratulations3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:gravity="center_horizontal"
+            android:text="knowledge"
+            android:textColor="@color/appWhite"
+            android:textSize="15sp" />
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

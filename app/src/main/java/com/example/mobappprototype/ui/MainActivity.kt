@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -13,8 +14,8 @@ import com.example.mobappprototype.R
 
 class MainActivity : AppCompatActivity() {
     private lateinit var btnFindTutor: Button
-    private lateinit var tvView: TextView
-    private lateinit var ibtnQuizMath: ImageButton
+    private lateinit var ivGenMath: ImageView
+    private lateinit var ivJumpToMeetings: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -25,11 +26,17 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         btnFindTutor = findViewById(R.id.btnFindTutor)
-        tvView = findViewById(R.id.tvUserName)
-        ibtnQuizMath = findViewById(R.id.ibtnQuizMath)
+        ivGenMath = findViewById(R.id.ivGenMath)
+        ivJumpToMeetings = findViewById(R.id.ivJumpToMeetings)
 
-        ibtnQuizMath.setOnClickListener{
+        ivGenMath.setOnClickListener{
             Intent(this@MainActivity, QuestionsActivity::class.java).also {
+                startActivity(it)
+            }
+        }
+
+        ivJumpToMeetings.setOnClickListener{
+            Intent(this@MainActivity, TutorSchedAndSubsListActivity::class.java).also {
                 startActivity(it)
             }
         }

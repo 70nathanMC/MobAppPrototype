@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/appWhite"
+    app:cardCornerRadius="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:id="@+id/listTutorImage"
+            android:src="@drawable/james"
+            android:scaleType="centerCrop"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            app:shapeAppearanceOverlay="@style/roundedImage"/>
+
+        <TextView
+            android:id="@+id/listTutorName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@id/listTutorImage"
+            android:fontFamily="@font/medium"
+            android:text="James Bautista"
+            android:textColor="@color/appBlack"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/degreeTutor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/listTutorImage"
+            android:fontFamily="@font/regular"
+            android:text="Computer Science"
+            android:textColor="@color/appGray6"
+            android:textSize="14sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="50dp"
+            app:layout_constraintStart_toStartOf="@+id/listTutorName"
+            app:layout_constraintTop_toBottomOf="@+id/listTutorName" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="@android:style/Widget.DeviceDefault.Light.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="16dp"
+            android:minHeight="16dp"
+            android:numStars="5"
+            android:progress="5"
+            android:progressTint="@color/stars"
+            android:rating="4.5"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="80dp"
+            android:layout_toEndOf="@+id/listTutorImage"
+            app:layout_constraintStart_toStartOf="@+id/degreeTutor"
+            app:layout_constraintTop_toBottomOf="@+id/degreeTutor" />
+
+        <TextView
+            android:id="@+id/ratingtxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="80dp"
+            android:fontFamily="@font/light"
+            android:text="4.5 Rating"
+            android:textColor="@color/appBlack"
+            android:textSize="13sp"
+            android:layout_toEndOf="@id/ratingBar"
+            app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ratingBar"
+            app:layout_constraintTop_toTopOf="@+id/ratingBar" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

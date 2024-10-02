@@ -5,7 +5,7 @@
     <corners
         android:radius="10dp"/>
     <stroke
-        android:color="@color/appGray4"
+        android:color="@color/appGray6"
         android:width="2dp"/>
 
 </shape>

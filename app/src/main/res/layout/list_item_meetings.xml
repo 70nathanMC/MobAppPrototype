@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/appWhite"
+    app:cardCornerRadius="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <TextView
+            android:id="@+id/listTutorName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/medium"
+            android:text="Calculus - Limits"
+            android:textColor="@color/appBlack"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/degreeTutor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/regular"
+            android:text="Monday"
+            android:textColor="@color/appGray6"
+            android:textSize="16sp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="38dp"
+            app:layout_constraintStart_toStartOf="@+id/listTutorName"
+            app:layout_constraintTop_toBottomOf="@+id/listTutorName" />
+
+        <TextView
+            android:id="@+id/degreeSchedule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/regular"
+            android:text="7:30 AM - 9:40 AM"
+            android:textColor="@color/appGray6"
+            android:textSize="16sp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="65dp"
+            app:layout_constraintStart_toStartOf="@+id/listTutorName"
+            app:layout_constraintTop_toBottomOf="@+id/listTutorName" />
+
+        <TextView
+            android:id="@+id/degreeSlots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:fontFamily="@font/light"
+            android:text="3 slots"
+            android:textColor="@color/appGray6"
+            android:textSize="14sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnJoin"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="45dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/appGreen"
+            android:text="@string/join"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:cornerRadius="10dp" />
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
