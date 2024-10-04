@@ -1,227 +1,324 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
     tools:context=".ui.TutorProfileActivity">
 
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/white"
+    <ScrollView
+        android:layout_width="409dp"
+        android:layout_height="704dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/ibtnHomeFFindTutorProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="35dp"
-            android:background="@color/white"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_arrow_back_ios_24" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:id="@+id/detailImage"
-                android:src="@drawable/jamesdp"
-                android:scaleType="centerCrop"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                app:shapeAppearanceOverlay="@style/roundedImage"/>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/detailTutorName"
-                android:layout_marginTop="14dp"
-                android:text="@string/james_bautista"
-                android:textSize="24sp"
-                android:textColor="@color/appBlack"
-                android:textStyle="bold"
-                android:layout_gravity="center"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvBachelorOfScienceIn"
-                android:text="@string/bachelor_of_science_in"
-                android:textSize="12sp"
-                android:textColor="@color/appGray6"
-                android:layout_gravity="center"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/detailDegree"
-                android:text="Computer Science"
-                android:textSize="12sp"
-                android:textColor="@color/appGray6"
-                android:layout_gravity="center"/>
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp">
 
                 <TextView
-                    android:id="@+id/tvRatingTxt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/light"
-                    android:gravity="center"
-                    android:text="@string/rating"
-                    android:textColor="@color/appBlack"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/detailRating2"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/detailRating2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/bold"
-                    android:gravity="center"
-                    android:text="4.5"
-                    android:textColor="@color/appBlack"
-                    android:textSize="25sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <RatingBar
-                    android:id="@+id/ratingBar"
-                    style="@android:style/Widget.DeviceDefault.Light.RatingBar.Small"
+                    android:id="@+id/textView8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:maxHeight="20dp"
-                    android:minHeight="20dp"
-                    android:numStars="5"
-                    android:progress="5"
-                    android:progressTint="@color/stars"
-                    android:rating="4.5"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="7dp"
+                    android:fontFamily="@font/regular"
+                    android:text="Profile"
+                    android:textColor="@color/appBlack"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/detailRating2"
+                    app:layout_constraintHorizontal_bias="0.399"
+                    app:layout_constraintStart_toEndOf="@+id/ibtnHomeFFindTutorProfile"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.533" />
+                    app:layout_constraintVertical_bias="1.0" />
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="39dp">
+
+                    <ImageView
+                        android:id="@+id/detailImage"
+                        android:layout_width="160dp"
+                        android:layout_height="160dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:shapeAppearanceOverlay="@style/roundedImage"
+                        app:srcCompat="@drawable/jamesdp" />
+
+                    <TextView
+                        android:id="@+id/detailTutorName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/medium"
+                        android:text="James Bautista"
+                        android:textColor="@color/appBlack"
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/detailImage"
+                        app:layout_constraintVertical_bias="0.166" />
+
+                    <TextView
+                        android:id="@+id/detailDegree"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:fontFamily="@font/regular"
+                        android:text="Bachelor of Science in Computer Science"
+                        android:textColor="@color/appGray6"
+                        android:textSize="11sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/detailTutorName" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="128dp"
+                    android:layout_marginTop="32dp"
+                    android:fontFamily="@font/light"
+                    android:text="Rating"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+                <TextView
+                    android:id="@+id/textView25"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-5dp"
+                    android:fontFamily="@font/bold"
+                    android:text="4.5"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView11"
+                    app:layout_constraintStart_toStartOf="@+id/textView11"
+                    app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+                <TextView
+                    android:id="@+id/textView24"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="75dp"
+                    android:fontFamily="@font/light"
+                    android:text="Feedback"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.81"
+                    app:layout_constraintStart_toEndOf="@+id/textView11"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+                <TextView
+                    android:id="@+id/textView26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-5dp"
+                    android:fontFamily="@font/bold"
+                    android:text="1k+"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView24"
+                    app:layout_constraintStart_toStartOf="@+id/textView24"
+                    app:layout_constraintTop_toBottomOf="@+id/textView24" />
+
+                <ImageView
+                    android:id="@+id/ibtnHomeFFindTutorProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="15dp"
+                    app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:srcCompat="@drawable/back" />
+
+                <ImageView
+                    android:id="@+id/imageView8"
+                    android:layout_width="21dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/textView24"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+                    app:layout_constraintVertical_bias="0.7"
+                    app:srcCompat="@drawable/feedback" />
+
+                <ImageView
+                    android:id="@+id/imageView19"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/textView11"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+                    app:layout_constraintVertical_bias="0.7"
+                    app:srcCompat="@drawable/ratingicon" />
+
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="1dp"
+                    android:layout_height="50dp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/textView24"
+                    app:layout_constraintHorizontal_bias="0.4"
+                    app:layout_constraintStart_toEndOf="@+id/textView11" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnBook"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:backgroundTint="@color/appGreen"
-                android:text="@string/book"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                app:cornerRadius="10dp" />
+                android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="About:"
-                android:textColor="@color/appBlack"
-                android:textStyle="bold"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="30dp"
-                android:textSize="18sp"/>
+                <Button
+                    android:id="@+id/btnBook"
+                    android:layout_width="314dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="15dp"
+                    android:backgroundTint="@color/appGreen"
+                    android:fontFamily="@font/semibold"
+                    android:text="Book"
+                    android:textColor="@color/appWhite"
+                    android:textSize="18sp"
+                    app:cornerRadius="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="26dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/btnBook">
+
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/medium"
+                        android:text="ABOUT"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textColor="@color/appGreen"
+                        android:textSize="16sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        />
+
+                    <TextView
+                        android:id="@+id/textView13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/medium"
+                        android:text="STRENGTH"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textSize="16sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        />
+
+                    <TextView
+                        android:id="@+id/textView27"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:fontFamily="@font/medium"
+                        android:text="SCHED"
+                        android:textSize="16sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        />
+
+                    <TextView
+                        android:id="@+id/textView28"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/medium"
+                        android:text="REVIEW"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textSize="16sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                         />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/tutor_about1"
-                android:layout_marginStart="10dp"
-                android:textSize="16sp"
-                android:id="@+id/detailDesc"/>
+                android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Strength:"
-                android:textColor="@color/appBlack"
-                android:textStyle="bold"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="30dp"
-                android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/textView31"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hi! I’m James, a 23-year-old Computer Science student passionate about teaching. "
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/strength1"
-                android:layout_marginStart="10dp"
-                android:textSize="16sp"
-                android:id="@+id/detailStrength"/>
+                <TextView
+                    android:id="@+id/textView32"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="As a peer tutor, I strive to make learning engaging and effective, helping students tackle coding challenges and develop problem-solving skills. I’m committed to refining my tutoring and building a strong reputation. "
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView31"
+                    app:layout_constraintVertical_bias="0.0" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Schedule:"
-                android:textColor="@color/appBlack"
-                android:textStyle="bold"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
-                android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/textView33"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Let’s make your learning journey both enjoyable and successful!"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView32"
+                    app:layout_constraintVertical_bias="0.0" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/schedule1"
-                android:layout_marginStart="10dp"
-                android:textSize="16sp"
-                android:id="@+id/detailSchedule"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Review"
-                android:textColor="@color/appBlack"
-                android:textStyle="bold"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
-                android:textSize="18sp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="None"
-                android:layout_marginStart="10dp"
-                android:textSize="16sp"
-                android:id="@+id/detailReviews"/>
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
