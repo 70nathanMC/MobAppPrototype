@@ -8,8 +8,9 @@
     tools:context=".ui.TutorProfileActivity">
 
     <ScrollView
-        android:layout_width="409dp"
-        android:layout_height="704dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -144,12 +145,12 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="15dp"
+                    android:clickable="true"
+                    android:focusable="true"
                     app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
-                    android:clickable="true"
-                    android:focusable="true"
                     app:srcCompat="@drawable/back" />
 
                 <ImageView
@@ -217,62 +218,58 @@
                         android:id="@+id/textView12"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/medium"
-                        android:text="ABOUT"
-                        android:textAlignment="center"
                         android:layout_gravity="center"
-                        android:gravity="center"
-                        android:textColor="@color/appGreen"
-                        android:textSize="16sp"
+                        android:layout_weight="1"
                         android:clickable="true"
                         android:focusable="true"
-                        />
+                        android:fontFamily="@font/medium"
+                        android:gravity="center"
+                        android:text="ABOUT"
+                        android:textAlignment="center"
+                        android:textColor="@color/appGreen"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/textView13"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/medium"
-                        android:text="STRENGTH"
-                        android:textAlignment="center"
                         android:layout_gravity="center"
-                        android:gravity="center"
-                        android:textSize="16sp"
+                        android:layout_weight="1"
                         android:clickable="true"
                         android:focusable="true"
-                        />
+                        android:fontFamily="@font/medium"
+                        android:gravity="center"
+                        android:text="STRENGTH"
+                        android:textAlignment="center"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/textView27"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAlignment="center"
                         android:layout_gravity="center"
-                        android:gravity="center"
-                        android:fontFamily="@font/medium"
-                        android:text="SCHED"
-                        android:textSize="16sp"
+                        android:layout_weight="1"
                         android:clickable="true"
                         android:focusable="true"
-                        />
+                        android:fontFamily="@font/medium"
+                        android:gravity="center"
+                        android:text="SCHED"
+                        android:textAlignment="center"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/textView28"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/medium"
-                        android:text="REVIEW"
-                        android:textAlignment="center"
                         android:layout_gravity="center"
-                        android:gravity="center"
-                        android:textSize="16sp"
+                        android:layout_weight="1"
                         android:clickable="true"
                         android:focusable="true"
-                         />
+                        android:fontFamily="@font/medium"
+                        android:gravity="center"
+                        android:text="REVIEW"
+                        android:textAlignment="center"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -280,7 +277,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/textView31"
@@ -312,6 +309,7 @@
                     android:text="Let’s make your learning journey both enjoyable and successful!"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView32"
                     app:layout_constraintVertical_bias="0.0" />
