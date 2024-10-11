@@ -2,11 +2,11 @@ package com.example.mobappprototype.model
 
 class TutorData(
     var tutorName: String,
-    var degree: String,
-    var tutorDesc: Int,
-//    var rating: Float,
+    var tutorDegree: String,
+    var tutorBio: String,
+    var rating: Float,
     var ratingDesc: String,
     var tutorImage: Int,
-    var tutorStrengths: Int,
-    var tutorSchedule: Int,
+    var tutorStrengths: String, //should be an array of string
+    var tutorSchedule: String,
 )

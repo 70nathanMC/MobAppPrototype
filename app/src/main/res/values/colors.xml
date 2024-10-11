@@ -6,6 +6,8 @@
     <color name="appGray6">#6A707C</color>
     <color name="appGrayE">#E8ECF4</color>
     <color name="appGray8">#8391A1</color>
+    <color name="appGrayButton">#D9D9D9</color>
+    <color name="appGrayBorder">#E8ECF4</color>
     <color name="white">#FFFFFF</color>
     <color name="incorrect">#E65252</color>
     <color name="correct">#8DDD61</color>

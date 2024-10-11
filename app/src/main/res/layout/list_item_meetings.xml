@@ -10,48 +10,119 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="wrap_content"
+        android:minHeight="100dp">
+
+        <LinearLayout
+            android:id="@+id/llMeetingInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvMeetingSubject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/medium"
+                android:text="Calculus"
+                android:textColor="@color/appBlack"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvSpacing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/tvMeetingSubject"
+                android:fontFamily="@font/medium"
+                android:gravity="center"
+                android:text=" - "
+                android:textColor="@color/appBlack"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvMeetingBranch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/tvSpacing"
+                android:fontFamily="@font/medium"
+                android:text="Limits"
+                android:textColor="@color/appBlack"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/listTutorName"
+            android:id="@+id/tvMeetingDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_below="@+id/llMeetingInfo"
+            android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/medium"
-            android:text="Calculus - Limits"
-            android:textColor="@color/appBlack"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/degreeTutor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginTop="-2dp"
             android:fontFamily="@font/regular"
             android:text="Monday"
             android:textColor="@color/appGray6"
             android:textSize="16sp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="38dp"
-            app:layout_constraintStart_toStartOf="@+id/listTutorName"
-            app:layout_constraintTop_toBottomOf="@+id/listTutorName" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/llMeetingInfo" />
 
         <TextView
-            android:id="@+id/degreeSchedule"
+            android:id="@+id/tvMeetingScheduleStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tvMeetingDay"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="8dp"
             android:fontFamily="@font/regular"
-            android:text="7:30 AM - 9:40 AM"
+            android:text="7:30 AM"
             android:textColor="@color/appGray6"
             android:textSize="16sp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="65dp"
-            app:layout_constraintStart_toStartOf="@+id/listTutorName"
-            app:layout_constraintTop_toBottomOf="@+id/listTutorName" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvMeetingDay" />
 
         <TextView
-            android:id="@+id/degreeSlots"
+            android:id="@+id/tvSpacing2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvMeetingDay"
+            android:layout_marginStart="2dp"
+            android:layout_marginBottom="8dp"
+            android:layout_toEndOf="@+id/tvMeetingScheduleStart"
+            android:fontFamily="@font/regular"
+            android:text=" - "
+            android:textColor="@color/appGray6"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvMeetingDay" />
+
+        <TextView
+            android:id="@+id/tvMeetingScheduleEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvMeetingDay"
+            android:layout_marginStart="2dp"
+            android:layout_marginBottom="8dp"
+            android:layout_toEndOf="@+id/tvSpacing2"
+            android:fontFamily="@font/regular"
+            android:text="9:40 AM"
+            android:textColor="@color/appGray6"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvMeetingDay" />
+
+        <TextView
+            android:id="@+id/tvSlotsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -59,7 +130,20 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:fontFamily="@font/light"
-            android:text="3 slots"
+            android:text="slots"
+            android:textColor="@color/appGray6"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvMeetingSlots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="3dp"
+            android:layout_toStartOf="@+id/tvSlotsText"
+            android:fontFamily="@font/light"
+            android:text="3"
             android:textColor="@color/appGray6"
             android:textSize="14sp" />
 
@@ -67,12 +151,13 @@
             android:id="@+id/btnJoin"
             android:layout_width="80dp"
             android:layout_height="50dp"
-            android:layout_alignParentTop="true"
+            android:layout_below="@+id/llMeetingInfo"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="45dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:backgroundTint="@color/appGreen"
+            android:maxHeight="50dp"
             android:text="@string/join"
             android:textColor="@color/white"
             android:textSize="16sp"

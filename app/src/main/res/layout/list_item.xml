@@ -37,7 +37,7 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/degreeTutor"
+            android:id="@+id/tutorDegree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/listTutorImage"
@@ -46,9 +46,7 @@
             android:textColor="@color/appGray6"
             android:textSize="14sp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="50dp"
-            app:layout_constraintStart_toStartOf="@+id/listTutorName"
-            app:layout_constraintTop_toBottomOf="@+id/listTutorName" />
+            android:layout_marginTop="50dp" />
 
         <RatingBar
             android:id="@+id/ratingBar"
@@ -63,9 +61,7 @@
             android:rating="4.5"
             android:layout_marginStart="16dp"
             android:layout_marginTop="80dp"
-            android:layout_toEndOf="@+id/listTutorImage"
-            app:layout_constraintStart_toStartOf="@+id/degreeTutor"
-            app:layout_constraintTop_toBottomOf="@+id/degreeTutor" />
+            android:layout_toEndOf="@+id/listTutorImage" />
 
         <TextView
             android:id="@+id/ratingtxt"
@@ -79,9 +75,7 @@
             android:textSize="13sp"
             android:layout_toEndOf="@id/ratingBar"
             app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ratingBar"
-            app:layout_constraintTop_toTopOf="@+id/ratingBar" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </RelativeLayout>
 

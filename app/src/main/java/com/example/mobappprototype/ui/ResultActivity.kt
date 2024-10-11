@@ -32,7 +32,7 @@ class ResultActivity : AppCompatActivity() {
         tvScoreResult.text = "$score/$totalQuestions"
 
         ibtnHomeFResult.setOnClickListener {
-            Intent(this, MainActivity::class.java).also {
+            Intent(this, StudentMainActivity::class.java).also {
                 startActivity(it)
             }
         }

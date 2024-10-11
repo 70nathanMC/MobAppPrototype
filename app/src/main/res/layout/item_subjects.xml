@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/btnSubjectButtons"
+    android:layout_width="140dp"
+    android:layout_height="36dp"
+    android:text="+Add"
+    android:gravity="center"
+    android:textSize="16sp"
+    android:padding="0dp"
+    android:layout_marginBottom="6dp"
+    android:textColor="@color/appGray6"
+    android:backgroundTint="@color/appGrayButton">
+</Button>

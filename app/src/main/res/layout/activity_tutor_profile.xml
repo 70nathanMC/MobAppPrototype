@@ -49,15 +49,32 @@
                     tools:layout_editor_absoluteX="0dp"
                     tools:layout_editor_absoluteY="39dp">
 
-                    <ImageView
-                        android:id="@+id/detailImage"
+                    <LinearLayout
+                        android:id="@+id/linearLayout3"
                         android:layout_width="160dp"
                         android:layout_height="160dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="@+id/detailTutorName"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:shapeAppearanceOverlay="@style/roundedImage"
-                        app:srcCompat="@drawable/jamesdp" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/detailTutorImage"
+                            android:layout_width="160dp"
+                            android:layout_height="160dp"
+                            android:layout_gravity="center"
+                            android:padding="6dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/james"
+                            app:shapeAppearanceOverlay="@style/roundedImage"
+                            app:strokeColor="@color/appGreen"
+                            app:strokeWidth="4dp" />
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/detailTutorName"
@@ -70,7 +87,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/detailImage"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
                         app:layout_constraintVertical_bias="0.166" />
 
                     <TextView
@@ -101,7 +118,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
                 <TextView
-                    android:id="@+id/textView25"
+                    android:id="@+id/tvTutorRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-5dp"

@@ -21,13 +21,13 @@ class ListAdapter (context: Context, dataArrayList: ArrayList<TutorData?>?) :
         }
         val listTutorImage = view!!.findViewById<ImageView>(R.id.listTutorImage)
         val listTutorName = view.findViewById<TextView>(R.id.listTutorName)
-        val degreeTutor = view.findViewById<TextView>(R.id.degreeTutor)
-//        val ratingBar = view.findViewById<RatingBar>(R.id.ratingBar)
+        val tutorDegree = view.findViewById<TextView>(R.id.tutorDegree)
+        val ratingBar = view.findViewById<RatingBar>(R.id.ratingBar)
         val ratingTxt = view.findViewById<TextView>(R.id.ratingtxt)
         listTutorImage.setImageResource(listData!!.tutorImage)
         listTutorName.text = listData.tutorName
-        degreeTutor.text = listData.degree
-//        ratingBar.rating = listData.rating
+        tutorDegree.text = listData.tutorDegree
+        ratingBar.rating = listData.rating
         ratingTxt.text = listData.ratingDesc
         return view
     }

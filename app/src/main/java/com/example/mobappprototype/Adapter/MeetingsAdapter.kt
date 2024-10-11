@@ -12,10 +12,10 @@ class MeetingsAdapter(private val meetings: List<MeetingData>) :
     class MeetingViewHolder(private val binding: ListItemMeetingsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(meeting: MeetingData) {
-            binding.listTutorName.text = meeting.subjectName
-            binding.degreeTutor.text = meeting.day
-            binding.degreeSchedule.text = meeting.time
-            binding.degreeSlots.text = meeting.slots
+            binding.tvMeetingSubject.text = meeting.subjectName
+            binding.tvMeetingDay.text = meeting.day
+            binding.tvMeetingScheduleStart.text = meeting.time
+            binding.tvMeetingSlots.text = meeting.slots
         }
     }
 

@@ -1,20 +1,13 @@
 package com.example.mobappprototype.ui
 
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.widget.Button
-import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.mobappprototype.R
-import com.example.mobappprototype.databinding.ActivityTutorListBinding
 import com.example.mobappprototype.databinding.ActivityTutorProfileBinding
-import com.google.android.material.button.MaterialButton
-import android.content.res.Resources
 
 class TutorProfileActivity : AppCompatActivity() {
 
@@ -33,10 +26,9 @@ class TutorProfileActivity : AppCompatActivity() {
         if (intent != null) {
             val tutorName = intent.getStringExtra("tutorName")
             var degree = intent.getStringExtra("degree")
-//            val ratingDesc = intent.getStringExtra("ratingDesc")
             val tutorImage = intent.getIntExtra("image", R.drawable.jamesdp)
 //            val tutorDesc = intent.getIntExtra("tutorDesc", R.string.tutor_about1)
-//            val rating = intent.getFloatExtra("rating", 4.5F)
+            val rating = intent.getFloatExtra("rating", 4.5F)
 //            val tutorStrength = intent.getIntExtra("tutorStrength", R.string.strength1)
 //            val tutorSchedule = intent.getIntExtra("tutorSchedule", R.string.schedule1)
             val resources: Resources = resources
@@ -45,10 +37,9 @@ class TutorProfileActivity : AppCompatActivity() {
             degree = "$bachelorString$degree"
             binding.detailTutorName.text = tutorName
             binding.detailDegree.text = degree
-//            binding.detailRating.rating = rating
-//            binding.detailRating.text = ratingDesc
+            binding.tvTutorRating.text = rating.toString()
 //            binding.detailDesc.setText(tutorDesc)
-            binding.detailImage.setImageResource(tutorImage)
+            binding.detailTutorImage.setImageResource(tutorImage)
 //            binding.detailStrength.setText(tutorStrength)
 //            binding.detailSchedule.setText(tutorSchedule)
         }

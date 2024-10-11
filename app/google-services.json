@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "357266925076",
+    "project_id": "mobappprototype",
+    "storage_bucket": "mobappprototype.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357266925076:android:ec56b2487eade80a67e901",
+        "android_client_info": {
+          "package_name": "com.example.mobappprototype"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnsNnw1dLWu_Zjozs6qqkZ8EquCeRB7Rk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

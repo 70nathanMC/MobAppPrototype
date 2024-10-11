@@ -18,7 +18,7 @@
             android:layout_height="60dp"
             android:id="@+id/ivSearchTutorImage"
             android:contentDescription="@string/tutor_image"
-            android:src="@drawable/guy1"
+            android:src="@drawable/james"
             android:layout_marginStart="20dp"
             android:padding="8dp"
             android:adjustViewBounds="true"
