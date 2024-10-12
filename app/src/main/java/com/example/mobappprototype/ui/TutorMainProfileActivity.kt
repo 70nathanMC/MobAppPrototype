@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -65,11 +66,23 @@ class TutorMainProfileActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
-        binding.ivLogout.setOnClickListener{
-            auth.signOut()
-            Intent(this, WelcomeActivity::class.java).also {
-                startActivity(it)
+        binding.ivLogout.setOnClickListener {
+            Log.i(TAG, "User wants to logout")
+            val builder = AlertDialog.Builder(this@TutorMainProfileActivity)
+            builder.setTitle("Log Out")
+            builder.setMessage("Are you sure you want to log out?")
+            builder.setPositiveButton("Logout") { dialog, _ ->
+                FirebaseAuth.getInstance().signOut()
+                Intent(this@TutorMainProfileActivity, WelcomeActivity::class.java).also {
+                    startActivity(it)
+                }
+                dialog.dismiss()
             }
+            builder.setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
         }
         binding.ivEditProfile.setOnClickListener{
             Intent(this@TutorMainProfileActivity, EditProfileActivity::class.java).also {

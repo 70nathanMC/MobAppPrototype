@@ -91,7 +91,6 @@ class CreateMeetingActivity : AppCompatActivity() {
                                                 Toast.makeText(this, "Error adding tutor to subject: ${e.message}", Toast.LENGTH_SHORT).show()
                                             }
                                     } else {
-                                        // Handle the case where the subject document is not found
                                         Log.w(TAG, "Subject document not found for $subject")
                                         Toast.makeText(this, "Subject document not found for $subject", Toast.LENGTH_SHORT).show()
                                     }
@@ -102,13 +101,11 @@ class CreateMeetingActivity : AppCompatActivity() {
                                 }
                         }
                         .addOnFailureListener { e ->
-                            // Handle the error (e.g., show a Toast)
                             Toast.makeText(this, "Error updating tutor's meetings: ${e.message}", Toast.LENGTH_SHORT).show()
                             Log.d(TAG, "Error updating tutor's meetings: ${e.message}")
                         }
                 }
                 .addOnFailureListener { e ->
-                    // Handle the error (e.g., show a Toast)
                     Toast.makeText(this, "Error updating tutor's meetings: ${e.message}", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "Error updating tutor's meetings2: ${e.message}")
                 }

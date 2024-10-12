@@ -103,7 +103,6 @@ class TutorListActivity : AppCompatActivity() {
                     // Check if the first name or last name starts with the query
                     if (firstName.lowercase().startsWith(query.lowercase()) ||
                         lastName.lowercase().startsWith(query.lowercase())) {
-                        // ... (your existing code to create TutorListData) ...
                         val tutor = TutorListData(profilePicUrl, fullName, program, rating.toFloat(), document.id)
                         tutorList.add(tutor)
                     }
@@ -127,8 +126,6 @@ class TutorListActivity : AppCompatActivity() {
                     subjectList.add(subjectName)
                 }
                 subjectChipAdapter.notifyDataSetChanged()
-
-                // Use a post-layout listener to set click listeners
                 binding.rvSubjectChips.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
                     override fun onChildViewAttachedToWindow(view: View) {
                         view.setOnClickListener()
@@ -184,21 +181,18 @@ class TutorListActivity : AppCompatActivity() {
                                     val tutor = TutorListData(profilePicUrl, fullName, program, rating.toFloat(), document.id)
                                     userDocuments.add(tutor)
                                 }
-                                // Check if all user documents have been fetched
                                 if (userDocuments.size == relatedTutors.size) {
                                     tutorList.addAll(userDocuments)
                                     tutorListAdapter.notifyDataSetChanged()
                                 }
                             }
                             .addOnFailureListener { exception ->
-                                // Handle error for individual user document fetch
                                 Log.w(TAG, "Error getting tutor details: ", exception)
                             }
                     }
                 }
             }
             .addOnFailureListener { exception ->
-                // Handle error
                 Log.w(TAG, "Error getting subjects: ", exception)
                 Toast.makeText(this, "Error fetching subjects", Toast.LENGTH_SHORT).show()
             }

@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MeetingForTutor(
-    val id: String = "", // Add this line
+    val id: String = "",
     val subject: String = "",
     val branch: String = "",
     val day: String = "",

@@ -76,7 +76,6 @@ class EditProfileActivity : AppCompatActivity() {
                 }
             }
             ref.getDownloadUrl().addOnFailureListener {
-                // Handle the failure case
                 Log.d(TAG, "Download Image failed")
             }
         }
@@ -99,7 +98,6 @@ class EditProfileActivity : AppCompatActivity() {
                     }
                 }
             }.addOnFailureListener { exception ->
-                // Handle any errors that occur while fetching the user document
                 Log.e(TAG, "Error getting user document", exception)
                 Toast.makeText(this, "Error: Failed to fetch user data", Toast.LENGTH_SHORT).show()
             }
@@ -319,7 +317,6 @@ class EditProfileActivity : AppCompatActivity() {
             bio.isEmpty() ||
             subjects.isEmpty()
         ) {
-            // Show dialog for incomplete fields
             MaterialAlertDialogBuilder(this)
                 .setTitle("Missing Information")
                 .setMessage("Please complete all fields to create your profile.")
@@ -342,7 +339,6 @@ class EditProfileActivity : AppCompatActivity() {
         val subjects = buttonList.filter { it.label != "+Add" }.map { it.label }
         val user: MutableMap<String, Any> = HashMap()
 
-        // Retrieve data from EditText fields
         user["firstName"] = firstName
         user["lastName"] = lastName
         user["fullName"] = "$firstName $lastName"
@@ -350,11 +346,8 @@ class EditProfileActivity : AppCompatActivity() {
         user["role"] = role
         user["bio"] = bio
         user["subjects"] = subjects
-
-        // Placeholder for profile picture URL (to be updated once the image is uploaded)
         user["profilePic"] = imageUrl
 
-        // Update Firestore with the user data (Make sure to associate this with the logged-in user)
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
         if (currentUserId != null) {
             firestoreDb.collection("users").document(currentUserId)

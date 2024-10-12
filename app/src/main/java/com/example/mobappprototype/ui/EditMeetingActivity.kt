@@ -72,7 +72,6 @@ class EditMeetingActivity : AppCompatActivity() {
                 "slotsRemaining" to slots // Update slotsRemaining whenever slots is changed
             )
             val newSubject = binding.spinnerSubject.selectedItem.toString()
-            // Update meeting document in Firestore
             db.collection("meetings").document(meetingId)
                 .update(updatedMeetingData as Map<String, Any>)
                 .addOnSuccessListener {

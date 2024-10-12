@@ -42,7 +42,6 @@ class AddSubjectActivity : AppCompatActivity() {
             val subjectsList = mutableListOf<String>()
 
             for (document in querySnapshot) {
-                // Get the subjectName field from each document
                 val subjectName = document.getString("subjectName")
                 subjectName?.let {
                     subjectsList.add(it)

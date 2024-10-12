@@ -41,9 +41,7 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
                 Log.d("QuestionSize", "${questionsList.size}") // Log after questionsList is populated
                 showNextQuestion()
             } else {
-                // Handle the case where fetching questions failed
                 Toast.makeText(this, "Failed to load quiz", Toast.LENGTH_SHORT).show()
-                // You might want to finish the activity or show an error message
             }
         }
 
@@ -163,7 +161,6 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
 
         if (selectedAnswer == question.choices.indexOf(question.correctAnswer) + 1) { // Compare with index + 1
             score++
-//            highlightAnswer(selectedAnswer)
         }
         else {
             when(selectedAnswer) {

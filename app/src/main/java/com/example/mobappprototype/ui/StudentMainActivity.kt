@@ -133,19 +133,16 @@ class StudentMainActivity : AppCompatActivity() {
         binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.home -> {
-                    // Handle Home item click
                     val intent = Intent(this, StudentMainActivity::class.java)
                     startActivity(intent)
                     true
                 }
                 R.id.messages -> {
-                    // Handle Messages item click
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
                     true
                 }
                 R.id.profile -> {
-                    // Handle Profile item click
                     val intent = Intent(this, StudentMainProfileActivity::class.java)
                     startActivity(intent)
                     true

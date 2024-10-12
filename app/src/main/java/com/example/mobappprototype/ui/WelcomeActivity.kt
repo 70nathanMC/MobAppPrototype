@@ -61,17 +61,14 @@ class WelcomeActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    // Handle the case where the user document does not exist
                     goCreateProfileActivity()
                     Log.e(TAG, "User document not found, user needs to create profile")
                 }
             }.addOnFailureListener { exception ->
-                // Handle any errors that occur while fetching the user document
                 Log.e(TAG, "Error getting user document", exception)
                 Toast.makeText(this, "Error: Failed to fetch user data", Toast.LENGTH_SHORT).show()
             }
         } else {
-            // Handle the case where the currentUser is null (shouldn't happen, but it's good to handle it)
             Log.e(TAG, "currentUser is null after successful login")
             Toast.makeText(this, "Error: User not found", Toast.LENGTH_SHORT).show()
         }
