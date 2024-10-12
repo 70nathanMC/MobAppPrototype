@@ -16,6 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/llTop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -194,6 +195,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clBook"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -212,93 +214,43 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="26dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintTop_toBottomOf="@+id/btnBook">
-
-
-                    <TextView
-                        android:id="@+id/textView12"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:fontFamily="@font/medium"
-                        android:gravity="center"
-                        android:text="ABOUT"
-                        android:textAlignment="center"
-                        android:textColor="@color/appGreen"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/textView13"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:fontFamily="@font/medium"
-                        android:gravity="center"
-                        android:text="STRENGTH"
-                        android:textAlignment="center"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/textView27"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:fontFamily="@font/medium"
-                        android:gravity="center"
-                        android:text="SCHED"
-                        android:textAlignment="center"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/textView28"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:fontFamily="@font/medium"
-                        android:gravity="center"
-                        android:text="REVIEW"
-                        android:textAlignment="center"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
-                <TextView
-                    android:id="@+id/tvBio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/regular"
-                    android:layout_marginTop="20dp"
-                    android:text="Hi! I’m James, a 23-year-old Computer Science student passionate about teaching.\n\nAs a peer tutor, I strive to make learning engaging and effective, helping students tackle coding challenges and develop problem-solving skills. I’m committed to refining my tutoring and building a strong reputation.\n\nLet’s make your learning journey both enjoyable and successful!"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    app:tabMode="fixed"
+                    app:tabGravity="fill"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    android:background="@color/white"
+                    app:tabIndicatorColor="@color/appGreen"
+                    app:tabSelectedTextColor="@color/appGreen"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+                    />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </LinearLayout>
 
     </ScrollView>

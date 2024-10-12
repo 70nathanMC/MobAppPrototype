@@ -6,7 +6,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.mobappprototype.Adapter.TutorProfilePagerAdapter
 import com.example.mobappprototype.databinding.ActivityTutorProfileBinding
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.firestore.FirebaseFirestore
 
 private const val TAG = "TutorProfileActivity"
@@ -31,6 +33,7 @@ class TutorProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "Error: Tutor not found", Toast.LENGTH_SHORT).show()
         }
 
+
         binding.btnBook.setOnClickListener {
             Intent(this, TutorSchedAndSubsListActivity::class.java).also {
                 it.putExtra("TUTOR_UID", tutorUid)
@@ -54,7 +57,23 @@ class TutorProfileActivity : AppCompatActivity() {
                     binding.tvTutorName.text = document.getString("fullName")
                     val program = document.getString("program")
                     binding.tvTutorProgram.text = "Bachelor of Science in $program"
-                    binding.tvBio.text = document.getString("bio")
+                    val bio = document.getString("bio") ?: ""
+
+                    val viewPager = binding.viewPager
+                    val tabLayout = binding.tabLayout
+
+                    val pagerAdapter = TutorProfilePagerAdapter(this, bio) // Pass bio here
+                    binding.viewPager.adapter = pagerAdapter
+                    TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                        tab.text = when (position) {
+                            0 -> "ABOUT"
+                            1 -> "STRENGTH"
+                            2 -> "SCHEDULE"
+                            3 -> "REVIEWS"
+                            else -> null
+                        }
+                    }.attach()
+
 
                     // Load profile image using Glide/Picasso
                     val profilePicUrl = document.getString("profilePic")

@@ -1,0 +1,24 @@
+package com.example.mobappprototype.Adapter
+
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.mobappprototype.fragments.AboutFragment
+import com.example.mobappprototype.fragments.ReviewFragment
+import com.example.mobappprototype.fragments.SchedFragment
+import com.example.mobappprototype.fragments.StrengthFragment
+
+class TutorProfilePagerAdapter(activity: FragmentActivity, private val bio: String) : FragmentStateAdapter(activity) {
+
+    override fun getItemCount(): Int = 4 // Number of tabs
+
+    override fun createFragment(position: Int): Fragment {
+        return when (position) {
+            0 -> AboutFragment.newInstance(bio)
+            1 -> StrengthFragment()
+            2 -> SchedFragment()
+            3 -> ReviewFragment()
+            else -> throw IllegalStateException("Invalid tab position")
+        }
+    }
+}
