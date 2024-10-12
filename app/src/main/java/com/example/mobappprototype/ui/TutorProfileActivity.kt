@@ -1,61 +1,80 @@
 package com.example.mobappprototype.ui
 
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.mobappprototype.R
+import com.bumptech.glide.Glide
 import com.example.mobappprototype.databinding.ActivityTutorProfileBinding
+import com.google.firebase.firestore.FirebaseFirestore
 
+private const val TAG = "TutorProfileActivity"
 class TutorProfileActivity : AppCompatActivity() {
-
+    private lateinit var firestoreDb: FirebaseFirestore
     private lateinit var binding: ActivityTutorProfileBinding
-    private lateinit var ibtnHomeFFindTutorProfile: ImageView
-    private lateinit var btnBook: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTutorProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ibtnHomeFFindTutorProfile = findViewById(R.id.ibtnHomeFFindTutorProfile)
-        btnBook = findViewById(R.id.btnBook)
 
-        val intent = this.intent
-        if (intent != null) {
-            val tutorName = intent.getStringExtra("tutorName")
-            var degree = intent.getStringExtra("degree")
-            val tutorImage = intent.getIntExtra("image", R.drawable.jamesdp)
-//            val tutorDesc = intent.getIntExtra("tutorDesc", R.string.tutor_about1)
-            val rating = intent.getFloatExtra("rating", 4.5F)
-//            val tutorStrength = intent.getIntExtra("tutorStrength", R.string.strength1)
-//            val tutorSchedule = intent.getIntExtra("tutorSchedule", R.string.schedule1)
-            val resources: Resources = resources
-            var bachelorString = resources.getString(R.string.bachelor)
-            bachelorString = "$bachelorString "
-            degree = "$bachelorString$degree"
-            binding.detailTutorName.text = tutorName
-            binding.detailDegree.text = degree
-            binding.tvTutorRating.text = rating.toString()
-//            binding.detailDesc.setText(tutorDesc)
-            binding.detailTutorImage.setImageResource(tutorImage)
-//            binding.detailStrength.setText(tutorStrength)
-//            binding.detailSchedule.setText(tutorSchedule)
+        firestoreDb = FirebaseFirestore.getInstance()
+
+        val tutorUid = intent.getStringExtra("TUTOR_UID")
+        Log.d(TAG, "Received tutor UID: $tutorUid") // Add this log
+
+        if (tutorUid != null) {
+            fetchTutorDataAndPopulateUI(tutorUid)
+        } else {
+            Log.e(TAG, "Tutor UID not found in Intent")
+            Toast.makeText(this, "Error: Tutor not found", Toast.LENGTH_SHORT).show()
         }
 
-        btnBook.setOnClickListener {
+        binding.btnBook.setOnClickListener {
             Intent(this, TutorSchedAndSubsListActivity::class.java).also {
+                it.putExtra("TUTOR_UID", tutorUid)
+                Log.d(TAG, "Tutor UID being passed to TutorSchedAndSubsListActivity: $tutorUid")
                 startActivity(it)
             }
         }
 
-        ibtnHomeFFindTutorProfile.setOnClickListener {
+        binding.btnHomeFTutorProfile.setOnClickListener {
             Intent(this, TutorListActivity::class.java).also {
                 startActivity(it)
             }
         }
+    }
+    private fun fetchTutorDataAndPopulateUI(tutorUid: String) {
+        firestoreDb.collection("users").document(tutorUid)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    // Populate UI elements with tutor data
+                    binding.tvTutorName.text = document.getString("fullName")
+                    val program = document.getString("program")
+                    binding.tvTutorProgram.text = "Bachelor of Science in $program"
+                    binding.tvBio.text = document.getString("bio")
 
+                    // Load profile image using Glide/Picasso
+                    val profilePicUrl = document.getString("profilePic")
+                    if (!profilePicUrl.isNullOrEmpty()) {
+                        Glide.with(this)
+                            .load(profilePicUrl)
+                            .into(binding.sivTutorProfilePic)
+                    }
 
+                    // ... (fetch and populate other UI elements like rating, feedback, etc.) ...
+                } else {
+                    // Handle the case where the tutor document does not exist
+                    Log.e(TAG, "Tutor document not found")
+                    Toast.makeText(this, "Error: Tutor data not found", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Handle any errors that occur while fetching the tutor document
+                Log.e(TAG, "Error getting tutor document", exception)
+                Toast.makeText(this, "Error: Failed to fetch tutor data", Toast.LENGTH_SHORT).show()
+            }
     }
 }

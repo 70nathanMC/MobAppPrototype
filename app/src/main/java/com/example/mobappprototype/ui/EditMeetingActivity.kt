@@ -8,12 +8,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mobappprototype.databinding.ActivityEditMeetingBinding
 import com.example.mobappprototype.model.MeetingForTutor
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Locale
 
+private const val TAG = "EditMeetingActivity"
 class EditMeetingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditMeetingBinding
     private lateinit var db: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +25,7 @@ class EditMeetingActivity : AppCompatActivity() {
 
         setContentView(binding.root)
         db = FirebaseFirestore.getInstance()
-        Log.d("EditMeetingActivity", "Was this run? Before val meeting = intent.getParcelableExtra")
+        auth = FirebaseAuth.getInstance() // Initialize auth here
         val meeting = intent.getParcelableExtra<MeetingForTutor>("meeting")
             ?: throw IllegalArgumentException("Meeting data is missing")
         val meetingId = intent.getStringExtra("meetingId")
@@ -34,36 +38,30 @@ class EditMeetingActivity : AppCompatActivity() {
         setTimePickerTime(binding.tpStartTime, meeting.startTime)
         setTimePickerTime(binding.tpEndTime, meeting.endTime)
         binding.etSlots.setText(String.format(Locale.getDefault(), "%d", meeting.slots))
-        Log.d("EditMeetingActivity", "Was this run? before binding.btnSave.setOnClickListener")
 
         binding.btnSave.setOnClickListener {
-            Log.d("EditMeetingActivity", "1")
             val subject = binding.spinnerSubject.selectedItem.toString() ?: ""
-            Log.d("EditMeetingActivity", "1.11")
             val branch = binding.etBranch.text.toString() ?: ""
             val day = binding.spinnerDay.selectedItem.toString() ?: ""
-            Log.d("EditMeetingActivity", "1.1")
             val startTimeHour = binding.tpStartTime.hour
             val startTimeMinute = binding.tpStartTime.minute
             val endTimeHour = binding.tpEndTime.hour
             val endTimeMinute = binding.tpEndTime.minute
-            Log.d("EditMeetingActivity", "1.2")
-            val startTimeAmPm = if (binding.tpStartTime.hour < 12) "AM" else "PM"
-            val endTimeAmPm = if (binding.tpEndTime.hour < 12) "AM" else "PM"
-            val startTime = String.format("%02d:%02d %s", startTimeHour, startTimeMinute, startTimeAmPm)
-            val endTime = String.format("%02d:%02d %s", endTimeHour, endTimeMinute, endTimeAmPm)
+            val formattedStartTimeHour = if (startTimeHour == 0) 12 else if (startTimeHour > 12) startTimeHour - 12 else startTimeHour
+            val formattedEndTimeHour = if (endTimeHour == 0) 12 else if (endTimeHour > 12) endTimeHour - 12 else endTimeHour
+            val startTimeAmPm = if (startTimeHour < 12) "AM" else "PM"
+            val endTimeAmPm = if (endTimeHour < 12) "AM" else "PM"
+            val startTime = String.format("%02d:%02d %s", formattedStartTimeHour, startTimeMinute, startTimeAmPm)
+            val endTime = String.format("%02d:%02d %s", formattedEndTimeHour, endTimeMinute, endTimeAmPm)
 
 
-            Log.d("EditMeetingActivity", "2")
             val slots = binding.etSlots.text.toString().toIntOrNull() ?: 0
-            Log.d("EditMeetingActivity", "3")
             if (subject.isBlank() || branch.isBlank() || day.isBlank() ||
                 startTime.isBlank() || endTime.isBlank() || slots <= 0
             ) {
                 Toast.makeText(this, "Please fill in all fields correctly.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            Log.d("EditMeetingActivity", "Was this run? Before val updatedMeetingData")
             val updatedMeetingData = hashMapOf(
                 "subject" to subject,
                 "branch" to branch,
@@ -73,14 +71,86 @@ class EditMeetingActivity : AppCompatActivity() {
                 "slots" to slots,
                 "slotsRemaining" to slots // Update slotsRemaining whenever slots is changed
             )
-            Log.d("EditMeetingActivity", "Was this run? Before db.collection to update meeting document in Firestore")
+            val newSubject = binding.spinnerSubject.selectedItem.toString()
             // Update meeting document in Firestore
             db.collection("meetings").document(meetingId)
                 .update(updatedMeetingData as Map<String, Any>)
                 .addOnSuccessListener {
                     Log.d("EditMeetingActivity", "Meeting updated successfully!")
                     Toast.makeText(this, "Meeting updated!", Toast.LENGTH_SHORT).show()
-                    finish()
+                    val userId = auth.currentUser?.uid ?: return@addOnSuccessListener
+                    val oldSubject = meeting.subject
+
+                    if (newSubject != oldSubject) {
+                        // 1. Add tutorUID to the new subject's relatedTutors array
+                        db.collection("subjects").whereEqualTo("subjectName", newSubject)
+                            .get()
+                            .addOnSuccessListener { documents ->
+                                if (!documents.isEmpty) {
+                                    // Get the first document (assuming there's only one with that subjectName)
+                                    val newSubjectDocument = documents.first()
+                                    newSubjectDocument.reference.update("relatedTutors", FieldValue.arrayUnion(userId))
+                                        .addOnSuccessListener {
+                                            Log.d(TAG, "Tutor $userId added to subject $newSubject")
+
+                                            // 2. Check if there are other meetings with the old subject
+                                            db.collection("meetings")
+                                                .whereEqualTo("tutorId", userId)
+                                                .whereEqualTo("subject", oldSubject)
+                                                .get()
+                                                .addOnSuccessListener { oldSubjectDocuments ->
+                                                    if (oldSubjectDocuments.isEmpty) {
+                                                        // 3. If no other meetings with the old subject, remove tutorUID from it
+                                                        db.collection("subjects").whereEqualTo("subjectName", oldSubject)
+                                                            .get()
+                                                            .addOnSuccessListener { oldSubjectDocs ->
+                                                                if (!oldSubjectDocs.isEmpty) {
+                                                                    val oldSubjectDocument = oldSubjectDocs.first()
+                                                                    oldSubjectDocument.reference.update("relatedTutors", FieldValue.arrayRemove(userId))
+                                                                        .addOnSuccessListener {
+                                                                            Log.d(TAG, "Tutor $userId removed from subject $oldSubject")
+                                                                            finish()
+                                                                        }
+                                                                        .addOnFailureListener { e ->
+                                                                            Log.w(TAG, "Error removing tutor from subject: ${e.message}")
+                                                                            Toast.makeText(this, "Error removing tutor from subject: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                                        }
+                                                                } else {
+                                                                    Log.w(TAG, "Old subject document not found")
+                                                                    Toast.makeText(this, "Old subject document not found", Toast.LENGTH_SHORT).show()
+                                                                }
+                                                            }
+                                                            .addOnFailureListener { e ->
+                                                                Log.w(TAG, "Error getting old subject document: ${e.message}")
+                                                                Toast.makeText(this, "Error getting old subject document: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                            }
+                                                    } else {
+                                                        // There are other meetings with the old subject, so no need to remove the tutorUID
+                                                        finish()
+                                                    }
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Log.w(TAG, "Error checking for meetings with old subject: ${e.message}")
+                                                    Toast.makeText(this, "Error checking for meetings with old subject: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                }
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Log.w(TAG, "Error adding tutor to subject: ${e.message}")
+                                            Toast.makeText(this, "Error adding tutor to subject: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                } else {
+                                    Log.w(TAG, "New subject document not found")
+                                    Toast.makeText(this, "New subject document not found", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w(TAG, "Error getting new subject document: ${e.message}")
+                                Toast.makeText(this, "Error getting new subject document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        // Subject not changed, no need to update relatedTutors
+                        finish()
+                    }
                 }
                 .addOnFailureListener { e ->
                     Log.e("EditMeetingActivity", "Error updating meeting", e)

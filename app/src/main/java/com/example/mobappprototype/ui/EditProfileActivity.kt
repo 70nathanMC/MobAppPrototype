@@ -16,9 +16,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
 import com.example.mobappprototype.Adapter.ButtonAdapter
 import com.example.mobappprototype.R
-import com.example.mobappprototype.databinding.ActivityCreateProfileBinding
+import com.example.mobappprototype.databinding.ActivityEditProfileBinding
 import com.example.mobappprototype.model.ButtonData
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -28,22 +29,20 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
-
-private const val TAG = "CreateProfileActivity"
-class CreateProfileActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityCreateProfileBinding
+private const val TAG = "EditProfileActivity"
+class EditProfileActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityEditProfileBinding
     private lateinit var firestoreDb: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
     private lateinit var actvRole: AutoCompleteTextView
     private lateinit var actvProgram: AutoCompleteTextView
     private lateinit var adapter: ButtonAdapter
-    private lateinit var auth: FirebaseAuth
     private val buttonList = mutableListOf(
         ButtonData("+Add", true) // Default "Add" button
     )
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        binding = ActivityEditProfileBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
-        binding = ActivityCreateProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         supportActionBar?.hide()
@@ -59,7 +58,7 @@ class CreateProfileActivity : AppCompatActivity() {
         firestoreDb = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
-        binding.layoutWeaknessesOrStrength.visibility = View.GONE
+        fetchUserDataAndPopulateUI()
 
         binding.sivSetProfilePic.setOnClickListener {
             openGallery()
@@ -82,10 +81,30 @@ class CreateProfileActivity : AppCompatActivity() {
             }
         }
 
-        binding.ivBackFCreateProfile.setOnClickListener {
-            val intent = Intent(this, WelcomeActivity::class.java)
-            startActivity(intent)
+        binding.ivBackFEditProfile.setOnClickListener {
+            val user = auth.currentUser
+            val userUid = user!!.uid
+            val usersRef = firestoreDb.collection("users").document(userUid)
+
+            usersRef.get().addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val role = document.getString("role")
+                    when (role) {
+                        "Student" -> {
+                            goStudentMainProfileActivity()
+                        }
+                        "Tutor" -> {
+                            goTutorMainProfileActivity()
+                        }
+                    }
+                }
+            }.addOnFailureListener { exception ->
+                // Handle any errors that occur while fetching the user document
+                Log.e(TAG, "Error getting user document", exception)
+                Toast.makeText(this, "Error: Failed to fetch user data", Toast.LENGTH_SHORT).show()
+            }
         }
+
         binding.etFirstName.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 binding.etFirstName.setTextColor(resources.getColor(R.color.appBlack))
@@ -152,8 +171,15 @@ class CreateProfileActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
     }
-
-    @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      contracts for common intents available in\n      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for\n      testing, and allow receiving results in separate, testable classes independent from your\n      activity. Use\n      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}\n      with the appropriate {@link ActivityResultContract} and handling the result in the\n      {@link ActivityResultCallback#onActivityResult(Object) callback}.")
+    @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      " +
+            "which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      " +
+            "contracts for common intents available in\n      " +
+            "{@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for\n      " +
+            "testing, and allow receiving results in separate, testable classes independent from your\n      " +
+            "activity. Use\n      " +
+            "{@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}\n      " +
+            "with the appropriate {@link ActivityResultContract} and handling the result in the\n      " +
+            "{@link ActivityResultCallback#onActivityResult(Object) callback}.")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -200,7 +226,6 @@ class CreateProfileActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun uploadImage(fileUri: Uri){
         val progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Uploading Image..")
@@ -217,7 +242,43 @@ class CreateProfileActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, "Image Failed to Upload", Toast.LENGTH_SHORT).show()
         }
     }
+    private fun fetchUserDataAndPopulateUI() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+        if (currentUserId != null) {
+            firestoreDb.collection("users").document(currentUserId)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        // Populate UI elements with existing data
+                        val profilePicUrl = document.getString("profilePic")
+                        if (!profilePicUrl.isNullOrEmpty()) {
+                            Glide.with(this).load(profilePicUrl).into(binding.sivSetProfilePic)
+                        }
+                        binding.etFirstName.setText(document.getString("firstName"))
+                        binding.etLastName.setText(document.getString("lastName"))
+                        binding.actvProgram.setText(document.getString("program"))
+                        binding.actvRole.setText(document.getString("role"))
+                        binding.etBio.setText(document.getString("bio"))
 
+                        // Populate subjects list (ensure you handle potential nulls)
+                        val subjects = document.get("subjects") as? List<String> ?: emptyList()
+                        buttonList.clear()
+                        buttonList.addAll(subjects.map { ButtonData(it, false) })
+                        buttonList.add(ButtonData("+Add", true))
+                        adapter.notifyDataSetChanged()
+                    } else {
+                        Log.d(TAG, "User document not found")
+                        Toast.makeText(this, "User data not found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d(TAG, "Error getting user document", exception)
+                    Toast.makeText(this, "Failed to fetch user data", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Log.w(TAG, "No logged-in user found.")
+        }
+    }
     private fun checkAndUpdateUI(weaknessesOrStrengths: Array<String>) {
         when (binding.actvRole.text.toString().trim()) {
             "Student" -> {
@@ -297,7 +358,7 @@ class CreateProfileActivity : AppCompatActivity() {
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
         if (currentUserId != null) {
             firestoreDb.collection("users").document(currentUserId)
-                .set(user)
+                .update(user)
                 .addOnSuccessListener {
                     Log.d(TAG, "User profile updated with ID: $currentUserId")
                     if (role == "Tutor") {
@@ -315,8 +376,6 @@ class CreateProfileActivity : AppCompatActivity() {
                         updateSubjectsWithTutor(currentUserId, subjects)
                     }
                     Toast.makeText(this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, LoginActivity::class.java)
-                    startActivity(intent)
                     finish()
                 }
                 .addOnFailureListener { e ->
@@ -338,7 +397,18 @@ class CreateProfileActivity : AppCompatActivity() {
                 }
         }
     }
-
+    private fun goStudentMainProfileActivity() {
+        Log.i(TAG, "goStudentMainProfileActivity")
+        val intent = Intent(this, StudentMainProfileActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+    private fun goTutorMainProfileActivity() {
+        Log.i(TAG, "goTutorMainProfileActivity")
+        val intent = Intent(this, TutorMainProfileActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
     companion object {
         const val ADD_BUTTON_REQUEST_CODE = 1
         const val IMAGE_PICKER_REQUEST_CODE = 2404

@@ -10,10 +10,32 @@
 const {onRequest} = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+admin.initializeApp();
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+exports.updateFullName = functions.firestore
+.document("users/{userId}")
+.onUpdate(async (change, context) => {
+    const newValue = change.after.data();
+    const previousValue = change.before.data();
+
+    if (newValue.firstName
+        !== previousValue.firstName ||
+        newValue.lastName !== previousValue.lastName) {
+        const fullName = `${newValue.firstName} ${newValue.lastName}`;
+    await change.after.ref.update({ fullName: fullName });
+        }
+});
+
+exports.updateSlotsRemaining = functions.firestore
+.document("meetings/{meetingId}")
+.onUpdate(async (change, context) => {
+    const newValue = change.after.data();
+    const previousValue = change.before.data();
+
+    if (newValue.participants.length !== previousValue.participants.length) {
+        const slotsRemaining = newValue.slots - newValue.participants.length;
+        await change.after.ref.update({ slotsRemaining: slotsRemaining });
+    }
+});

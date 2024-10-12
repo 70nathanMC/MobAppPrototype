@@ -19,6 +19,9 @@
         android:theme="@style/Theme.MobAppPrototype"
         tools:targetApi="33">
         <activity
+            android:name=".ui.EditProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.TutorMainProfileActivity"
             android:exported="false" />
         <activity

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.button.MaterialButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/btnSearchHistory"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minHeight="36dp"
+    android:text="John Doe"
+    android:fontFamily="@font/light"
+    android:gravity="center"
+    android:textSize="11sp"
+    android:padding="0dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginBottom="6dp"
+    android:textColor="@color/white"
+    app:cornerRadius="10dp"
+    android:backgroundTint="@color/appGreen">
+</com.google.android.material.button.MaterialButton>

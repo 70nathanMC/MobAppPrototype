@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.mobappprototype.R
 import com.example.mobappprototype.ViewModel.UserViewModel
-import com.example.mobappprototype.databinding.ActivityMainBinding
+import com.example.mobappprototype.databinding.ActivityStudentMainBinding
 import com.example.mobappprototype.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,16 +17,16 @@ import com.google.firebase.firestore.FirebaseFirestore
 private const val TAG = "MainActivity"
 
 class StudentMainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityStudentMainBinding
     private lateinit var firestoreDb: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private lateinit var userViewModel: UserViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityStudentMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.layoutMainActivity.visibility = View.INVISIBLE
+        binding.layoutMainActivity.visibility = View.GONE
         binding.loadingLayout.visibility = View.VISIBLE
 
         auth = FirebaseAuth.getInstance()
@@ -45,7 +45,6 @@ class StudentMainActivity : AppCompatActivity() {
                     }
                 } else {
                     Log.d(TAG, "User document does not exist")
-                    goCreateProfileActivity()
                 }
             }
         }
@@ -54,24 +53,10 @@ class StudentMainActivity : AppCompatActivity() {
         userViewModel.user.observe(this) { user ->
             if (user != null) {
                 updateUIWithUserData(user)
-                when (user.role) {
-                    "Student" -> {
-                        // Do nothing
-                    }
-                    "Tutor" -> {
-                        // go to the main activity for tutors
-                        goTutorMainActivity()
-                    }
-                    else -> {
-                        Log.d(TAG, "user.role does not exist")
-                        goCreateProfileActivity()
-                    }
-                }
                 binding.loadingLayout.visibility = View.GONE // Hide loading indicator
                 binding.layoutMainActivity.visibility = View.VISIBLE
             }
         }
-
         // Event listeners for dashboard buttons
         setupClickListeners()
     }
@@ -173,19 +158,5 @@ class StudentMainActivity : AppCompatActivity() {
         binding.tvUserFirstNameDashboard.text = user.firstName
         Glide.with(this).load(user.profilePic).into(binding.ivUserImageDashboard)
         // Update other UI elements if needed
-    }
-
-    private fun goCreateProfileActivity() {
-        Log.i(TAG, "goCreateProfileActivity")
-        val intent = Intent(this, CreateProfileActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun goTutorMainActivity() {
-        Log.i(TAG, "goTutorMainActivity")
-        val intent = Intent(this, TutorMainActivity::class.java)
-        startActivity(intent)
-        finish()
     }
 }

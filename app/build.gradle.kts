@@ -61,4 +61,6 @@ dependencies {
     implementation (libs.firebase.storage.ktx)
     implementation (libs.firebase.storage.ktx)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
+    implementation ("com.google.firebase:firebase-bom:33.4.0")
+    implementation (libs.firebase.firestore.ktx)
 }

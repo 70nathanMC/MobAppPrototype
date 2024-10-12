@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -11,51 +11,74 @@
 
 
 
-    <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/imageView21"
+        android:layout_width="284dp"
+        android:layout_height="249dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="@+id/textView32"
+        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintStart_toStartOf="@+id/textView32"
+        app:layout_constraintTop_toBottomOf="@+id/textView32"
+        app:srcCompat="@drawable/ic_welcome_img" />
+
+    <TextView
+        android:id="@+id/textView34"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:backgroundTint="@color/appGreen"
-        android:fontFamily="@font/semibold"
-        android:text="Login"
-        android:textColor="@color/appWhite"
-        android:textSize="18sp"
-        app:cornerRadius="8dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/light"
+        android:gravity="center"
+        android:text="Connect with Peers.\n Enhance your Learning"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/imageView21"
+        app:layout_constraintStart_toStartOf="@+id/imageView21"
+        app:layout_constraintTop_toBottomOf="@+id/imageView21" />
+
+    <TextView
+        android:id="@+id/textView32"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/bold"
+        android:gravity="center"
+        android:text=" Welcome to \n UC Hub!"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_width="350dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="10dp"
         android:backgroundTint="@color/appBlack"
         android:fontFamily="@font/semibold"
         android:text="Register"
         android:textColor="@color/appWhite"
-        android:textSize="18sp"
+        android:textSize="15sp"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
     <Button
-        android:id="@+id/btnGoToCreateProfile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:backgroundTint="@color/appGray8"
+        android:id="@+id/btnLogin"
+        android:layout_width="350dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="60dp"
+        android:backgroundTint="@color/appGreen"
         android:fontFamily="@font/semibold"
-        android:text="Create Profile"
+        android:text="Login"
         android:textColor="@color/appWhite"
-        android:textSize="18sp"
+        android:textSize="15sp"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView34" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 

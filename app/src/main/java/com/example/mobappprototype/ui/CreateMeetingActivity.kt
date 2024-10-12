@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
+private const val TAG = "CreateMeetingActivity"
 class CreateMeetingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCreateMeetingBinding
     private lateinit var db: FirebaseFirestore
@@ -26,18 +27,19 @@ class CreateMeetingActivity : AppCompatActivity() {
         fetchSubjectsFromFirestore(binding.spinnerSubject) // Call the function to populate the Spinner
 
         binding.btnCreate.setOnClickListener {
-            val subject = binding.spinnerSubject.selectedItem.toString()
-            val branch = binding.etBranch.text.toString()
-            val day = binding.spinnerDay.selectedItem.toString()
+            val subject = binding.spinnerSubject.selectedItem.toString().trim()
+            val branch = binding.etBranch.text.toString().trim()
+            val day = binding.spinnerDay.selectedItem.toString().trim()
             val startTimeHour = binding.tpStartTime.hour
             val startTimeMinute = binding.tpStartTime.minute
             val endTimeHour = binding.tpEndTime.hour
             val endTimeMinute = binding.tpEndTime.minute
-            val startTimeAmPm = if (binding.tpStartTime.hour < 12) "AM" else "PM"
-            val endTimeAmPm = if (binding.tpEndTime.hour < 12) "AM" else "PM"
-
-            val startTime = String.format("%02d:%02d %s", startTimeHour, startTimeMinute, startTimeAmPm)
-            val endTime = String.format("%02d:%02d %s", endTimeHour, endTimeMinute, endTimeAmPm)
+            val formattedStartTimeHour = if (startTimeHour == 0) 12 else if (startTimeHour > 12) startTimeHour - 12 else startTimeHour
+            val formattedEndTimeHour = if (endTimeHour == 0) 12 else if (endTimeHour > 12) endTimeHour - 12 else endTimeHour
+            val startTimeAmPm = if (startTimeHour < 12) "AM" else "PM"
+            val endTimeAmPm = if (endTimeHour < 12) "AM" else "PM"
+            val startTime = String.format("%02d:%02d %s", formattedStartTimeHour, startTimeMinute, startTimeAmPm)
+            val endTime = String.format("%02d:%02d %s", formattedEndTimeHour, endTimeMinute, endTimeAmPm)
             val slots = binding.etSlots.text.toString().toIntOrNull() ?: 0 // Default to 0 if invalid
 
             if (subject.isBlank() || branch.isBlank() || day.isBlank() ||
@@ -74,16 +76,41 @@ class CreateMeetingActivity : AppCompatActivity() {
                         .update("meetings", FieldValue.arrayUnion(meetingId))
                         .addOnSuccessListener {
                             Log.d("CreateMeetingActivity", "Meeting ID added to tutor's document: $meetingId")
-                            finish() // Optionally close the activity
+                            db.collection("subjects").whereEqualTo("subjectName", subject)
+                                .get()
+                                .addOnSuccessListener { subjectDocuments ->
+                                    if (!subjectDocuments.isEmpty) {
+                                        val subjectDocument = subjectDocuments.first() // Get the first document with the matching subjectName
+                                        subjectDocument.reference.update("relatedTutors", FieldValue.arrayUnion(userId))
+                                            .addOnSuccessListener {
+                                                Log.d(TAG, "Tutor $userId added to subject $subject")
+                                                finish()
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Log.w(TAG, "Error adding tutor to subject: ${e.message}")
+                                                Toast.makeText(this, "Error adding tutor to subject: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            }
+                                    } else {
+                                        // Handle the case where the subject document is not found
+                                        Log.w(TAG, "Subject document not found for $subject")
+                                        Toast.makeText(this, "Subject document not found for $subject", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(TAG, "Error fetching subject document: ${e.message}")
+                                    Toast.makeText(this, "Error fetching subject document: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
                         }
                         .addOnFailureListener { e ->
                             // Handle the error (e.g., show a Toast)
                             Toast.makeText(this, "Error updating tutor's meetings: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Log.d(TAG, "Error updating tutor's meetings: ${e.message}")
                         }
                 }
                 .addOnFailureListener { e ->
                     // Handle the error (e.g., show a Toast)
-                    Toast.makeText(this, "Error creating meeting: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Error updating tutor's meetings: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "Error updating tutor's meetings2: ${e.message}")
                 }
         }
     }
@@ -103,6 +130,7 @@ class CreateMeetingActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 // Handle any errors that occurred while fetching the subjects
                 Toast.makeText(this, "Error fetching subjects: ${exception.message}", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "Error updating tutor's fetching subjects: ${exception.message}")
             }
     }
 }

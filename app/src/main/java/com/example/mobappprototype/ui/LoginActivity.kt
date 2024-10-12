@@ -9,11 +9,13 @@ import androidx.core.content.res.ResourcesCompat
 import com.example.mobappprototype.R
 import com.example.mobappprototype.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 private const val TAG = "LoginActivity"
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,8 +24,9 @@ class LoginActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
         auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
         if (auth.currentUser != null) {
-            goMainActivity()
+            checkUserRole()
         }
 
         binding.tvRegisterNow.setOnClickListener {
@@ -44,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
                 binding.btnLoginReal.isEnabled = true
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Sucess!", Toast.LENGTH_SHORT).show()
-                    goMainActivity()
+                    checkUserRole()
             } else {
                 Log.e(TAG, "signInWithEmail failed", task.exception)
                 Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
@@ -78,10 +81,60 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+    private fun checkUserRole() {
+        val user = auth.currentUser
+        if (user != null) {
+            val userUid = user.uid
+            val usersRef = db.collection("users").document(userUid)
 
-    private fun goMainActivity() {
-        Log.i(TAG, "goMainActivity")
+            usersRef.get().addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val role = document.getString("role")
+                    when (role) {
+                        "Student" -> {
+                            goStudentMainActivity()
+                        }
+                        "Tutor" -> {
+                            goTutorMainActivity()
+                        }
+                        else -> {
+                            // Handle the case where the role is not found or invalid
+                            goCreateProfileActivity()
+                            Log.e(TAG, "Invalid user role, user needs to go to create profile")
+                        }
+                    }
+                } else {
+                    // Handle the case where the user document does not exist
+                    goCreateProfileActivity()
+                    Log.e(TAG, "User document not found, user needs to create profile")
+                }
+            }.addOnFailureListener { exception ->
+                // Handle any errors that occur while fetching the user document
+                Log.e(TAG, "Error getting user document", exception)
+                Toast.makeText(this, "Error: Failed to fetch user data", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            // Handle the case where the currentUser is null (shouldn't happen, but it's good to handle it)
+            Log.e(TAG, "currentUser is null after successful login")
+            Toast.makeText(this, "Error: User not found", Toast.LENGTH_SHORT).show()
+        }
+    }
+    private fun goCreateProfileActivity() {
+        Log.i(TAG, "goCreateProfileActivity")
+        val intent = Intent(this, CreateProfileActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+    private fun goStudentMainActivity() {
+        Log.i(TAG, "goStudentMainActivity")
         val intent = Intent(this, StudentMainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun goTutorMainActivity() {
+        Log.i(TAG, "goTutorMainActivity")
+        val intent = Intent(this, TutorMainActivity::class.java)
         startActivity(intent)
         finish()
     }

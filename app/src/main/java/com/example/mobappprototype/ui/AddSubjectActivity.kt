@@ -36,9 +36,9 @@ class AddSubjectActivity : AppCompatActivity() {
     }
 
     private fun fetchSubjectsFromFirestore() {
-        val userRef = firestoreDb.collection("allSubjectsList")
+        val subjectsRef = firestoreDb.collection("subjects")
 
-        userRef.get().addOnSuccessListener { querySnapshot: QuerySnapshot ->
+        subjectsRef.get().addOnSuccessListener { querySnapshot: QuerySnapshot ->
             val subjectsList = mutableListOf<String>()
 
             for (document in querySnapshot) {

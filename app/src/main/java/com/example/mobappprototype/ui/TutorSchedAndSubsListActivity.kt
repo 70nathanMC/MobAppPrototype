@@ -3,14 +3,16 @@ package com.example.mobappprototype.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.mobappprototype.Adapter.MeetingsAdapter
-import com.example.mobappprototype.R
+import com.bumptech.glide.Glide
+import com.example.mobappprototype.Adapter.MeetingDataAdapter
+import com.example.mobappprototype.ViewModel.UserViewModel
 import com.example.mobappprototype.databinding.ActivityTutorSchedAndSubsListBinding
-import com.example.mobappprototype.model.Meeting
 import com.example.mobappprototype.model.MeetingData
+import com.example.mobappprototype.model.User
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 private const val TAG = "TutorSchedAndSubsListActivity"
@@ -18,58 +20,112 @@ class TutorSchedAndSubsListActivity : AppCompatActivity() {
 
     private lateinit var firestoreDb: FirebaseFirestore
     private lateinit var binding: ActivityTutorSchedAndSubsListBinding
-    private lateinit var ibtnHomeFTutorSchedAndSubsList: ImageView
+    private lateinit var meetingDataAdapter: MeetingDataAdapter
+    private val meetingList = mutableListOf<MeetingData>()
+    private lateinit var auth: FirebaseAuth
+    private lateinit var userViewModel: UserViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTutorSchedAndSubsListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        auth = FirebaseAuth.getInstance()
         firestoreDb = FirebaseFirestore.getInstance()
-        val meetingsReference = firestoreDb
-            .collection("meetings")
-            //.limit(20)
-            //.orderBy()
-        meetingsReference.addSnapshotListener { snapshot, exception ->
-            if (exception != null || snapshot == null) {
-                Log.e(TAG, "Exception when querying posts", exception)
-                return@addSnapshotListener
-            }
-            val meetingList = snapshot.toObjects(Meeting::class.java)
-//            meetings.addAll(meetingList)
-            for (meeting in meetingList) {
-                Log.i(TAG,"Meeting ${meeting}")
-            }
-        }
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
-        val subjectNameList = arrayOf("Calculus - Limits", "Calculus - Integration", "Calculus - Differentiation", "Calculus - Sequences", "Calculus - Series", "Calculus - Vector")
-        val dayList = arrayOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
-        val timeList = arrayOf("7:30 AM - 9:30 AM", "10:00 AM - 12:00 PM", "2:00 PM - 4:00 PM", "9:00 AM - 11:00 AM", "1:00 PM - 3:00 PM", "8:00 AM - 10:00 AM")
-        val slotsList = arrayOf("3 Slots", "2 Slots", "5 Slots", "4 Slots", "1 Slot", "3 Slots")
-
-
-        val meetingsList = mutableListOf<MeetingData>()
-        for (i in subjectNameList.indices) {
-            meetingsList.add(
-                MeetingData(
-                    subjectNameList[i],
-                    dayList[i],
-                    timeList[i],
-                    slotsList[i]
-                )
-            )
-        }
-
-        // Setup RecyclerView
+        meetingDataAdapter = MeetingDataAdapter(meetingList)
         binding.rvMeetings.layoutManager = LinearLayoutManager(this)
-        binding.rvMeetings.adapter = MeetingsAdapter(meetingsList)
+        binding.rvMeetings.adapter = meetingDataAdapter
 
-        // Home button logic
-        ibtnHomeFTutorSchedAndSubsList = findViewById(R.id.ibtnHomeFTutorSchedAndSubsList)
-        ibtnHomeFTutorSchedAndSubsList.setOnClickListener {
+        val userUID = auth.currentUser?.uid
+        if (userUID != null) {
+            val userRef = firestoreDb.collection("users").document(userUID)
+            userRef.get().addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val user = documentSnapshot.toObject(User::class.java)
+                    if (user != null) {
+                        userViewModel.setUser(user)
+                    }
+                } else {
+                    Log.d(TAG, "User document does not exist")
+                }
+            }
+        }
+
+        userViewModel.user.observe(this) { user ->
+            if (user != null) {
+                updateUIWithUserData(user)
+            }
+        }
+
+        val tutorUid = intent.getStringExtra("TUTOR_UID")
+        Log.d(TAG, "Tutor UID retrieved from TutorListActivity: $tutorUid")
+        if (tutorUid != null) {
+            Log.d(TAG, "Received tutor UID: $tutorUid")
+            fetchMeetings(tutorUid)
+            fetchTutorName(tutorUid)
+        } else {
+            Log.e(TAG, "Tutor UID not found in Intent")
+        }
+        binding.ivUserProfile.setOnClickListener{
+            Intent(this, StudentMainProfileActivity::class.java).also {
+                startActivity(it)
+            }
+        }
+
+        binding.ibtnHomeFTutorSchedAndSubsList.setOnClickListener {
             Intent(this, StudentMainActivity::class.java).also {
                 startActivity(it)
             }
         }
 
+    }
+
+    private fun updateUIWithUserData(user: User) {
+        Glide.with(this).load(user.profilePic).into(binding.ivUserProfile)
+        // Update other UI elements if needed
+    }
+    private fun fetchMeetings(tutorUid: String) {
+        Log.d(TAG, "Fetching meetings for tutor UID: $tutorUid")
+        firestoreDb.collection("meetings").whereEqualTo("tutorId", tutorUid)
+            .get()
+            .addOnSuccessListener { documents ->
+                Log.d(TAG, "Number of meeting documents retrieved: ${documents.size()}") // Log the number of documents
+                for (document in documents) {
+                    val meeting = MeetingData(
+                        id = document.id,
+                        subject = document.getString("subject") ?: "",
+                        branch = document.getString("branch") ?: "",
+                        day = document.getString("day") ?: "",
+                        startTime = document.getString("startTime") ?: "",
+                        endTime = document.getString("endTime") ?: "",
+                        slots = document.getLong("slots")?.toInt() ?: 0,
+                        slotsRemaining = document.getLong("slotsRemaining")?.toInt() ?: 0,
+                        participants = document.get("participants") as? List<String> ?: emptyList(),
+                        tutorId = document.getString("tutorId") ?: ""
+                    )
+                    meetingList.add(meeting)
+                }
+                meetingDataAdapter.notifyDataSetChanged()
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error fetching meetings: ", exception)
+            }
+    }
+    private fun fetchTutorName(tutorUid: String) {
+        firestoreDb.collection("users").document(tutorUid)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val tutorName = document.getString("fullName") ?: ""
+                    binding.tvTutorNameTitle.text = tutorName // Set the tutor's name to the TextView
+                } else {
+                    Log.e(TAG, "Tutor document not found")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error getting tutor document", exception)
+            }
     }
 }
