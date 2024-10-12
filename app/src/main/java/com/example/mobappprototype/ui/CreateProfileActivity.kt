@@ -38,7 +38,7 @@ class CreateProfileActivity : AppCompatActivity() {
     private lateinit var adapter: ButtonAdapter
     private lateinit var auth: FirebaseAuth
     private val buttonList = mutableListOf(
-        ButtonData("+Add", true) // Default "Add" button
+        ButtonData("+Add", true, R.color.appGrayButton, R.color.appGray6) // Default "Add" button
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -173,7 +173,7 @@ class CreateProfileActivity : AppCompatActivity() {
                                 .show()
                         } else {
                             // Add new subject at the beginning
-                            buttonList.add(0, ButtonData(newButtonLabel, false))
+                            buttonList.add(0, ButtonData(newButtonLabel, false, R.color.appGrayButton, R.color.appGray6))
                             adapter.notifyDataSetChanged() // Notify adapter of changes
                         }
                     }

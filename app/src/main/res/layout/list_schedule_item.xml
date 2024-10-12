@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="30dp"
-    app:cardBackgroundColor="@color/white">
+    android:background="@color/white"
+    android:backgroundTint="@color/white"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -28,13 +30,12 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:fontFamily="@font/regular"
+            android:gravity="center"
             android:text="7:30 AM - 10:00 AM"
             android:textSize="15sp"
-            android:gravity="center"
-            android:layout_marginStart="80dp"
+            android:layout_marginStart="150dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvMeetingDay"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
 

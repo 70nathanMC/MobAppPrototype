@@ -38,7 +38,7 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var actvProgram: AutoCompleteTextView
     private lateinit var adapter: ButtonAdapter
     private val buttonList = mutableListOf(
-        ButtonData("+Add", true) // Default "Add" button
+        ButtonData("+Add", true, R.color.appGrayButton, R.color.appGray6) // Default "Add" button
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
@@ -197,7 +197,7 @@ class EditProfileActivity : AppCompatActivity() {
                                 .show()
                         } else {
                             // Add new subject at the beginning
-                            buttonList.add(0, ButtonData(newButtonLabel, false))
+                            buttonList.add(0, ButtonData(newButtonLabel, false, R.color.appGrayButton, R.color.appGray6))
                             adapter.notifyDataSetChanged() // Notify adapter of changes
                         }
                     }
@@ -261,8 +261,8 @@ class EditProfileActivity : AppCompatActivity() {
                         // Populate subjects list (ensure you handle potential nulls)
                         val subjects = document.get("subjects") as? List<String> ?: emptyList()
                         buttonList.clear()
-                        buttonList.addAll(subjects.map { ButtonData(it, false) })
-                        buttonList.add(ButtonData("+Add", true))
+                        buttonList.addAll(subjects.map { ButtonData(it, false, R.color.appGrayButton, R.color.appGray6) })
+                        buttonList.add(ButtonData("+Add", true, R.color.appGrayButton, R.color.appGray6))
                         adapter.notifyDataSetChanged()
                     } else {
                         Log.d(TAG, "User document not found")

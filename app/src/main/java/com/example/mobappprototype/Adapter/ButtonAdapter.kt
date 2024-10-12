@@ -2,8 +2,10 @@ package com.example.mobappprototype.Adapter
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mobappprototype.databinding.ItemSubjectsBinding
 import com.example.mobappprototype.model.ButtonData
@@ -36,6 +38,17 @@ class ButtonAdapter(
                 showRemoveConfirmationDialog(context, buttonData.label, position)
             }
         }
+
+        holder.binding.btnSubjectButtons.backgroundTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(context, buttonData.colorResId))
+
+        // Set text color using textColorResId
+        holder.binding.btnSubjectButtons.setTextColor(ContextCompat.getColor(context, buttonData.textColorResId))
+    }
+    fun updateButtonList(newButtonList: List<ButtonData>) {
+        buttonList.clear()
+        buttonList.addAll(newButtonList)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = buttonList.size

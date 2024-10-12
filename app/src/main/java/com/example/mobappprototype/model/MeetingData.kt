@@ -1,6 +1,6 @@
 package com.example.mobappprototype.model
 
-class MeetingData (
+data class MeetingData (
     val id: String = "", // Meeting ID
     val subject: String = "",
     val branch: String = "",
