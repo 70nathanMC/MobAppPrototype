@@ -61,8 +61,9 @@ dependencies {
     implementation (libs.firebase.storage.ktx)
     implementation (libs.firebase.storage.ktx)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
-    implementation ("com.google.firebase:firebase-bom:33.4.0")
-    implementation (libs.firebase.firestore.ktx)
-    implementation("androidx.viewpager2:viewpager2:1.0.0")
-    implementation("com.google.android.material:material:1.5.0")
+    implementation (platform(libs.firebase.bom))
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.material)
+//    implementation("com.github.bumptech.glide:glide:<Glide_version>")
+//    annotationProcessor(libs.compiler)
 }

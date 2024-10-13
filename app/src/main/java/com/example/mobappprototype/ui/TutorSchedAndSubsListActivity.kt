@@ -91,7 +91,7 @@ class TutorSchedAndSubsListActivity : AppCompatActivity() {
         firestoreDb.collection("meetings").whereEqualTo("tutorId", tutorUid)
             .get()
             .addOnSuccessListener { documents ->
-                Log.d(TAG, "Number of meeting documents retrieved: ${documents.size()}") // Log the number of documents
+                Log.d(TAG, "Number of meeting documents retrieved: ${documents.size()}")
                 for (document in documents) {
                     val meeting = MeetingData(
                         id = document.id,
