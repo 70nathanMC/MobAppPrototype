@@ -12,7 +12,7 @@ import com.example.mobappprototype.model.LastMessage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firestore.v1.DocumentChange
+
 import java.util.Date
 
 private const val TAG = "InboxActivity"
@@ -39,6 +39,13 @@ class InboxActivity : AppCompatActivity() {
 
         fetchChatRooms()
         listenForNewMessages()
+
+        binding.btnHome.setOnClickListener{
+            Intent(this, TutorSchedAndSubsListActivity::class.java).also {
+                startActivity(it)
+            }
+        }
+
     }
 
     private fun fetchChatRooms() {
@@ -98,7 +105,7 @@ class InboxActivity : AppCompatActivity() {
                 Log.e(TAG, "Error fetching last message", exception)
             }
     }
-    fun listenForNewMessages() {
+    private fun listenForNewMessages() {
         val currentUserId = auth.currentUser?.uid
         if (currentUserId != null) {
             firestoreDb.collection("chats")
@@ -110,7 +117,7 @@ class InboxActivity : AppCompatActivity() {
                     }
 
                     snapshot?.documentChanges?.forEach { change ->
-                        if (change.type == com.google.firebase.firestore.DocumentChange.Type.MODIFIED) { // Use fully qualified name
+                        if (change.type == com.google.firebase.firestore.DocumentChange.Type.MODIFIED) {
                             val chatRoomId = change.document.id
                             val lastMessage = change.document.toObject(ChatRoom::class.java).lastMessage
 
@@ -130,7 +137,7 @@ class InboxActivity : AppCompatActivity() {
                                                 userDocument.reference.update("lastSeenChats.${chatRoomId}.unreadCount", newUnreadCount)
                                                     .addOnSuccessListener {
                                                         Log.d(TAG, "Successfully incremented unread count for chat room: $chatRoomId")
-                                                        // You may want to update the UI here if needed
+                                                        // Update the UI here for the number of unreadMessages
                                                     }
                                                     .addOnFailureListener { e ->
                                                         Log.e(TAG, "Error incrementing unread count", e)
@@ -142,6 +149,7 @@ class InboxActivity : AppCompatActivity() {
                         }
                     }
                 }
+
         }
     }
 }

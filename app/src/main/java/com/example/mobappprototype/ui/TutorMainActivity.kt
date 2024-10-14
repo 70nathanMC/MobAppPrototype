@@ -91,7 +91,7 @@ class TutorMainActivity : AppCompatActivity() {
                 }
                 R.id.profile -> {
                     // Handle Profile item click
-                    val intent = Intent(this, TutorProfileActivity::class.java)
+                    val intent = Intent(this, TutorMainProfileActivity::class.java)
                     startActivity(intent)
                     true
                 }

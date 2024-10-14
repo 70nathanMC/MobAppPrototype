@@ -168,6 +168,7 @@ class EditProfileActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+
     }
     @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      " +
             "which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      " +

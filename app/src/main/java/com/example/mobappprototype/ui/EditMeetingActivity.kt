@@ -1,11 +1,13 @@
 package com.example.mobappprototype.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.mobappprototype.R
 import com.example.mobappprototype.databinding.ActivityEditMeetingBinding
 import com.example.mobappprototype.model.MeetingForTutor
 import com.google.firebase.auth.FirebaseAuth
@@ -156,6 +158,31 @@ class EditMeetingActivity : AppCompatActivity() {
                     Toast.makeText(this, "Error updating meeting: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
+
+        binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.home -> {
+                    // Handle Home item click
+                    val intent = Intent(this, TutorMainActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.messages -> {
+                    // Handle Messages item click
+                    val intent = Intent(this, InboxActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.profile -> {
+                    // Handle Profile item click
+                    val intent = Intent(this, TutorMainProfileActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
+
     }
     private fun fetchSubjectsFromFirestore(spinner: Spinner, selectedSubject: String) {
         db.collection("subjects")

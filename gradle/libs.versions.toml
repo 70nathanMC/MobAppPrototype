@@ -3,6 +3,8 @@ agp = "8.7.0"
 compiler = "<Glide_version>"
 firebaseBom = "33.4.0"
 glide = "4.16.0"
+hiltAndroid = "2.51.1"
+hiltAndroidCompiler = "2.51.1"
 imagepicker = "2.1"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
@@ -32,6 +34,8 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx", version.ref = "firebaseStorage" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 imagepicker = { module = "com.github.dhaval2404:imagepicker", version.ref = "imagepicker" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

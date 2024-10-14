@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.example.mobappprototype.R
 import com.example.mobappprototype.ViewModel.UserViewModel
 import com.example.mobappprototype.databinding.ActivityStudentProfileBinding
 import com.example.mobappprototype.model.User
@@ -89,6 +90,30 @@ class StudentMainProfileActivity : AppCompatActivity() {
         binding.btnFindTutorFProfile.setOnClickListener{
             Intent(this, TutorListActivity::class.java).also {
                 startActivity(it)
+            }
+        }
+
+        binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.home -> {
+                    // Handle Home item click
+                    val intent = Intent(this, StudentMainActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.messages -> {
+                    // Handle Messages item click
+                    val intent = Intent(this, InboxActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.profile -> {
+                    // Handle Profile item click
+                    val intent = Intent(this, StudentMainProfileActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
             }
         }
     }

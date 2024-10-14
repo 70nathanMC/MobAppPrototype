@@ -51,7 +51,7 @@ class InboxAdapter(private val chatRooms: List<ChatRoom>) :
 
         // Display last message if available
         if (chatRoom.lastMessage != null) {
-            holder.binding.tvLastMessage.text = chatRoom.lastMessage!!.content // Use !! since we've checked for null
+            holder.binding.tvLastMessage.text = chatRoom.lastMessage!!.content
         } else {
             holder.binding.tvLastMessage.text = "No messages yet"
         }

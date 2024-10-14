@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
     id("kotlin-parcelize")
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -11,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.mobappprototype"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -38,6 +40,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
@@ -63,6 +68,8 @@ dependencies {
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
     implementation (platform(libs.firebase.bom))
     implementation(libs.androidx.viewpager2)
+    implementation(libs.hilt.android)
+    annotationProcessor(libs.hilt.android.compiler)
     implementation(libs.material)
 //    implementation("com.github.bumptech.glide:glide:<Glide_version>")
 //    annotationProcessor(libs.compiler)

@@ -6,7 +6,7 @@ import java.util.Date
 
 data class ChatRoom(
     @DocumentId
-    val documentId: String = "", // Renamed to documentId
+    val documentId: String = "",
     val meetingID: String = "",
     val participants: List<String> = listOf(),
     val lastMessage: LastMessage? = null
@@ -14,7 +14,7 @@ data class ChatRoom(
 
 data class LastMessage(
     val content: String = "",
-    val senderUID: String = "", // Add this back
+    val senderUID: String = "",
     @ServerTimestamp
-    val timestamp: Date? = null // Add this back
+    val timestamp: Date? = null
 )

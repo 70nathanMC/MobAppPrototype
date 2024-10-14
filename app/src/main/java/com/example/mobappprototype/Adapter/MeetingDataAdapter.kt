@@ -1,17 +1,29 @@
 package com.example.mobappprototype.Adapter
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mobappprototype.R
 import com.example.mobappprototype.databinding.ListItemMeetingsBinding // Make sure this is the correct import for your layout
 import com.example.mobappprototype.model.MeetingData
 import com.example.mobappprototype.ui.ChatActivity
+import com.example.mobappprototype.ui.TutorSchedAndSubsListActivity
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FieldValue
+import java.util.jar.Manifest
 
 
 private const val TAG = "MeetingDataAdapter"
@@ -35,7 +47,7 @@ class MeetingDataAdapter(private val meetings: List<MeetingData>) :
 
     override fun onBindViewHolder(holder: MeetingViewHolder, position: Int) {
         val meeting = meetings[position]
-        // Populate the views in list_item_meetings.xml with meeting data
+
         holder.binding.tvMeetingSubject.text = meeting.subject
         holder.binding.tvMeetingBranch.text = meeting.branch
         holder.binding.tvMeetingDay.text = meeting.day
@@ -66,6 +78,7 @@ class MeetingDataAdapter(private val meetings: List<MeetingData>) :
                                             // Launch ChatActivity here
                                             val intent = Intent(holder.itemView.context, ChatActivity::class.java)
                                             intent.putExtra("meetingId", meetingId)
+                                            val tutorUid = intent.getStringExtra("TUTOR_UID")
                                             holder.itemView.context.startActivity(intent)
                                         }
                                         .addOnFailureListener { e ->

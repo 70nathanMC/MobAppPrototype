@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.example.mobappprototype.R
 import com.example.mobappprototype.ViewModel.UserViewModel
 import com.example.mobappprototype.databinding.ActivityTutorMainProfileBinding
 import com.example.mobappprototype.model.User
@@ -46,6 +47,7 @@ class TutorMainProfileActivity : AppCompatActivity() {
                 }
             }
         }
+
 
         userViewModel.user.observe(this) { user ->
             if (user != null) {
@@ -94,5 +96,29 @@ class TutorMainProfileActivity : AppCompatActivity() {
                 startActivity(it)
             }
         }
+        binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.home -> {
+                    // Handle Home item click
+                    val intent = Intent(this, TutorMainActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.messages -> {
+                    // Handle Messages item click
+                    val intent = Intent(this, InboxActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.profile -> {
+                    // Handle Profile item click
+                    val intent = Intent(this, TutorMainProfileActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
+
     }
 }
