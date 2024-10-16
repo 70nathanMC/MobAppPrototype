@@ -4,12 +4,14 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mobappprototype.Adapter.InboxAdapter
 import com.example.mobappprototype.databinding.ActivityInboxBinding
 import com.example.mobappprototype.model.ChatRoom
 import com.example.mobappprototype.model.LastMessage
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
@@ -30,6 +32,8 @@ class InboxActivity : AppCompatActivity() {
         binding = ActivityInboxBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        Log.d(TAG, "onCreate: started") // Add this log
+
         firestoreDb = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
         inboxAdapter = InboxAdapter(chatRooms)
@@ -41,32 +45,51 @@ class InboxActivity : AppCompatActivity() {
         listenForNewMessages()
 
         binding.btnHome.setOnClickListener{
-            Intent(this, TutorSchedAndSubsListActivity::class.java).also {
-                startActivity(it)
-            }
+            val currentUserId = auth.currentUser?.uid ?: return@setOnClickListener
+            firestoreDb.collection("users").document(currentUserId)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val role = document.getString("role")
+                        val intent = if (role == "Student") {
+                            Intent(this, TutorListActivity::class.java)
+                        } else {
+                            Intent(this, TutorMainActivity::class.java)
+                        }
+                        startActivity(intent)
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting user role: ", exception)
+                    Toast.makeText(this, "Error fetching user data", Toast.LENGTH_SHORT).show()
+                }
         }
 
     }
 
     private fun fetchChatRooms() {
+        Log.d(TAG, "fetchChatRooms: started")
         val currentUserId = auth.currentUser?.uid
         if (currentUserId != null) {
             firestoreDb.collection("chats")
                 .whereArrayContains("participants", currentUserId)
                 .get()
                 .addOnSuccessListener { documents ->
+                    Log.d(TAG, "fetchChatRooms: ${documents.size()} chat rooms found")
                     chatRooms.clear()
                     documents.forEach { document ->
                         val chatRoom = document.toObject(ChatRoom::class.java)
                         if (chatRoom != null) {
-                            chatRooms.add(chatRoom)
-                            Log.d(TAG, "Chat room: $chatRoom")
+                            fetchUnreadCountForChatRoom(currentUserId, chatRoom.meetingID) { unreadCount ->
+                                chatRoom.unreadCount = unreadCount
+                                chatRooms.add(chatRoom)
+                                // Update lastMessage only once after adding the chatRoom
+                                updateLastMessage(chatRoom.meetingID)
+                                runOnUiThread {
+                                    inboxAdapter.notifyDataSetChanged()
+                                }
+                            }
                         }
-                    }
-
-                    // Update lastMessage for each chat room
-                    chatRooms.forEach { chatRoom ->
-                        updateLastMessage(chatRoom.meetingID)
                     }
 
                     runOnUiThread {
@@ -78,6 +101,7 @@ class InboxActivity : AppCompatActivity() {
                 }
         }
     }
+
 
     private fun updateLastMessage(meetingID: String) {
         firestoreDb.collection("chats")
@@ -106,6 +130,7 @@ class InboxActivity : AppCompatActivity() {
             }
     }
     private fun listenForNewMessages() {
+        Log.d(TAG, "listenForNewMessages: started")
         val currentUserId = auth.currentUser?.uid
         if (currentUserId != null) {
             firestoreDb.collection("chats")
@@ -116,40 +141,44 @@ class InboxActivity : AppCompatActivity() {
                         return@addSnapshotListener
                     }
 
-                    snapshot?.documentChanges?.forEach { change ->
-                        if (change.type == com.google.firebase.firestore.DocumentChange.Type.MODIFIED) {
-                            val chatRoomId = change.document.id
-                            val lastMessage = change.document.toObject(ChatRoom::class.java).lastMessage
-
-                            if (lastMessage != null && lastMessage.senderUID != currentUserId) {
-                                firestoreDb.collection("users").document(currentUserId)
-                                    .get()
-                                    .addOnSuccessListener { userDocument ->
-                                        if (userDocument.exists()) {
-                                            val lastSeenChats = userDocument.get("lastSeenChats") as? Map<String, Any>
-                                            val lastSeenChatData = lastSeenChats?.get(chatRoomId) as? Map<String, Any>
-                                            val lastSeenTime = lastSeenChatData?.get("timestamp") as? Date
-                                            val currentUnreadCount = lastSeenChatData?.get("unreadCount") as? Long ?: 0
-
-                                            if (lastSeenTime == null || lastMessage.timestamp!!.after(lastSeenTime)) {
-                                                // Increment unread count
-                                                val newUnreadCount = currentUnreadCount + 1
-                                                userDocument.reference.update("lastSeenChats.${chatRoomId}.unreadCount", newUnreadCount)
-                                                    .addOnSuccessListener {
-                                                        Log.d(TAG, "Successfully incremented unread count for chat room: $chatRoomId")
-                                                        // Update the UI here for the number of unreadMessages
-                                                    }
-                                                    .addOnFailureListener { e ->
-                                                        Log.e(TAG, "Error incrementing unread count", e)
-                                                    }
-                                            }
-                                        }
+                    if (snapshot != null) {
+                        for (documentChange in snapshot.documentChanges) {
+                            if (documentChange.type == DocumentChange.Type.MODIFIED)
+                            {
+                                val updatedChatRoom = documentChange.document.toObject(ChatRoom::class.java)
+                                val chatRoomIndex = chatRooms.indexOfFirst { it.meetingID == updatedChatRoom.meetingID }
+                                if (chatRoomIndex != -1) {
+                                    // Update the chat room in the list and notify the adapter
+                                    chatRooms[chatRoomIndex] = updatedChatRoom
+                                    runOnUiThread {
+                                        inboxAdapter.notifyItemChanged(chatRoomIndex)
                                     }
+                                }
                             }
                         }
                     }
                 }
-
         }
     }
+    private fun fetchUnreadCountForChatRoom(userId: String, meetingId: String, callback: (Long) -> Unit) {
+        Log.d(TAG, "fetchUnreadCountForChatRoom: started for meeting $meetingId")
+        firestoreDb.collection("users").document(userId)
+            .get()
+            .addOnSuccessListener { userDocument ->
+                if (userDocument.exists()) {
+                    val lastSeenChats = userDocument.get("lastSeenChats") as? Map<String, Any>
+                    val unreadCount = (lastSeenChats?.get(meetingId) as? Map<String, Any>)?.get("unreadCount") as? Long ?: 0
+                    callback(unreadCount)
+                    Log.d(TAG, "fetchUnreadCountForChatRoom: unreadCount = $unreadCount for meeting $meetingId")
+                } else {
+                    callback(0) // User document not found, default to 0
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error fetching unread count", exception)
+                callback(0) // Error fetching, default to 0
+            }
+    }
+
+
 }

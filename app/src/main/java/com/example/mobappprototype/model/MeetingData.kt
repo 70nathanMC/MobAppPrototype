@@ -10,5 +10,5 @@ data class MeetingData (
     val slots: Int = 0,
     val slotsRemaining: Int = 0,
     val participants: List<String> = emptyList(),
-    val tutorId: String = ""
-)
+    val tutorId: String = "",
+    )

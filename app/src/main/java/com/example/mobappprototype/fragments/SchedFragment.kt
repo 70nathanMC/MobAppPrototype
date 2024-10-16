@@ -11,18 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mobappprototype.Adapter.ScheduleAdapter
 import com.example.mobappprototype.R
 import com.example.mobappprototype.model.MeetingData
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SchedFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SchedFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -30,7 +24,7 @@ class SchedFragment : Fragment() {
     private lateinit var firestoreDb: FirebaseFirestore
     private lateinit var recyclerView: RecyclerView
     private lateinit var scheduleAdapter: ScheduleAdapter
-
+    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -46,30 +40,39 @@ class SchedFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_sched, container, false)
         firestoreDb = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
         recyclerView = view.findViewById(R.id.rvSchedule) // Make sure this ID matches your XML
         recyclerView.layoutManager = LinearLayoutManager(context)
         scheduleAdapter = ScheduleAdapter(emptyList())
         recyclerView.adapter = scheduleAdapter
 
         val tutorUid = activity?.intent?.getStringExtra("TUTOR_UID")
+        val userUID = auth.currentUser?.uid
         if (tutorUid != null) {
+            // If tutorUid is present in intent extras, use that (Student viewing Tutor's schedule)
             fetchSchedule(tutorUid)
+        } else if (userUID != null) {
+            // If tutorUid is not present, and user is logged in, fetch their own schedule (Tutor viewing own schedule)
+            firestoreDb.collection("users").document(userUID)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists() && document.getString("role") == "Tutor") {
+                        fetchSchedule(userUID) // Fetch schedule using the user's own UID
+                    } else {
+                        Log.e("SchedFragment", "User is not a Tutor")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("SchedFragment", "Error checking user role", exception)
+                }
         } else {
-            Log.e("SchedFragment", "Tutor UID not found")
+            Log.e("SchedFragment", "Tutor UID not found and user not logged in")
         }
+
         return view
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SchedFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             SchedFragment().apply {

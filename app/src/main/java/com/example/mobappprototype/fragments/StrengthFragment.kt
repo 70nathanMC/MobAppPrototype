@@ -12,23 +12,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mobappprototype.Adapter.ButtonAdapter
 import com.example.mobappprototype.R
 import com.example.mobappprototype.model.ButtonData
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [StrengthFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class StrengthFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var firestoreDb: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
     private lateinit var recyclerView: RecyclerView
     private lateinit var buttonAdapter: ButtonAdapter
 
@@ -47,6 +42,8 @@ class StrengthFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_strength, container, false)
         firestoreDb = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
+        val userUID = auth.currentUser?.uid
         recyclerView = view.findViewById(R.id.rvSubjectButtons)
 
         // Set up GridLayoutManager
@@ -58,9 +55,13 @@ class StrengthFragment : Fragment() {
 
         val tutorUid = activity?.intent?.getStringExtra("TUTOR_UID")
         if (tutorUid != null) {
+            // If tutorUid is present in intent extras, use that (Student viewing Tutor's strengths)
             fetchStrengths(tutorUid)
+        } else if (userUID != null) {
+            // If tutorUid is not present, and user is logged in, fetch their own strengths (Tutor viewing own strengths)
+            fetchStrengths(userUID) // Fetch strengths using the user's own UID
         } else {
-            Log.e("StrengthFragment", "Tutor UID not found")
+            Log.e("StrengthFragment", "Tutor UID not found and user not logged in")
         }
 
         // Calculate span count dynamically
@@ -95,15 +96,6 @@ class StrengthFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment StrengthFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             StrengthFragment().apply {

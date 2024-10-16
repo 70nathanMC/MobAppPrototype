@@ -12,6 +12,8 @@ import com.example.mobappprototype.Adapter.SubjectChipAdapter
 import com.example.mobappprototype.Adapter.TutorListAdapter
 import com.example.mobappprototype.databinding.ActivityTutorListBinding
 import com.example.mobappprototype.model.TutorListData
+import com.google.api.Authentication
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 private const val TAG = "TutorListActivity"
@@ -19,6 +21,7 @@ private const val TAG = "TutorListActivity"
 class TutorListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTutorListBinding
     private lateinit var firestoreDb: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
     private lateinit var tutorListAdapter: TutorListAdapter
     private val tutorList = mutableListOf<TutorListData>()
     private lateinit var subjectChipAdapter: SubjectChipAdapter
@@ -29,6 +32,7 @@ class TutorListActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         firestoreDb = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
         subjectChipAdapter = SubjectChipAdapter(subjectList)
         binding.rvSubjectChips.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvSubjectChips.adapter = subjectChipAdapter
@@ -53,8 +57,6 @@ class TutorListActivity : AppCompatActivity() {
             }
 
         }
-
-
         binding.ivStudentProfile.setOnClickListener {
             Intent(this, StudentMainProfileActivity::class.java).also {
                 startActivity(it)

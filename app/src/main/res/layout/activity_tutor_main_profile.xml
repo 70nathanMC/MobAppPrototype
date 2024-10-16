@@ -73,7 +73,6 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
-                        app:layout_constraintStart_toEndOf="@+id/imageView"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.0" />
 
@@ -83,7 +82,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp">
+                    android:layout_marginTop="10dp">
 
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -151,7 +150,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="128dp"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginTop="15dp"
                         android:fontFamily="@font/light"
                         android:text="Rating"
                         android:textSize="14sp"
@@ -174,7 +173,7 @@
                         android:id="@+id/textView24"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginTop="15dp"
                         android:layout_marginEnd="75dp"
                         android:fontFamily="@font/light"
                         android:text="Feedback"
@@ -232,6 +231,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clCreateMeeting"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -244,7 +244,7 @@
                         android:backgroundTint="@color/appGreen"
                         android:fontFamily="@font/semibold"
                         android:text="Create Meeting"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="10dp"
                         android:textColor="@color/appWhite"
                         android:textSize="18sp"
                         app:cornerRadius="8dp"
@@ -254,97 +254,42 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.0" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="20dp"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/btnCreateMeeting"
-                        app:layout_constraintVertical_bias="1.0">
-
-                        <TextView
-                            android:id="@+id/textView12"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:fontFamily="@font/medium"
-                            android:gravity="center"
-                            android:text="ABOUT"
-                            android:textAlignment="center"
-                            android:textColor="@color/appGreen"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/textView13"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:fontFamily="@font/medium"
-                            android:gravity="center"
-                            android:text="STRENGTH"
-                            android:textAlignment="center"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/textView27"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:fontFamily="@font/medium"
-                            android:gravity="center"
-                            android:text="SCHED"
-                            android:textAlignment="center"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/textView28"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:fontFamily="@font/medium"
-                            android:gravity="center"
-                            android:text="REVIEW"
-                            android:textAlignment="center"
-                            android:textSize="16sp" />
-
-                    </LinearLayout>
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="20dp">
 
-                    <TextView
-                        android:id="@+id/tvBio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/regular"
-                        android:layout_marginTop="20dp"
-                        android:text="Hi! I’m James, a 23-year-old Computer Science student passionate about teaching.\n\nAs a peer tutor, I strive to make learning engaging and effective, helping students tackle coding challenges and develop problem-solving skills. I’m committed to refining my tutoring and building a strong reputation.\n\nLet’s make your learning journey both enjoyable and successful!"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tabLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        app:tabMode="fixed"
+                        app:tabGravity="fill"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
+                        android:background="@color/white"
+                        app:tabIndicatorColor="@color/appGreen"
+                        app:tabSelectedTextColor="@color/appGreen"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/viewPager"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+                        />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
             </LinearLayout>
         </ScrollView>
     </RelativeLayout>
