@@ -39,14 +39,12 @@ class StrengthFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_strength, container, false)
         firestoreDb = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
         val userUID = auth.currentUser?.uid
         recyclerView = view.findViewById(R.id.rvSubjectButtons)
 
-        // Set up GridLayoutManager
         val layoutManager = GridLayoutManager(context, 3) // 3 columns
         recyclerView.layoutManager = layoutManager
 
@@ -55,23 +53,19 @@ class StrengthFragment : Fragment() {
 
         val tutorUid = activity?.intent?.getStringExtra("TUTOR_UID")
         if (tutorUid != null) {
-            // If tutorUid is present in intent extras, use that (Student viewing Tutor's strengths)
             fetchStrengths(tutorUid)
         } else if (userUID != null) {
-            // If tutorUid is not present, and user is logged in, fetch their own strengths (Tutor viewing own strengths)
-            fetchStrengths(userUID) // Fetch strengths using the user's own UID
+            fetchStrengths(userUID)
         } else {
             Log.e("StrengthFragment", "Tutor UID not found and user not logged in")
         }
 
-        // Calculate span count dynamically
         val displayMetrics: DisplayMetrics = resources.displayMetrics
         val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
 
-        val columnWidthDp = 140  // Same width as the button's layout_width
+        val columnWidthDp = 140
         val spanCount = (screenWidthDp / columnWidthDp).toInt()
 
-        // Set up RecyclerView with GridLayoutManager
         val layoutManager2 = GridLayoutManager(context, spanCount)
         recyclerView.layoutManager = layoutManager2
 

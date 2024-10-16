@@ -55,7 +55,6 @@ class WelcomeActivity : AppCompatActivity() {
                             goTutorMainActivity()
                         }
                         else -> {
-                            // Handle the case where the role is not found or invalid
                             goCreateProfileActivity()
                             Log.e(TAG, "Invalid user role, user needs to go to create profile")
                         }

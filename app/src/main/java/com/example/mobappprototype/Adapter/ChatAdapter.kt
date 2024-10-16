@@ -57,7 +57,6 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
         fun bind(message: ChatMessage) {
             binding.textMessageBody.text = message.content
 
-            // Fetch sender's information
             firestoreDb.collection("users").document(message.senderUID)
                 .get()
                 .addOnSuccessListener { document ->
@@ -77,7 +76,6 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
         fun bind(message: ChatMessage) {
             binding.textMessageBody.text = message.content
 
-            // Fetch receiver's information
             firestoreDb.collection("users").document(message.senderUID)
                 .get()
                 .addOnSuccessListener { document ->

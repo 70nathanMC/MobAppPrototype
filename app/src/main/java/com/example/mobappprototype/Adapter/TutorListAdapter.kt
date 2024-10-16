@@ -30,7 +30,7 @@ class TutorListAdapter(private val tutors: List<TutorListData>) :
 
         holder.binding.root.setOnClickListener {
             val intent = Intent(holder.itemView.context, TutorProfileActivity::class.java)
-            intent.putExtra("TUTOR_UID", tutor.tutorUid) // Pass the tutorUid from the TutorListData object
+            intent.putExtra("TUTOR_UID", tutor.tutorUid)
             holder.itemView.context.startActivity(intent)
         }
 

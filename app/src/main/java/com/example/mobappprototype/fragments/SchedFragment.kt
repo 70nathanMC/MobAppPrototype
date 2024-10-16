@@ -37,7 +37,6 @@ class SchedFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_sched, container, false)
         firestoreDb = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
@@ -49,10 +48,8 @@ class SchedFragment : Fragment() {
         val tutorUid = activity?.intent?.getStringExtra("TUTOR_UID")
         val userUID = auth.currentUser?.uid
         if (tutorUid != null) {
-            // If tutorUid is present in intent extras, use that (Student viewing Tutor's schedule)
             fetchSchedule(tutorUid)
         } else if (userUID != null) {
-            // If tutorUid is not present, and user is logged in, fetch their own schedule (Tutor viewing own schedule)
             firestoreDb.collection("users").document(userUID)
                 .get()
                 .addOnSuccessListener { document ->

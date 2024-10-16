@@ -88,7 +88,6 @@ class RegisterActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    //Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail: success")
 
                     Toast.makeText(baseContext, "Registration Successful!", Toast.LENGTH_SHORT).show()
@@ -96,7 +95,6 @@ class RegisterActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 } else {
-                    // If sign-in fails, display a message to the user
                     Log.w(TAG, "createUserWithEmail: failure", task.exception)
 
                     if (task.exception is FirebaseAuthException
@@ -106,7 +104,6 @@ class RegisterActivity : AppCompatActivity() {
                         builder.setTitle("Email Address Already in Use")
                             .setMessage("This email address is already associated with an account. Please try another email.")
                             .setPositiveButton("OK") { _, _ ->
-                                // Handle positive button click (e.g., clear email field)
                             }
                             .show()
                     } else {

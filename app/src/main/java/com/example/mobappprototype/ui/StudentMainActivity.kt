@@ -33,7 +33,6 @@ class StudentMainActivity : AppCompatActivity() {
         firestoreDb = FirebaseFirestore.getInstance()
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
-        // Fetch and observe the user data
         val userUID = auth.currentUser?.uid
         if (userUID != null) {
             val userRef = firestoreDb.collection("users").document(userUID)
@@ -57,7 +56,6 @@ class StudentMainActivity : AppCompatActivity() {
                 binding.layoutMainActivity.visibility = View.VISIBLE
             }
         }
-        // Event listeners for dashboard buttons
         setupClickListeners()
     }
 

@@ -21,8 +21,8 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityQuestionsBinding
 
     private var questionsCounter: Int = 0
-    private var questionsList: MutableList<Question> = mutableListOf() // Initialize as an empty list
-    private var subjectName: String = "" // To store the subject name
+    private var questionsList: MutableList<Question> = mutableListOf()
+    private var subjectName: String = ""
     private var selectedAnswer = 0
     private lateinit var currentQuestion: Question
     private var answered = false
@@ -38,7 +38,7 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
         Constants.getQuestions(subjectName) { questions ->
             if (questions != null) {
                 questionsList = questions
-                Log.d("QuestionSize", "${questionsList.size}") // Log after questionsList is populated
+                Log.d("QuestionSize", "${questionsList.size}")
                 showNextQuestion()
             } else {
                 Toast.makeText(this, "Failed to load quiz", Toast.LENGTH_SHORT).show()

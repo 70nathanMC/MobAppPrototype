@@ -34,7 +34,7 @@ class TutorMainActivity : AppCompatActivity() {
         setContentView(binding.root)
         Log.d("TutorMainActivity", "onCreate called")
         db = FirebaseFirestore.getInstance()
-        auth = FirebaseAuth.getInstance() // Initialize auth here
+        auth = FirebaseAuth.getInstance()
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
         val userUID = auth.currentUser?.uid
@@ -71,7 +71,7 @@ class TutorMainActivity : AppCompatActivity() {
 
         rvMeetings = findViewById(R.id.rvMeetings)
         rvMeetings.layoutManager = LinearLayoutManager(this)
-        meetingAdapter = MeetingAdapter(emptyList()) // Initialize with an empty list
+        meetingAdapter = MeetingAdapter(emptyList())
         rvMeetings.adapter = meetingAdapter
 
         fetchMeetings()
@@ -119,13 +119,12 @@ class TutorMainActivity : AppCompatActivity() {
         val userId = auth.currentUser?.uid ?: return
 
         db.collection("users").document(userId)
-            .collection("tutorData") // Access the subcollection
-            .document("data") // Assuming you have a document named "data"
+            .collection("tutorData")
+            .document("data")
             .get()
             .addOnSuccessListener { document ->
                 val meetingIds = document.get("meetings") as? List<String> ?: emptyList()
                 if (meetingIds.isEmpty()) {
-                    // Handle case where there are no meetings (e.g., show a message)
                     rvMeetings = findViewById(R.id.rvMeetings)
                     rvMeetings.layoutManager = LinearLayoutManager(this)
                     meetingAdapter = MeetingAdapter(emptyList())
@@ -138,7 +137,6 @@ class TutorMainActivity : AppCompatActivity() {
                 val query = db.collection("meetings")
                     .whereIn(FieldPath.documentId(), meetingIds)
 
-                // Add a SnapshotListener to the query
                 query.addSnapshotListener { snapshot, error ->
                     if (error != null) {
                         Toast.makeText(this, "Error fetching meetings: ${error.message}", Toast.LENGTH_SHORT).show()

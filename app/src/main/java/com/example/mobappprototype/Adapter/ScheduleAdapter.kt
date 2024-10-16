@@ -31,7 +31,7 @@ class ScheduleAdapter(private var meetings: List<MeetingData>) :
         holder.binding.tvMeetingTime.text = timeRange
     }
 
-    fun updateMeetings(newMeetings: List<MeetingData>) { // Update parameter type
+    fun updateMeetings(newMeetings: List<MeetingData>) {
         meetings = newMeetings
         notifyDataSetChanged()
     }

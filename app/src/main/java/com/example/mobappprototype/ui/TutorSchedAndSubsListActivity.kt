@@ -128,7 +128,7 @@ class TutorSchedAndSubsListActivity : AppCompatActivity() {
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
                     val tutorName = document.getString("fullName") ?: ""
-                    binding.tvTutorNameTitle.text = tutorName // Set the tutor's name to the TextView
+                    binding.tvTutorNameTitle.text = tutorName
                 } else {
                     Log.e(TAG, "Tutor document not found")
                 }

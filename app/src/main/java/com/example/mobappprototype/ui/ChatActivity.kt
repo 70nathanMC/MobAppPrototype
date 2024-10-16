@@ -47,8 +47,6 @@ class ChatActivity : AppCompatActivity() {
         if (meetingId != null) {
             fetchMessages(meetingId)
             val userRef = firestoreDb.collection("users").document(userUid!!)
-
-            // Fetch the current unread count (if any)
             userRef.get().addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
                     // Reset the unread count for this meeting
@@ -62,7 +60,7 @@ class ChatActivity : AppCompatActivity() {
                         }
                 }
             }
-            val updates = hashMapOf<String, Any>(
+            val updates = hashMapOf(
                 "lastSeenChats.${meetingId}.unreadCount" to 0,
                 "lastSeenChats.${meetingId}.timestamp" to FieldValue.serverTimestamp()
             )

@@ -126,7 +126,6 @@ class EditMeetingActivity : AppCompatActivity() {
                                                                 Toast.makeText(this, "Error getting old subject document: ${e.message}", Toast.LENGTH_SHORT).show()
                                                             }
                                                     } else {
-                                                        // There are other meetings with the old subject, so no need to remove the tutorUID
                                                         finish()
                                                     }
                                                 }
@@ -149,7 +148,6 @@ class EditMeetingActivity : AppCompatActivity() {
                                 Toast.makeText(this, "Error getting new subject document: ${e.message}", Toast.LENGTH_SHORT).show()
                             }
                     } else {
-                        // Subject not changed, no need to update relatedTutors
                         finish()
                     }
                 }
@@ -162,19 +160,16 @@ class EditMeetingActivity : AppCompatActivity() {
         binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.home -> {
-                    // Handle Home item click
                     val intent = Intent(this, TutorMainActivity::class.java)
                     startActivity(intent)
                     true
                 }
                 R.id.messages -> {
-                    // Handle Messages item click
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
                     true
                 }
                 R.id.profile -> {
-                    // Handle Profile item click
                     val intent = Intent(this, TutorMainProfileActivity::class.java)
                     startActivity(intent)
                     true
@@ -211,8 +206,8 @@ class EditMeetingActivity : AppCompatActivity() {
     private fun setSpinnerDaySelection(spinner: Spinner, selectedDay: String) {
         val adapter = spinner.adapter
         if (adapter is ArrayAdapter<*>) {
-            val dayList = (0..<adapter.count).map { adapter.getItem(it) as String } // Get the list of days as strings
-            val selectedIndex = dayList.indexOf(selectedDay) // Find the index in the string list
+            val dayList = (0..<adapter.count).map { adapter.getItem(it) as String }
+            val selectedIndex = dayList.indexOf(selectedDay)
             if (selectedIndex != -1) {
                 spinner.setSelection(selectedIndex)
             }

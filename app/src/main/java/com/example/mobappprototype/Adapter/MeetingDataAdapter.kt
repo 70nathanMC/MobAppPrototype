@@ -60,7 +60,6 @@ class MeetingDataAdapter(private val meetings: List<MeetingData>) :
             if (meetingId != null && userUID != null) {
                 val meetingRef = firestoreDb.collection("meetings").document(meetingId)
 
-                // Update participants array in meetings collection
                 meetingRef.update("participants", FieldValue.arrayUnion(userUID))
                     .addOnSuccessListener {
                         Log.d(TAG, "Successfully joined meeting: $meetingId")
@@ -85,7 +84,6 @@ class MeetingDataAdapter(private val meetings: List<MeetingData>) :
                                             Log.e(TAG, "Error adding user to chat", e)
                                         }
                                 } else {
-                                    // Launch ChatActivity here
                                     val intent = Intent(holder.itemView.context, ChatActivity::class.java)
                                     intent.putExtra("meetingId", meetingId)
                                     holder.itemView.context.startActivity(intent)

@@ -24,7 +24,7 @@ class CreateMeetingActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
-        fetchSubjectsFromFirestore(binding.spinnerSubject) // Call the function to populate the Spinner
+        fetchSubjectsFromFirestore(binding.spinnerSubject)
 
         binding.btnCreate.setOnClickListener {
             val subject = binding.spinnerSubject.selectedItem.toString().trim()
@@ -40,7 +40,7 @@ class CreateMeetingActivity : AppCompatActivity() {
             val endTimeAmPm = if (endTimeHour < 12) "AM" else "PM"
             val startTime = String.format("%02d:%02d %s", formattedStartTimeHour, startTimeMinute, startTimeAmPm)
             val endTime = String.format("%02d:%02d %s", formattedEndTimeHour, endTimeMinute, endTimeAmPm)
-            val slots = binding.etSlots.text.toString().toIntOrNull() ?: 0 // Default to 0 if invalid
+            val slots = binding.etSlots.text.toString().toIntOrNull() ?: 0
 
             if (subject.isBlank() || branch.isBlank() || day.isBlank() ||
                 startTime.isBlank() || endTime.isBlank() || slots <= 0) {
@@ -59,16 +59,14 @@ class CreateMeetingActivity : AppCompatActivity() {
                 "endTime" to endTime,
                 "slots" to slots,
                 "slotsRemaining" to slots, // Initially, slotsRemaining is equal to total slots
-                "participants" to listOf(userId) // Initially, the tutor is a participant
+                "participants" to listOf(userId)
             )
 
             db.collection("meetings")
                 .add(meetingData)
                 .addOnSuccessListener { documentReference ->
-                    // Meeting created successfully
                     Toast.makeText(this, "Meeting created!", Toast.LENGTH_SHORT).show()
 
-                    // Update the tutor's document with the meeting ID
                     val meetingId = documentReference.id
                     db.collection("users").document(userId)
                         .collection("tutorData") // Access the subcollection

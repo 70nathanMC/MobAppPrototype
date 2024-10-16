@@ -91,7 +91,7 @@ class TutorListActivity : AppCompatActivity() {
         tutorList.clear() // Clear previous results
 
         firestoreDb.collection("users")
-            .whereEqualTo("role", "Tutor") // Filter for tutors only
+            .whereEqualTo("role", "Tutor")
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
@@ -153,16 +153,14 @@ class TutorListActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
-                    // Handle case where no subject is found
                     Toast.makeText(this, "No subject found with the name $subjectName", Toast.LENGTH_SHORT).show()
                     tutorListAdapter.notifyDataSetChanged()
                     return@addOnSuccessListener
                 }
-                val subjectDocumentId = documents.documents[0].id // Get the document ID
+                val subjectDocumentId = documents.documents[0].id
                 val relatedTutors = documents.documents[0].get("relatedTutors") as? List<String> ?: emptyList()
-                Log.d(TAG, "Related tutors for $subjectName: $relatedTutors") // Add this line to log the relatedTutors list
+                Log.d(TAG, "Related tutors for $subjectName: $relatedTutors")
                 if (relatedTutors.isEmpty()) {
-                    // Handle case where no tutors are found for the subject
                     Toast.makeText(this, "No tutors found for $subjectName", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "Subject document ID: $subjectDocumentId")
                     tutorListAdapter.notifyDataSetChanged()

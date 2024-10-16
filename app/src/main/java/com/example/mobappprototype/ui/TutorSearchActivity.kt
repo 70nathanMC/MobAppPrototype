@@ -41,28 +41,23 @@ class TutorSearchActivity : AppCompatActivity() {
         firestoreDb = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
         searchHistoryAdapter = SearchHistoryAdapter(searchHistoryList) { query ->
-            // Handle search history item click
-            binding.svSearchTutor.setQuery(query, true) // Set the query and submit
+            binding.svSearchTutor.setQuery(query, true)
         }
         binding.rvSearchHistory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvSearchHistory.adapter = searchHistoryAdapter
 
-        loadSearchHistory() // Load search history on activity start
+        loadSearchHistory()
 
-
-        // Initialize RecyclerView
         tutorSearchAdapter = TutorSearchAdapter(tutorList)
         binding.rvTutorSearch.layoutManager = LinearLayoutManager(this)
         binding.rvTutorSearch.adapter = tutorSearchAdapter
 
-        // Initially hide the RecyclerView
         binding.rvTutorSearch.visibility = View.GONE
 
-        // Set up SearchView listener
         binding.svSearchTutor.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (!query.isNullOrBlank()) {
-                    runnable?.let { handler.removeCallbacks(it) } // Remove any pending callbacks
+                    runnable?.let { handler.removeCallbacks(it) }
 
                     runnable = Runnable {
                         saveSearchQuery(query) // Save the search query
@@ -147,9 +142,9 @@ class TutorSearchActivity : AppCompatActivity() {
                 "timestamp" to com.google.firebase.firestore.FieldValue.serverTimestamp()
             )
 
-            searchHistoryRef.add(queryData) // Add the new query first
+            searchHistoryRef.add(queryData)
                 .addOnSuccessListener {
-                    // Now, find and delete older duplicates
+                    // find and delete older duplicates
                     searchHistoryRef.whereEqualTo("query", query)
                         .get()
                         .addOnSuccessListener { documents ->

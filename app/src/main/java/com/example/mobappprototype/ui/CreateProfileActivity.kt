@@ -77,7 +77,6 @@ class CreateProfileActivity : AppCompatActivity() {
                 }
             }
             ref.getDownloadUrl().addOnFailureListener {
-                // Handle the failure case
                 Log.d(TAG, "Download Image failed")
             }
         }
@@ -124,17 +123,15 @@ class CreateProfileActivity : AppCompatActivity() {
 
         val displayMetrics: DisplayMetrics = resources.displayMetrics
         val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
-        val columnWidthDp = 140  // Same width as the button's layout_width
+        val columnWidthDp = 140
         val spanCount = (screenWidthDp / columnWidthDp).toInt()
 
-        // Set up RecyclerView with GridLayoutManager
         binding.rvSubjectButtons.layoutManager = GridLayoutManager(this, spanCount)
         adapter = ButtonAdapter(buttonList, onAddClicked = {
             // Navigate to Add Button Activity
             val intent = Intent(this, AddSubjectActivity::class.java)
             startActivityForResult(intent, ADD_BUTTON_REQUEST_CODE)
         }, onRemoveClicked = { position ->
-            // Remove button from list
             buttonList.removeAt(position)
             adapter.notifyItemRemoved(position)
         }, context = this)
@@ -281,7 +278,6 @@ class CreateProfileActivity : AppCompatActivity() {
         val subjects = buttonList.filter { it.label != "+Add" }.map { it.label }
         val user: MutableMap<String, Any> = HashMap()
 
-        // Retrieve data from EditText fields
         user["firstName"] = firstName
         user["lastName"] = lastName
         user["fullName"] = "$firstName $lastName"
@@ -289,11 +285,8 @@ class CreateProfileActivity : AppCompatActivity() {
         user["role"] = role
         user["bio"] = bio
         user["subjects"] = subjects
-
-        // Placeholder for profile picture URL (to be updated once the image is uploaded)
         user["profilePic"] = imageUrl
 
-        // Update Firestore with the user data (Make sure to associate this with the logged-in user)
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
         if (currentUserId != null) {
             firestoreDb.collection("users").document(currentUserId)

@@ -21,10 +21,8 @@ class AddSubjectActivity : AppCompatActivity() {
         setContentView(binding.root)
         firestoreDb = FirebaseFirestore.getInstance()
 
-        // Fetch subjects from Firestore
         fetchSubjectsFromFirestore()
 
-        // Handle the confirm button click
         binding.btnConfirmAdd.setOnClickListener {
             val newButtonLabel = binding.etButtonLabel.text.toString()
             val resultIntent = Intent().apply {
@@ -49,10 +47,7 @@ class AddSubjectActivity : AppCompatActivity() {
             }
 
             if (subjectsList.isNotEmpty()) {
-                // Create an ArrayAdapter with the fetched subjects list
                 val arrayAdapter = ArrayAdapter(this, R.layout.dropdown_item_normal, subjectsList)
-
-                // Set the ArrayAdapter to the AutoCompleteTextView
                 binding.etButtonLabel.setAdapter(arrayAdapter)
             } else {
                 Toast.makeText(this, "No subjects found", Toast.LENGTH_SHORT).show()

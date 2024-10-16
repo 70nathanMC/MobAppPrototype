@@ -22,10 +22,7 @@ class SubjectChipAdapter(private val subjects: List<String>) :
         holder.binding.root.text = subject
 
         holder.binding.root.setOnClickListener {
-            // Get a reference to the TutorListActivity
             val activity = holder.itemView.context as? TutorListActivity
-
-            // Call fetchTutorsBySubject on the activity
             activity?.fetchTutorsBySubject(subject)
         }
     }

@@ -28,7 +28,6 @@ class ButtonAdapter(
         val buttonData = buttonList[position]
         holder.binding.btnSubjectButtons.text = buttonData.label
 
-        // Handle the click events
         if (buttonData.isAddButton) {
             holder.binding.btnSubjectButtons.setOnClickListener {
                 onAddClicked()
@@ -42,7 +41,6 @@ class ButtonAdapter(
         holder.binding.btnSubjectButtons.backgroundTintList =
             ColorStateList.valueOf(ContextCompat.getColor(context, buttonData.colorResId))
 
-        // Set text color using textColorResId
         holder.binding.btnSubjectButtons.setTextColor(ContextCompat.getColor(context, buttonData.textColorResId))
     }
     fun updateButtonList(newButtonList: List<ButtonData>) {

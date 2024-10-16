@@ -35,7 +35,6 @@ class TutorMainProfileActivity : AppCompatActivity() {
         firestoreDb = FirebaseFirestore.getInstance()
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
-        // Fetch and observe the user data
         val userUID = auth.currentUser?.uid
         if (userUID != null) {
             val userRef = firestoreDb.collection("users").document(userUID)
@@ -93,7 +92,6 @@ class TutorMainProfileActivity : AppCompatActivity() {
                 }
             }
             .addOnFailureListener { exception ->
-                // Handle any errors that occur while fetching the tutor document
                 Log.e(TAG, "Error getting tutor document", exception)
                 Toast.makeText(this, "Error: Failed to fetch tutor data", Toast.LENGTH_SHORT).show()
             }

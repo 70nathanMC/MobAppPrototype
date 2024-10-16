@@ -26,7 +26,7 @@ class TutorProfileActivity : AppCompatActivity() {
         firestoreDb = FirebaseFirestore.getInstance()
 
         val tutorUid = intent.getStringExtra("TUTOR_UID")
-        Log.d(TAG, "Received tutor UID: $tutorUid") // Add this log
+        Log.d(TAG, "Received tutor UID: $tutorUid")
 
         if (tutorUid != null) {
             fetchTutorDataAndPopulateUI(tutorUid)
@@ -41,7 +41,6 @@ class TutorProfileActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
-                    // Populate UI elements with tutor data
                     binding.tvTutorName.text = document.getString("fullName")
                     val program = document.getString("program")
                     binding.tvTutorProgram.text = "Bachelor of Science in $program"
@@ -62,8 +61,6 @@ class TutorProfileActivity : AppCompatActivity() {
                         }
                     }.attach()
 
-
-                    // Load profile image using Glide/Picasso
                     val profilePicUrl = document.getString("profilePic")
                     if (!profilePicUrl.isNullOrEmpty()) {
                         Glide.with(this)
@@ -73,13 +70,11 @@ class TutorProfileActivity : AppCompatActivity() {
 
                     // ... (fetch and populate other UI elements like rating, feedback, etc.) ...
                 } else {
-                    // Handle the case where the tutor document does not exist
                     Log.e(TAG, "Tutor document not found")
                     Toast.makeText(this, "Error: Tutor data not found", Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener { exception ->
-                // Handle any errors that occur while fetching the tutor document
                 Log.e(TAG, "Error getting tutor document", exception)
                 Toast.makeText(this, "Error: Failed to fetch tutor data", Toast.LENGTH_SHORT).show()
             }
