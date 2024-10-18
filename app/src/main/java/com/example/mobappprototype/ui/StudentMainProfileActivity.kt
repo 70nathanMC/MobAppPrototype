@@ -3,14 +3,19 @@ package com.example.mobappprototype.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.example.mobappprototype.Adapter.StudentProfilePagerAdapter
+import com.example.mobappprototype.Adapter.TutorProfilePagerAdapter
 import com.example.mobappprototype.R
 import com.example.mobappprototype.ViewModel.UserViewModel
 import com.example.mobappprototype.databinding.ActivityStudentProfileBinding
 import com.example.mobappprototype.model.User
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -24,6 +29,9 @@ class StudentMainProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityStudentProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.layoutMainActivity.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
 
         auth = FirebaseAuth.getInstance()
         firestoreDb = FirebaseFirestore.getInstance()
@@ -46,14 +54,48 @@ class StudentMainProfileActivity : AppCompatActivity() {
         userViewModel.user.observe(this) { user ->
             if (user != null) {
                 updateUIWithUserData(user)
+                fetchTutorDataAndPopulateUI(userUID.toString())
+                binding.loadingLayout.visibility = View.GONE
+                binding.layoutMainActivity.visibility = View.VISIBLE
             }
         }
         setupClickListeners()
     }
+
+    private fun fetchTutorDataAndPopulateUI(tutorUid: String) {
+        firestoreDb.collection("users").document(tutorUid)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val bio = document.getString("bio") ?: ""
+
+                    val viewPager = binding.viewPager
+                    val tabLayout = binding.tabLayout
+
+                    val pagerAdapter = StudentProfilePagerAdapter(this, bio) // Pass bio here
+                    binding.viewPager.adapter = pagerAdapter
+                    TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                        tab.text = when (position) {
+                            0 -> "ABOUT"
+                            1 -> "WEAKNESSES"
+                            else -> null
+                        }
+                    }.attach()
+                } else {
+                    // Handle the case where the tutor document does not exist
+                    Log.e(TAG, "Tutor document not found")
+                    Toast.makeText(this, "Error: Tutor data not found", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error getting tutor document", exception)
+                Toast.makeText(this, "Error: Failed to fetch tutor data", Toast.LENGTH_SHORT).show()
+            }
+    }
+
     private fun updateUIWithUserData(user: User) {
         binding.tvStudentFullName.text = user.fullName
         Glide.with(this).load(user.profilePic).into(binding.sivStudentProfilePic)
-        binding.tvBio.text = user.bio
         binding.tvStudentDegree.text = "Bachelor of Science in ${user.program}"
         // Update other UI elements if needed
     }

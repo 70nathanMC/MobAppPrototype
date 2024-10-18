@@ -5,74 +5,103 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CreateMeetingActivity"
-    android:padding="16dp">
+    android:background="@color/white"
+    tools:context=".ui.CreateMeetingActivity">
 
-    <Spinner
-        android:id="@+id/spinnerSubject"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <Spinner
+            android:id="@+id/spinnerSubject"
+            android:layout_width="0dp"
+            android:tooltipText="Select Subject"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <EditText
+            android:id="@+id/etBranch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Branch (e.g., Algebra)"
+            app:layout_constraintTop_toBottomOf="@id/spinnerSubject"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Spinner
+            android:id="@+id/spinnerDay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:tooltipText="Select Day"
+            app:layout_constraintTop_toBottomOf="@id/etBranch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:entries="@array/days_of_week" />
+
+        <TimePicker
+            android:id="@+id/tpStartTime"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:timePickerMode="spinner"
+            app:layout_constraintTop_toBottomOf="@id/spinnerDay"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TimePicker
+            android:id="@+id/tpEndTime"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:timePickerMode="spinner"
+            app:layout_constraintTop_toBottomOf="@id/tpStartTime"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <EditText
+            android:id="@+id/etSlots"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Number of Slots"
+            android:inputType="number"
+            app:layout_constraintTop_toBottomOf="@id/tpEndTime"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <EditText
+            android:id="@+id/etMeetingLink"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Meeting Link"
+            android:inputType="number"
+            app:layout_constraintTop_toBottomOf="@id/etSlots"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/btnCreate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create Meeting"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etSlots"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationBar"
         android:layout_width="0dp"
-        android:tooltipText="Select Subject"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <EditText
-        android:id="@+id/etBranch"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Branch (e.g., Algebra)"
-        app:layout_constraintTop_toBottomOf="@id/spinnerSubject"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Spinner
-        android:id="@+id/spinnerDay"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:tooltipText="Select Day"
-        app:layout_constraintTop_toBottomOf="@id/etBranch"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:entries="@array/days_of_week" />
-
-    <TimePicker
-        android:id="@+id/tpStartTime"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:timePickerMode="spinner"
-        app:layout_constraintTop_toBottomOf="@id/spinnerDay"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TimePicker
-        android:id="@+id/tpEndTime"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:timePickerMode="spinner"
-        app:layout_constraintTop_toBottomOf="@id/tpStartTime"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <EditText
-        android:id="@+id/etSlots"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Number of Slots"
-        android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@id/tpEndTime"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/btnCreate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create Meeting"
+        android:layout_height="70dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etSlots"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/white"
+        app:menu="@menu/bottom_nav">
+
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

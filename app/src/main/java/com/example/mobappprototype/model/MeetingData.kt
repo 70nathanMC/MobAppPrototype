@@ -1,7 +1,9 @@
 package com.example.mobappprototype.model
 
+import com.google.firebase.Timestamp
+
 data class MeetingData (
-    val id: String = "", // Meeting ID
+    var id: String = "",
     val subject: String = "",
     val branch: String = "",
     val day: String = "",
@@ -11,4 +13,9 @@ data class MeetingData (
     val slotsRemaining: Int = 0,
     val participants: List<String> = emptyList(),
     val tutorId: String = "",
+    val startTimeTimestamp: Timestamp = Timestamp.now(),
+    val endTimeTimestamp: Timestamp = Timestamp.now(),
+    val date: Timestamp = Timestamp.now(),
+    val tutorFullName: String = "",
+    val tutorProfilePic: String = ""
     )

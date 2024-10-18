@@ -5,10 +5,16 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.mobappprototype.Adapter.TutorProfilePagerAdapter
 import com.example.mobappprototype.R
+import com.example.mobappprototype.ViewModel.UserViewModel
 import com.example.mobappprototype.databinding.ActivityTutorProfileBinding
+import com.example.mobappprototype.fragments.RatingBottomSheetFragment
+import com.example.mobappprototype.model.User
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.api.Authentication
 import com.google.firebase.auth.FirebaseAuth
@@ -18,12 +24,15 @@ private const val TAG = "TutorProfileActivity"
 class TutorProfileActivity : AppCompatActivity() {
     private lateinit var firestoreDb: FirebaseFirestore
     private lateinit var binding: ActivityTutorProfileBinding
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTutorProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         firestoreDb = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
 
         val tutorUid = intent.getStringExtra("TUTOR_UID")
         Log.d(TAG, "Received tutor UID: $tutorUid")
@@ -36,6 +45,7 @@ class TutorProfileActivity : AppCompatActivity() {
         }
         setupClickListeners()
     }
+
     private fun fetchTutorDataAndPopulateUI(tutorUid: String) {
         firestoreDb.collection("users").document(tutorUid)
             .get()
@@ -45,12 +55,15 @@ class TutorProfileActivity : AppCompatActivity() {
                     val program = document.getString("program")
                     binding.tvTutorProgram.text = "Bachelor of Science in $program"
                     val bio = document.getString("bio") ?: ""
+                    binding.tvTutorRating.text = document.getDouble("overallRating").toString()
+                    binding.tvFeedbackCount.text = document.getLong("feedbackAmount")?.toString()
 
                     val viewPager = binding.viewPager
                     val tabLayout = binding.tabLayout
 
                     val pagerAdapter = TutorProfilePagerAdapter(this, bio) // Pass bio here
-                    binding.viewPager.adapter = pagerAdapter
+                    viewPager.adapter = pagerAdapter
+
                     TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                         tab.text = when (position) {
                             0 -> "ABOUT"
@@ -67,8 +80,6 @@ class TutorProfileActivity : AppCompatActivity() {
                             .load(profilePicUrl)
                             .into(binding.sivTutorProfilePic)
                     }
-
-                    // ... (fetch and populate other UI elements like rating, feedback, etc.) ...
                 } else {
                     Log.e(TAG, "Tutor document not found")
                     Toast.makeText(this, "Error: Tutor data not found", Toast.LENGTH_SHORT).show()
@@ -96,11 +107,19 @@ class TutorProfileActivity : AppCompatActivity() {
             }
         }
 
+        binding.ivRatingIcon.setOnClickListener {
+            val tutorUid = intent.getStringExtra("TUTOR_UID")
+            if (tutorUid != null) {
+                checkForExistingReview(tutorUid)
+            }
+        }
+
+
         binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.home -> {
                     // Handle Home item click
-                    val intent = Intent(this, TutorMainActivity::class.java)
+                    val intent = Intent(this, StudentMainActivity::class.java)
                     startActivity(intent)
                     true
                 }
@@ -112,12 +131,51 @@ class TutorProfileActivity : AppCompatActivity() {
                 }
                 R.id.profile -> {
                     // Handle Profile item click
-                    val intent = Intent(this, TutorMainProfileActivity::class.java)
+                    val intent = Intent(this, StudentMainProfileActivity::class.java)
                     startActivity(intent)
                     true
                 }
                 else -> false
             }
         }
+    }
+
+    private fun checkForExistingReview(tutorUid: String) {
+        val currentUserUid = auth.currentUser?.uid ?: return
+
+        firestoreDb.collection("reviews")
+            .whereEqualTo("reviewerUID", currentUserUid)
+            .whereEqualTo("tutorUID", tutorUid)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    // User has an existing review
+                    val reviewDocument = documents.first() // Assuming only one review per user per tutor
+                    val overallRating = reviewDocument.getDouble("overallRating")?.toFloat() ?: 0f
+                    val comment = reviewDocument.getString("comment") ?: ""
+                    val reviewDocumentId = documents.first().id
+                    Log.d(TAG, "Existing review found with ID: $reviewDocumentId")
+
+                    val ratingBottomSheet = RatingBottomSheetFragment()
+                    val bundle = Bundle()
+                    bundle.putString("TUTOR_UID", intent.getStringExtra("TUTOR_UID"))
+                    bundle.putString("REVIEW_ID", reviewDocumentId) // Pass the review ID
+                    bundle.putFloat("EXISTING_RATING", overallRating)
+                    bundle.putString("EXISTING_COMMENT", comment)
+                    ratingBottomSheet.arguments = bundle
+                    ratingBottomSheet.show(supportFragmentManager, "ratingBottomSheet")
+
+                } else {
+                    val ratingBottomSheet = RatingBottomSheetFragment()
+                    val bundle = Bundle()
+                    bundle.putString("TUTOR_UID", tutorUid)
+                    ratingBottomSheet.arguments = bundle
+                    ratingBottomSheet.show(supportFragmentManager, "ratingBottomSheet")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error checking for existing review", exception)
+                // ... (handle the error, e.g., show a toast)
+            }
     }
 }

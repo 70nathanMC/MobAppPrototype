@@ -3,57 +3,52 @@ package com.example.mobappprototype.Adapter
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mobappprototype.ui.EditMeetingActivity
-import com.example.mobappprototype.R
-import com.example.mobappprototype.model.MeetingForTutor
+import com.bumptech.glide.Glide
+import com.example.mobappprototype.databinding.ItemMeetingDashboardBinding
+import com.example.mobappprototype.model.MeetingData
+import com.example.mobappprototype.ui.ChatActivity
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-class MeetingAdapter(
-    var meetings: List<MeetingForTutor>) :
-    RecyclerView.Adapter<MeetingAdapter.MeetingViewHolder>() {
+private const val TAG = "MeetingAdapter"
 
-    class MeetingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    {
-        val tvMeetingSubject: TextView = itemView.findViewById(R.id.tvMeetingSubject)
-        val tvMeetingBranch: TextView = itemView.findViewById(R.id.tvMeetingBranch)
-        val tvMeetingDay: TextView = itemView.findViewById(R.id.tvMeetingDay)
-        val tvMeetingScheduleStart: TextView = itemView.findViewById(R.id.tvMeetingScheduleStart)
-        val tvMeetingScheduleEnd: TextView = itemView.findViewById(R.id.tvMeetingScheduleEnd)
-        val tvMeetingSlots: TextView = itemView.findViewById(R.id.tvMeetingSlots)
-        val btnEditMeeting: Button = itemView.findViewById(R.id.btnEditMeeting)
+class MeetingAdapter(initialMeetings: List<MeetingData>) :
+    RecyclerView.Adapter<MeetingAdapter.ViewHolder>() {
+
+    var meetings: MutableList<MeetingData> = initialMeetings.toMutableList()
+
+    class ViewHolder(val binding: ItemMeetingDashboardBinding) : RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemMeetingDashboardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MeetingViewHolder {
-        val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.meeting_item, parent, false)
-        return MeetingViewHolder(itemView)
-    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val meeting = meetings[position]
+        holder.binding.tvMeetingSubjectAndBranch.text = "${meeting.subject} - ${meeting.branch}"
+        holder.binding.tvTutorFullName.text = meeting.tutorFullName
+        Glide.with(holder.itemView.context).load(meeting.tutorProfilePic).into(holder.binding.listTutorImage)
 
-    override fun onBindViewHolder(holder: MeetingViewHolder, position: Int) {
+        val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+        val formattedTime = timeFormat.format(meeting.startTimeTimestamp.toDate())
+        holder.binding.tvMeetingDay.text = formattedTime
 
-        val currentMeeting = meetings[position]
-
-        holder.tvMeetingSubject.text = currentMeeting.subject
-        holder.tvMeetingBranch.text = currentMeeting.branch
-        holder.tvMeetingDay.text = currentMeeting.day
-        holder.tvMeetingScheduleStart.text = currentMeeting.startTime
-        holder.tvMeetingScheduleEnd.text = currentMeeting.endTime
-        currentMeeting.slots.toString().also { holder.tvMeetingSlots.text = it }
-
-        holder.btnEditMeeting.setOnClickListener {
-            val intent = Intent(holder.itemView.context, EditMeetingActivity::class.java)
-            intent.putExtra("meeting", currentMeeting)
-            intent.putExtra("meetingId", meetings[position].id) // Pass the meeting ID
-            Log.d("MeetingAdapter", "before starting EditMeetingActivity")
+        holder.itemView.setOnClickListener {
+            val intent = Intent(holder.itemView.context, ChatActivity::class.java)
+            intent.putExtra("meetingId", meeting.id)
+            Log.d(TAG, "The meeting being passed to ChatActivity is: ${meeting.id}")
             holder.itemView.context.startActivity(intent)
         }
     }
 
-    override fun getItemCount(): Int {
-        return meetings.size
+    override fun getItemCount(): Int = meetings.size
+
+    fun updateMeetings(newMeetings: List<MeetingData>) {
+        this.meetings.clear()
+        this.meetings.addAll(newMeetings)
+        notifyDataSetChanged()
     }
 }

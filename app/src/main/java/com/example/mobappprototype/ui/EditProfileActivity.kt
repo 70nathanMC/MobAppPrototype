@@ -26,6 +26,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
@@ -329,9 +330,7 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateUserAndNavigate(
-        imageUrl: String
-    ) {
+    private fun updateUserAndNavigate(imageUrl: String) {
         val firstName = binding.etFirstName.text.toString().trim()
         val lastName = binding.etLastName.text.toString().trim()
         val program = binding.actvProgram.text.toString().trim()
@@ -355,20 +354,57 @@ class EditProfileActivity : AppCompatActivity() {
                 .update(user)
                 .addOnSuccessListener {
                     Log.d(TAG, "User profile updated with ID: $currentUserId")
+
                     if (role == "Tutor") {
+                        val tutorData = hashMapOf(
+                            "overallRating" to 0.0,
+                            "feedbackAmount" to 0
+                        )
                         firestoreDb.collection("users").document(currentUserId)
-                            .collection("tutorData")
-                            .document("data")
-                            .set(hashMapOf("meetings" to listOf<String>())) // Initialize with an empty list
+                            .set(tutorData, SetOptions.merge())
                             .addOnSuccessListener {
-                                Log.d(TAG, "Tutor data document created")
+                                Log.d(TAG, "Tutor data fields added/updated")
+
+                                // Fetch the number of reviews
+                                firestoreDb.collection("reviews")
+                                    .whereEqualTo("tutorUID", currentUserId)
+                                    .get()
+                                    .addOnSuccessListener { querySnapshot ->
+                                        val feedbackAmount = querySnapshot.size()
+
+                                        // Update feedbackAmount
+                                        firestoreDb.collection("users").document(currentUserId)
+                                            .update("feedbackAmount", feedbackAmount)
+                                            .addOnSuccessListener {
+                                                Log.d(TAG, "feedbackAmount updated to $feedbackAmount")
+
+                                                // Create tutor document
+                                                firestoreDb.collection("users").document(currentUserId)
+                                                    .collection("tutorData")
+                                                    .document("data")
+                                                    .set(hashMapOf("meetings" to listOf<String>()))
+                                                    .addOnSuccessListener {
+                                                        Log.d(TAG, "Tutor data document created")
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        Log.w(TAG, "Error creating tutor data document", e)
+                                                    }
+
+                                                updateSubjectsWithTutor(currentUserId, subjects)
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Log.w(TAG, "Error updating feedbackAmount", e)
+                                            }
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.w(TAG, "Error fetching reviews", e)
+                                    }
                             }
                             .addOnFailureListener { e ->
-                                Log.w(TAG, "Error creating tutor data document", e)
+                                Log.w(TAG, "Error adding/updating tutor data fields", e)
                             }
-
-                        updateSubjectsWithTutor(currentUserId, subjects)
                     }
+
                     Toast.makeText(this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show()
                     finish()
                 }

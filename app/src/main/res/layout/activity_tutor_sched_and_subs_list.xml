@@ -24,8 +24,8 @@
 
                 <ImageView
                     android:id="@+id/ibtnHomeFTutorSchedAndSubsList"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
@@ -34,7 +34,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:clickable="true"
                     android:focusable="true"
-                    app:srcCompat="@drawable/home" />
+                    app:srcCompat="@drawable/ic_home_1" />
 
                 <TextView
                     android:id="@+id/tvTutorNameTitle"
@@ -51,17 +51,17 @@
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/ivUserProfile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
                     android:layout_marginEnd="32dp"
                     app:shapeAppearanceOverlay="@style/roundedImage"
                     android:clickable="true"
                     android:focusable="true"
+                    android:src="@drawable/ic_profile_default"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.982"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/sarahs" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

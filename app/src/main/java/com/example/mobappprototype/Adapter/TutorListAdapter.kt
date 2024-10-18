@@ -25,8 +25,8 @@ class TutorListAdapter(private val tutors: List<TutorListData>) :
         val tutor = tutors[position]
         holder.binding.listTutorName.text = tutor.fullName
         holder.binding.tutorDegree.text = tutor.program
-        holder.binding.ratingBar.rating = tutor.rating
-        holder.binding.ratingtxt.text = "${tutor.rating} Rating"
+        holder.binding.ratingBar.rating = tutor.overallRating
+        holder.binding.ratingtxt.text = "${tutor.overallRating} Rating"
 
         holder.binding.root.setOnClickListener {
             val intent = Intent(holder.itemView.context, TutorProfileActivity::class.java)

@@ -1,6 +1,8 @@
 [versions]
 agp = "8.7.0"
 compiler = "<Glide_version>"
+converterMoshi = "2.9.0"
+firebaseAppcheckSafetynet = "16.1.2"
 firebaseBom = "33.4.0"
 glide = "4.16.0"
 hiltAndroid = "2.51.1"
@@ -12,6 +14,7 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
+legacySupportV4 = "1.0.0"
 lifecycleViewmodelKtx = "2.8.6"
 material = "1.12.0"
 activity = "1.9.2"
@@ -22,14 +25,21 @@ firebaseAuth = "23.0.0"
 firebaseFirestore = "25.1.0"
 firebaseDatabaseKtx = "21.0.0"
 firebaseStorage = "21.0.1"
+materialCalendarview = "1.4.3"
+retrofit = "2.9.0"
 supportAnnotations = "28.0.0"
+twilioVerifyAndroid = "(insert latest version)"
 viewpager2 = "1.1.0"
+firebaseMessagingKtx = "24.0.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
+converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }
+firebase-appcheck-safetynet = { module = "com.google.firebase:firebase-appcheck-safetynet", version.ref = "firebaseAppcheckSafetynet" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx", version.ref = "firebaseStorage" }
@@ -49,7 +59,11 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+material-calendarview = { module = "com.prolificinteractive:material-calendarview", version.ref = "materialCalendarview" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 support-annotations = { group = "com.android.support", name = "support-annotations", version.ref = "supportAnnotations" }
+firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
+twilio-verify-android = { module = "com.twilio:twilio-verify-android", version.ref = "twilioVerifyAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

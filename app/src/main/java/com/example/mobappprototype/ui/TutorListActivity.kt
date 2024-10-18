@@ -6,12 +6,16 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.mobappprototype.Adapter.SubjectChipAdapter
 import com.example.mobappprototype.Adapter.TutorListAdapter
+import com.example.mobappprototype.ViewModel.UserViewModel
 import com.example.mobappprototype.databinding.ActivityTutorListBinding
 import com.example.mobappprototype.model.TutorListData
+import com.example.mobappprototype.model.User
 import com.google.api.Authentication
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -26,6 +30,8 @@ class TutorListActivity : AppCompatActivity() {
     private val tutorList = mutableListOf<TutorListData>()
     private lateinit var subjectChipAdapter: SubjectChipAdapter
     private val subjectList = mutableListOf<String>()
+    private lateinit var userViewModel: UserViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTutorListBinding.inflate(layoutInflater)
@@ -33,6 +39,7 @@ class TutorListActivity : AppCompatActivity() {
 
         firestoreDb = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
         subjectChipAdapter = SubjectChipAdapter(subjectList)
         binding.rvSubjectChips.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvSubjectChips.adapter = subjectChipAdapter
@@ -44,6 +51,27 @@ class TutorListActivity : AppCompatActivity() {
         binding.rvTutorList.adapter = tutorListAdapter // Assuming you're replacing the ListView with RecyclerView
 
         val searchQuery = intent.getStringExtra("QUERY_TEXT") ?: ""
+
+        val userUID = auth.currentUser?.uid
+        if (userUID != null) {
+            val userRef = firestoreDb.collection("users").document(userUID)
+            userRef.get().addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val user = documentSnapshot.toObject(User::class.java)
+                    if (user != null) {
+                        userViewModel.setUser(user)
+                    }
+                } else {
+                    Log.d(TAG, "User document does not exist")
+                }
+            }
+        }
+
+        userViewModel.user.observe(this) { user ->
+            if (user != null) {
+                updateUIWithUserData(user)
+            }
+        }
 
         if (searchQuery.isBlank()) {
             fetchAllTutors()
@@ -64,6 +92,10 @@ class TutorListActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateUIWithUserData(user: User) {
+        Glide.with(this).load(user.profilePic).into(binding.ivStudentProfile)
+    }
+
     private fun fetchAllTutors() {
         tutorList.clear()
 
@@ -75,8 +107,8 @@ class TutorListActivity : AppCompatActivity() {
                     val fullName = document.getString("fullName") ?: ""
                     val profilePicUrl = document.getString("profilePic") ?: ""
                     val program = document.getString("program") ?: ""
-                    val rating = document.getDouble("rating") ?: 0.0 // Assuming you have a rating field
-                    val tutor = TutorListData(profilePicUrl, fullName, program, rating.toFloat(), document.id) // Include document.id here
+                    val overallRating = document.getDouble("overallRating") ?: 0.0 // Assuming you have a rating field
+                    val tutor = TutorListData(profilePicUrl, fullName, program, overallRating.toFloat(), document.id) // Include document.id here
                     tutorList.add(tutor)
                 }
 
@@ -98,14 +130,14 @@ class TutorListActivity : AppCompatActivity() {
                     val fullName = document.getString("fullName") ?: ""
                     val firstName = document.getString("firstName") ?: ""
                     val lastName = document.getString("lastName") ?: ""
-                    val rating = document.getDouble("rating") ?: 0.0
+                    val overallRating = document.getDouble("overallRating") ?: 0.0
                     val profilePicUrl = document.getString("profilePic") ?: ""
                     val program = document.getString("program") ?: ""
 
                     // Check if the first name or last name starts with the query
                     if (firstName.lowercase().startsWith(query.lowercase()) ||
                         lastName.lowercase().startsWith(query.lowercase())) {
-                        val tutor = TutorListData(profilePicUrl, fullName, program, rating.toFloat(), document.id)
+                        val tutor = TutorListData(profilePicUrl, fullName, program, overallRating.toFloat(), document.id)
                         tutorList.add(tutor)
                     }
                 }
@@ -177,8 +209,8 @@ class TutorListActivity : AppCompatActivity() {
                                     val fullName = document.getString("fullName") ?: ""
                                     val profilePicUrl = document.getString("profilePic") ?: ""
                                     val program = document.getString("program") ?: ""
-                                    val rating = document.getDouble("rating") ?: 0.0
-                                    val tutor = TutorListData(profilePicUrl, fullName, program, rating.toFloat(), document.id)
+                                    val overallRating = document.getDouble("overallRating") ?: 0.0
+                                    val tutor = TutorListData(profilePicUrl, fullName, program, overallRating.toFloat(), document.id)
                                     userDocuments.add(tutor)
                                 }
                                 if (userDocuments.size == relatedTutors.size) {

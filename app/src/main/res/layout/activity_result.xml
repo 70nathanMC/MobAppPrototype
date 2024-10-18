@@ -39,8 +39,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/trophy"
-        tools:srcCompat="@drawable/trophy" />
+        android:src="@drawable/ic_trophy"
+        tools:srcCompat="@drawable/ic_trophy" />
 
     <TextView
         android:id="@+id/tvCongratulations"

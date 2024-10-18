@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mobappprototype.Adapter.InboxAdapter
+import com.example.mobappprototype.R
 import com.example.mobappprototype.databinding.ActivityInboxBinding
 import com.example.mobappprototype.model.ChatRoom
 import com.example.mobappprototype.model.LastMessage
@@ -65,7 +66,53 @@ class InboxActivity : AppCompatActivity() {
                 }
         }
 
+        binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.home -> {
+                    getCurrentUserRole { userRole ->
+                        val intent = if (userRole == "Student") {
+                            Intent(this, StudentMainActivity::class.java)
+                        } else {
+                            Intent(this, TutorMainActivity::class.java)
+                        }
+                        startActivity(intent)
+                    }
+                    true
+                }
+                R.id.messages -> {
+                    true
+                }
+                R.id.profile -> {
+                    getCurrentUserRole { userRole ->
+                        val intent = if (userRole == "Student") {
+                            Intent(this, StudentMainProfileActivity::class.java)
+                        } else {
+                            Intent(this, TutorMainProfileActivity::class.java)
+                        }
+                        startActivity(intent)
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
+
     }
+
+    private fun getCurrentUserRole(callback: (String) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+
+        firestoreDb.collection("users").document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                callback(document.getString("role") ?: "")
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error getting user role", exception)
+                callback("")
+            }
+    }
+
 
     private fun fetchChatRooms() {
         Log.d(TAG, "fetchChatRooms: started")

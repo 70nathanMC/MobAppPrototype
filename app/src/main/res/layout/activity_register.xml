@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:clickable="true"
         android:focusable="true"
-        app:srcCompat="@drawable/b" />
+        app:srcCompat="@drawable/ic_back_login" />
 
     <LinearLayout
         android:id="@+id/linearLayout3"
@@ -145,7 +145,7 @@
                 android:layout_height="0dp"
                 android:background="@drawable/default_options_border_bg_gray"
                 android:ems="10"
-                android:hint="@string/enter_your_password"
+                android:hint="Confirm password"
                 android:inputType="textPassword"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"

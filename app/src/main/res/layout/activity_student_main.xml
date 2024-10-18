@@ -55,7 +55,6 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/sarahm"
                         tools:ignore="ContentDescription"
                         android:clickable="true"
                         android:focusable="true"
@@ -93,49 +92,46 @@
 
                     <ImageView
                         android:id="@+id/ivReadyToLearn"
-                        android:layout_width="354dp"
-                        android:layout_height="143dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="15dp"
+                        android:layout_width="350dp"
+                        android:layout_height="170dp"
+                        android:background="@drawable/ic_ready_to_learn_1"
+                        android:clickable="true"
+                        android:clipToOutline="true"
+                        android:cropToPadding="true"
+                        android:focusable="true"
+                        android:scaleType="centerCrop"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/btnFindTutor"
                         app:layout_constraintStart_toStartOf="@+id/btnFindTutor"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="1.0"
-                        android:background="@drawable/image_view_round_casing_1"
-                        android:scaleType="centerCrop"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:cropToPadding="true"
-                        android:clipToOutline="true"
-                        app:srcCompat="@drawable/dbfinal" />
+                        app:layout_constraintVertical_bias="1.0" />
 
                     <Button
                         android:id="@+id/btnFindTutor"
                         android:layout_width="292dp"
-                        android:layout_height="48dp"
-                        android:layout_gravity="bottom"
-                        android:layout_marginTop="90dp"
-                        android:layout_marginBottom="30dp"
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="10dp"
                         android:alpha="0.9"
                         android:backgroundTint="@color/appWhite"
-                        android:drawableLeft="@drawable/search"
+                        android:clickable="true"
+                        android:drawableLeft="@drawable/group_196"
+                        android:focusable="true"
                         android:fontFamily="@font/regular"
-                        android:gravity="start|center_vertical"
+                        android:paddingStart="0dp"
                         android:text="@string/btnFindTutor_text"
                         android:textColor="@color/appGray8"
-                        android:clickable="true"
-                        android:focusable="true"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/ivReadyToLearn" />
+                        app:layout_constraintTop_toTopOf="@+id/ivReadyToLearn"
+                        app:layout_constraintVertical_bias="1.0" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -180,7 +176,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="40dp"
                             android:layout_weight="1"
-                            app:srcCompat="@drawable/physics" />
+                            app:srcCompat="@drawable/ic_physics" />
 
                         <ImageView
                             android:id="@+id/ivCalculus"
@@ -188,7 +184,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="35dp"
                             android:layout_weight="1"
-                            app:srcCompat="@drawable/calculus" />
+                            app:srcCompat="@drawable/ic_calculus" />
 
                         <ImageView
                             android:id="@+id/ivGenMath"
@@ -198,7 +194,7 @@
                             android:layout_weight="1"
                             android:clickable="true"
                             android:focusable="true"
-                            app:srcCompat="@drawable/genmath" />
+                            app:srcCompat="@drawable/ic_gen_math" />
 
                         <ImageView
                             android:id="@+id/ivScience"
@@ -206,7 +202,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="35dp"
                             android:layout_weight="1"
-                            app:srcCompat="@drawable/science" />
+                            app:srcCompat="@drawable/ic_science" />
 
                         <ImageView
                             android:id="@+id/ivHistory"
@@ -214,7 +210,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="40dp"
                             android:layout_weight="1"
-                            app:srcCompat="@drawable/history" />
+                            app:srcCompat="@drawable/ic_history" />
 
                         <ImageView
                             android:id="@+id/ivLiterature"
@@ -222,7 +218,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="35dp"
                             android:layout_weight="1"
-                            app:srcCompat="@drawable/lit" />
+                            app:srcCompat="@drawable/ic_literature" />
 
                         <ImageView
                             android:id="@+id/ivStatistics"
@@ -230,7 +226,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="35dp"
                             android:layout_weight="1"
-                            app:srcCompat="@drawable/stats" />
+                            app:srcCompat="@drawable/ic_statistics" />
 
                         <ImageView
                             android:id="@+id/ivPhilosophy"
@@ -239,7 +235,7 @@
                             android:layout_marginStart="35dp"
                             android:layout_weight="1"
                             android:layout_marginEnd="40dp"
-                            app:srcCompat="@drawable/science" />
+                            app:srcCompat="@drawable/ic_philosophy" />
 
                     </LinearLayout>
                 </HorizontalScrollView>
@@ -254,12 +250,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        app:srcCompat="@drawable/bar" />
+                        app:srcCompat="@drawable/ic_icon_next_scroll" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="600dp">
+                    android:layout_height="wrap_content">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="350dp"
@@ -275,155 +271,45 @@
                             android:layout_height="match_parent"
                             android:layout_marginBottom="10dp">
 
-                            <ImageView
-                                android:id="@+id/ivJumpToMeetings"
+                            <TextView
+                                android:id="@+id/tvAgendaForToday"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="60dp"
-                                android:layout_marginBottom="348dp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/textView16"
-                                app:layout_constraintTop_toBottomOf="@+id/textView14"
-                                android:background="@drawable/image_view_round_casing_2"
-                                android:scaleType="centerCrop"
+                                android:layout_marginStart="24dp"
+                                android:layout_marginTop="15dp"
                                 android:clickable="true"
                                 android:focusable="true"
-                                android:cropToPadding="true"
-                                android:clipToOutline="true"
-                                app:srcCompat="@drawable/sched" />
-
-                            <TextView
-                                android:id="@+id/textView14"
-                                android:layout_width="300dp"
-                                android:layout_height="wrap_content"
-                                android:drawableEnd="@drawable/arrow_right"
-                                android:layout_marginTop="15dp"
                                 android:fontFamily="@font/bold"
-                                android:text="Agenda"
+                                android:text="Agenda For Today"
                                 android:textSize="20sp"
-                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
-                            <TextView
-                                android:id="@+id/textView15"
-                                android:layout_width="wrap_content"
+                            <ImageView
+                                android:id="@+id/ivArrowNext"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="30dp"
+                                android:background="@color/appWhite"
+                                android:layout_marginTop="8dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:src="@drawable/ic_arrow_right"
+                                app:layout_constraintBottom_toTopOf="@+id/rvMeetingsToday"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvMeetingsToday"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="35dp"
-                                android:layout_marginTop="20dp"
-                                android:fontFamily="@font/regular"
-                                android:text="7:00 AM"
-                                android:textColor="@color/appGray6"
-                                android:textSize="15sp"
+                                android:layout_marginTop="10dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/textView14" />
-
-                            <TextView
-                                android:id="@+id/textView16"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="40dp"
-                                android:fontFamily="@font/regular"
-                                android:text="8:00 AM"
-                                android:textColor="@color/appGray6"
-                                android:textSize="15sp"
-                                app:layout_constraintEnd_toEndOf="@+id/textView15"
-                                app:layout_constraintStart_toStartOf="@+id/textView15"
-                                app:layout_constraintTop_toBottomOf="@+id/textView15" />
-
-                            <TextView
-                                android:id="@+id/textView17"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="40dp"
-                                android:fontFamily="@font/regular"
-                                android:text="9:00 AM"
-                                android:textColor="@color/appGray6"
-                                android:textSize="15sp"
-                                app:layout_constraintEnd_toEndOf="@+id/textView16"
-                                app:layout_constraintStart_toStartOf="@+id/textView16"
-                                app:layout_constraintTop_toBottomOf="@+id/textView16" />
-
-                            <TextView
-                                android:id="@+id/textView18"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="40dp"
-                                android:fontFamily="@font/regular"
-                                android:text="10:00 AM"
-                                android:textColor="@color/appGray6"
-                                android:textSize="15sp"
-                                app:layout_constraintEnd_toEndOf="@+id/textView17"
-                                app:layout_constraintStart_toStartOf="@+id/textView17"
-                                app:layout_constraintTop_toBottomOf="@+id/textView17" />
-
-                            <TextView
-                                android:id="@+id/textView19"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="40dp"
-                                android:fontFamily="@font/regular"
-                                android:text="11:00 AM"
-                                android:textColor="@color/appGray6"
-                                android:textSize="15sp"
-                                app:layout_constraintEnd_toEndOf="@+id/textView18"
-                                app:layout_constraintStart_toStartOf="@+id/textView18"
-                                app:layout_constraintTop_toBottomOf="@+id/textView18" />
-
-                            <TextView
-                                android:id="@+id/textView20"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="40dp"
-                                android:fontFamily="@font/regular"
-                                android:text="12:00 PM"
-                                android:textColor="@color/appGray6"
-                                android:textSize="15sp"
-                                app:layout_constraintEnd_toEndOf="@+id/textView19"
-                                app:layout_constraintStart_toStartOf="@+id/textView19"
-                                app:layout_constraintTop_toBottomOf="@+id/textView19" />
-
-                            <TextView
-                                android:id="@+id/textView21"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="40dp"
-                                android:fontFamily="@font/regular"
-                                android:text="1:00 PM"
-                                android:textColor="@color/appGray6"
-                                android:textSize="15sp"
-                                app:layout_constraintEnd_toEndOf="@+id/textView20"
-                                app:layout_constraintStart_toStartOf="@+id/textView20"
-                                app:layout_constraintTop_toBottomOf="@+id/textView20" />
-
-                            <TextView
-                                android:id="@+id/textView22"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="40dp"
-                                android:fontFamily="@font/regular"
-                                android:text="2:00 PM"
-                                android:textColor="@color/appGray6"
-                                android:textSize="15sp"
-                                app:layout_constraintEnd_toEndOf="@+id/textView21"
-                                app:layout_constraintStart_toStartOf="@+id/textView21"
-                                app:layout_constraintTop_toBottomOf="@+id/textView21" />
-
-                            <TextView
-                                android:id="@+id/textView23"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="40dp"
-                                android:fontFamily="@font/regular"
-                                android:text="3:00 PM"
-                                android:textColor="@color/appGray6"
-                                android:textSize="15sp"
-                                app:layout_constraintEnd_toEndOf="@+id/textView22"
-                                app:layout_constraintStart_toStartOf="@+id/textView22"
-                                app:layout_constraintTop_toBottomOf="@+id/textView22" />
-
+                                app:layout_constraintTop_toBottomOf="@+id/tvAgendaForToday" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>

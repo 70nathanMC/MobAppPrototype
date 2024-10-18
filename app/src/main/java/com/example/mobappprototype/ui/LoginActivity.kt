@@ -34,6 +34,11 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.tvForgotPassword.setOnClickListener {
+            val intent = Intent(this, ForgotPasswordActivity::class.java)
+            startActivity(intent)
+        }
+
         binding.btnLoginReal.setOnClickListener {
             binding.btnLoginReal.isEnabled = false
             val email = binding.etEmail.text.toString()
@@ -98,13 +103,14 @@ class LoginActivity : AppCompatActivity() {
                             goTutorMainActivity()
                         }
                         else -> {
-                            goCreateProfileActivity()
                             Log.e(TAG, "Invalid user role, user needs to go to create profile")
+                            goCreateProfileActivity()
                         }
                     }
                 } else {
-                    goCreateProfileActivity()
-                    Log.e(TAG, "User document not found, user needs to create profile")
+                    Log.e(TAG, "User document not found, user needs to log in again")
+                    auth.signOut()
+                    goLoginActivity()
                 }
             }.addOnFailureListener { exception ->
                 Log.e(TAG, "Error getting user document", exception)
@@ -131,6 +137,12 @@ class LoginActivity : AppCompatActivity() {
     private fun goTutorMainActivity() {
         Log.i(TAG, "goTutorMainActivity")
         val intent = Intent(this, TutorMainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+    private fun goLoginActivity() {
+        Log.i(TAG, "goToLoginActivity")
+        val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }

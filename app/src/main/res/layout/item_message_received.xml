@@ -33,6 +33,8 @@
             android:layout_marginStart="4dp"
             android:background="@drawable/received_message_background"
             android:padding="10dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:text="Message received"
             android:textColor="@android:color/black" />
 

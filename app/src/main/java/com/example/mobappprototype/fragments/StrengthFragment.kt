@@ -69,9 +69,9 @@ class StrengthFragment : Fragment() {
         val layoutManager2 = GridLayoutManager(context, spanCount)
         recyclerView.layoutManager = layoutManager2
 
-
         return view
     }
+
     private fun fetchStrengths(tutorUid: String) {
         firestoreDb.collection("users").document(tutorUid)
             .get()

@@ -1,22 +1,13 @@
 package com.example.mobappprototype.ui
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.mobappprototype.Adapter.MeetingDataAdapter
-import com.example.mobappprototype.R
 import com.example.mobappprototype.ViewModel.UserViewModel
 import com.example.mobappprototype.databinding.ActivityTutorSchedAndSubsListBinding
 import com.example.mobappprototype.model.MeetingData

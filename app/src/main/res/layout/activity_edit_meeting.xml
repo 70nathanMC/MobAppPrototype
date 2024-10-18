@@ -36,7 +36,7 @@
     <TimePicker
         android:id="@+id/tpStartTime"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:timePickerMode="spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,7 @@
     <TimePicker
         android:id="@+id/tpEndTime"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:timePickerMode="spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,6 +59,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tpEndTime" />
+
+    <EditText
+        android:id="@+id/etMeetingLink"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Meeting Link"
+        android:inputType="number"
+        app:layout_constraintTop_toBottomOf="@id/etSlots"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/btnSave"

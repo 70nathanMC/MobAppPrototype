@@ -52,6 +52,7 @@ class TutorMainProfileActivity : AppCompatActivity() {
 
         userViewModel.user.observe(this) { user ->
             if (user != null) {
+                fetchTutorDataAndPopulateUI(userUID.toString())
                 updateUIWithUserData(user)
                 binding.loadingLayout.visibility = View.GONE
                 binding.layoutMainActivity.visibility = View.VISIBLE
@@ -66,8 +67,9 @@ class TutorMainProfileActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
-                    // Populate UI elements with tutor data
                     val bio = document.getString("bio") ?: ""
+                    binding.tvTutorRating.text = document.getDouble("overallRating").toString()
+                    binding.tvFeedbackCount.text = document.getString("feedbackCount") ?:"0"
 
                     val viewPager = binding.viewPager
                     val tabLayout = binding.tabLayout
@@ -83,8 +85,6 @@ class TutorMainProfileActivity : AppCompatActivity() {
                             else -> null
                         }
                     }.attach()
-
-                    // ... (fetch and populate other UI elements like rating, feedback, etc.) ...
                 } else {
                     // Handle the case where the tutor document does not exist
                     Log.e(TAG, "Tutor document not found")
@@ -97,10 +97,9 @@ class TutorMainProfileActivity : AppCompatActivity() {
             }
     }
     private fun updateUIWithUserData(user: User) {
-        binding.detailTutorName.text = user.fullName
-        Glide.with(this).load(user.profilePic).into(binding.detailTutorImage)
-        binding.detailDegree.text = "Bachelor of Science in ${user.program}"
-        // Update other UI elements if needed
+        binding.tvTutorName.text = user.fullName
+        Glide.with(this).load(user.profilePic).into(binding.sivTutorProfilePic)
+        binding.tvTutorProgram.text = "Bachelor of Science in ${user.program}"
     }
 
     private fun setupClickListeners() {

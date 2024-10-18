@@ -43,6 +43,9 @@ class ChatActivity : AppCompatActivity() {
             }
         }
 
+        binding.tvTutorNameTitle
+        // change this to the name of the Subject - Branch
+
         val meetingId = intent.getStringExtra("meetingId")
         if (meetingId != null) {
             fetchMessages(meetingId)
@@ -101,6 +104,7 @@ class ChatActivity : AppCompatActivity() {
                     }
                 }
                 chatAdapter.notifyDataSetChanged()
+                binding.rvChatMessages.smoothScrollToPosition(messages.size - 1)
             }
     }
 

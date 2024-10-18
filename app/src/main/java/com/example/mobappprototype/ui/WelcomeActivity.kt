@@ -60,8 +60,9 @@ class WelcomeActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    goCreateProfileActivity()
-                    Log.e(TAG, "User document not found, user needs to create profile")
+                    auth.signOut()
+                    goLoginActivity()
+                    Log.e(TAG, "User document not found, user needs to go to login")
                 }
             }.addOnFailureListener { exception ->
                 Log.e(TAG, "Error getting user document", exception)

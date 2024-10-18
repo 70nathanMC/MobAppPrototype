@@ -13,4 +13,5 @@ data class MeetingForTutor(
     val endTime: String = "",
     val slots: Int = 0,
     val slotsRemaining: Int = 0
+
 ) : Parcelable

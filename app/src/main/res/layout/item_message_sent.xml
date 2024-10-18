@@ -27,9 +27,11 @@
             android:layout_marginStart="4dp"
             android:background="@drawable/sent_message_background"
             android:padding="10dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:text="Message sent"
             android:layout_gravity="end"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/black" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image_message_profile"

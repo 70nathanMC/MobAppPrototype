@@ -1,6 +1,7 @@
 package com.example.mobappprototype.ui
 
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -95,6 +96,7 @@ class TutorSearchActivity : AppCompatActivity() {
             }
         }
     }
+    @SuppressLint("NotifyDataSetChanged")
     private fun searchTutors(query: String) {
         tutorList.clear() // Clear previous results
 
@@ -171,6 +173,7 @@ class TutorSearchActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun loadSearchHistory() {
         val currentUser = auth.currentUser
         if (currentUser != null) {

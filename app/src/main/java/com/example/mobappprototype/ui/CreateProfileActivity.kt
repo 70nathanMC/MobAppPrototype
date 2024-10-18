@@ -286,6 +286,10 @@ class CreateProfileActivity : AppCompatActivity() {
         user["bio"] = bio
         user["subjects"] = subjects
         user["profilePic"] = imageUrl
+        if (role == "Tutor") { // Only add overallRating for tutors
+            user["overallRating"] = 0.0
+            user["feedbackAmount"] = 0
+        }
 
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
         if (currentUserId != null) {
