@@ -1,9 +1,11 @@
 package com.example.mobappprototype.ui
 
 import android.content.Intent
+import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.TouchDelegate
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mobappprototype.Adapter.InboxAdapter
@@ -41,6 +43,13 @@ class InboxActivity : AppCompatActivity() {
 
         binding.rvInbox.layoutManager = LinearLayoutManager(this)
         binding.rvInbox.adapter = inboxAdapter
+
+        binding.linearLayout6.post {
+            val rect = Rect()
+            binding.btnHome.getHitRect(rect)
+            rect.inset(-50, -50) // Expand the touch area by 50 pixels on each side
+            binding.linearLayout6.touchDelegate = TouchDelegate(rect, binding.btnHome)
+        }
 
         fetchChatRooms()
         listenForNewMessages()

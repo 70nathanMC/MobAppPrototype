@@ -9,6 +9,10 @@ import com.example.mobappprototype.databinding.ItemMessageSentBinding
 import com.example.mobappprototype.model.ChatMessage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.*
+
 
 private const val VIEW_TYPE_MESSAGE_SENT = 1
 private const val VIEW_TYPE_MESSAGE_RECEIVED = 2
@@ -57,6 +61,15 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
         fun bind(message: ChatMessage) {
             binding.textMessageBody.text = message.content
 
+            val calendar = Calendar.getInstance()
+            calendar.time = message.timestamp ?: Date()
+            val startTimeHour = calendar.get(Calendar.HOUR_OF_DAY)
+            val startTimeMinute = calendar.get(Calendar.MINUTE)
+            val formattedStartTimeHour = if (startTimeHour == 0) 12 else if (startTimeHour > 12) startTimeHour - 12 else startTimeHour
+            val startTimeAmPm = if (startTimeHour < 12) "AM" else "PM"
+            val formattedTime = String.format("%02d:%02d %s", formattedStartTimeHour, startTimeMinute, startTimeAmPm)
+            binding.textMessageTime.text = formattedTime
+
             firestoreDb.collection("users").document(message.senderUID)
                 .get()
                 .addOnSuccessListener { document ->
@@ -76,6 +89,15 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
         fun bind(message: ChatMessage) {
             binding.textMessageBody.text = message.content
 
+            val calendar = Calendar.getInstance()
+            calendar.time = message.timestamp ?: Date() // Handle null timestamp
+            val startTimeHour = calendar.get(Calendar.HOUR_OF_DAY)
+            val startTimeMinute = calendar.get(Calendar.MINUTE)
+            val formattedStartTimeHour = if (startTimeHour == 0) 12 else if (startTimeHour > 12) startTimeHour - 12 else startTimeHour
+            val startTimeAmPm = if (startTimeHour < 12) "AM" else "PM"
+            val formattedTime = String.format("%02d:%02d %s", formattedStartTimeHour, startTimeMinute, startTimeAmPm)
+            binding.textMessageTime.text = formattedTime
+
             firestoreDb.collection("users").document(message.senderUID)
                 .get()
                 .addOnSuccessListener { document ->
@@ -84,6 +106,7 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
                         val senderFullName = document.getString("firstName") + " " + document.getString("lastName")
                         binding.textMessageName.text = senderFullName
                         Glide.with(itemView.context).load(profilePicUrl).into(binding.imageMessageProfile)
+
                     }
                 }
         }

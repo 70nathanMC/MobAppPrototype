@@ -15,6 +15,7 @@ import com.example.mobappprototype.databinding.ActivityStudentMainBinding
 import com.example.mobappprototype.model.MeetingData
 import com.example.mobappprototype.model.User
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 
@@ -63,8 +64,6 @@ class StudentMainActivity : AppCompatActivity() {
             if (user != null) {
                 updateUIWithUserData(user)
                 fetchTodaysMeetings()
-                binding.loadingLayout.visibility = View.GONE
-                binding.layoutMainActivity.visibility = View.VISIBLE
             }
         }
         setupClickListeners()
@@ -81,52 +80,42 @@ class StudentMainActivity : AppCompatActivity() {
                         if (meetingIds != null) {
                             val today = Calendar.getInstance()
                             val todaysMeetings = mutableListOf<MeetingData>()
-                            for (meetingId in meetingIds) {
-                                firestoreDb.collection("meetings").document(meetingId)
-                                    .addSnapshotListener { meetingDocumentSnapshot, error ->
-                                        if (error != null) {
-                                            Log.w(TAG, "Listen failed.", error)
-                                            return@addSnapshotListener
+                            val todayDayOfWeek = today.get(Calendar.DAY_OF_WEEK) // e.g., Calendar.MONDAY
+
+                            firestoreDb.collection("meetings")
+                                .whereIn(FieldPath.documentId(), meetingIds)
+                                .get()
+                                .addOnSuccessListener { meetingsQuerySnapshot ->
+                                    for (meetingDocument in meetingsQuerySnapshot) {
+                                        val meetingData = meetingDocument.toObject(MeetingData::class.java)
+                                        meetingData.id = meetingDocument.id
+
+                                        // Get day of the week from meetingData.day (String)
+                                        val meetingDayOfWeek = when (meetingData.day.lowercase()) {
+                                            "monday" -> Calendar.MONDAY
+                                            "tuesday" -> Calendar.TUESDAY
+                                            "wednesday" -> Calendar.WEDNESDAY
+                                            "thursday" -> Calendar.THURSDAY
+                                            "friday" -> Calendar.FRIDAY
+                                            "saturday" -> Calendar.SATURDAY
+                                            "sunday" -> Calendar.SUNDAY
+                                            else -> -1 // Handle invalid day input
                                         }
 
-                                        if (meetingDocumentSnapshot != null && meetingDocumentSnapshot.exists()) {
-                                            val meetingData = meetingDocumentSnapshot.toObject(MeetingData::class.java)
-                                            if (meetingData != null) {
-                                                meetingData.id = meetingDocumentSnapshot.id
-                                                val meetingDate = meetingData.date.toDate()
-                                                val meetingCalendar = Calendar.getInstance().apply {
-                                                    time = meetingDate
-                                                }
-                                                if (today.get(Calendar.YEAR) == meetingCalendar.get(Calendar.YEAR) &&
-                                                    today.get(Calendar.MONTH) == meetingCalendar.get(Calendar.MONTH) &&
-                                                    today.get(Calendar.DAY_OF_MONTH) == meetingCalendar.get(Calendar.DAY_OF_MONTH)
-                                                ) {
-                                                    // Update the meeting in the list or add it if it doesn't exist
-                                                    val existingMeetingIndex = todaysMeetings.indexOfFirst { it.id == meetingData.id }
-                                                    if (existingMeetingIndex != -1) {
-                                                        todaysMeetings[existingMeetingIndex] = meetingData
-                                                    } else {
-                                                        todaysMeetings.add(meetingData)
-                                                    }
-                                                    meetingAdapter.meetings =
-                                                        todaysMeetings.toList().toMutableList()
-                                                    meetingAdapter.notifyDataSetChanged()
-                                                } else {
-                                                    // Remove the meeting from the list if it's no longer today
-                                                    val existingMeetingIndex = todaysMeetings.indexOfFirst { it.id == meetingData.id }
-                                                    if (existingMeetingIndex != -1) {
-                                                        todaysMeetings.removeAt(existingMeetingIndex)
-                                                        meetingAdapter.meetings =
-                                                            todaysMeetings.toList().toMutableList()
-                                                        meetingAdapter.notifyDataSetChanged()
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            Log.d(TAG, "Current data: null")
+                                        if (meetingDayOfWeek == todayDayOfWeek) {
+                                            todaysMeetings.add(meetingData)
                                         }
                                     }
-                            }
+                                    // Update adapter
+                                    binding.loadingLayout.visibility = View.VISIBLE
+                                    meetingAdapter.meetings = todaysMeetings
+                                    meetingAdapter.notifyDataSetChanged()
+                                    binding.loadingLayout.visibility = View.GONE
+                                    binding.layoutMainActivity.visibility = View.VISIBLE
+                                }
+                                .addOnFailureListener { exception ->
+                                    Log.w(TAG, "Error getting meetings: ", exception)
+                                }
                         }
                     }
                 }

@@ -108,9 +108,8 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    Log.e(TAG, "User document not found, user needs to log in again")
-                    auth.signOut()
-                    goLoginActivity()
+                    Log.e(TAG, "User document not found, user needs to create profile")
+                    goCreateProfileActivity()
                 }
             }.addOnFailureListener { exception ->
                 Log.e(TAG, "Error getting user document", exception)

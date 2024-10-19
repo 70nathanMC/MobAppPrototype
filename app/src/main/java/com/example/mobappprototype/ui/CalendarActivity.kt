@@ -39,6 +39,10 @@ class CalendarActivity : AppCompatActivity() {
         binding.rvMeetingsForDate.adapter = meetingAdapter
         binding.rvMeetingsForDate.layoutManager = LinearLayoutManager(this)
 
+        val currentDate = Calendar.getInstance()
+        binding.calendarView.date = currentDate.timeInMillis
+        fetchMeetingsForDate(currentDate)
+
         binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.home -> {
@@ -65,7 +69,7 @@ class CalendarActivity : AppCompatActivity() {
         Log.d(
             "CalendarActivity",
             "Fetching meetings for date: ${selectedDate.time}"
-        ) // Log the selected date
+        )
 
         val userUID = auth.currentUser?.uid
         if (userUID != null) {
@@ -105,18 +109,27 @@ class CalendarActivity : AppCompatActivity() {
         val selectedDayOfWeek = selectedDate.get(Calendar.DAY_OF_WEEK)
 
         for (meetingId in meetingIds) {
+            Log.d("CalendarActivity", "Fetching meeting with ID: $meetingId")
+
             firestoreDb.collection("meetings").document(meetingId)
                 .get()
                 .addOnSuccessListener { meetingDocument ->
                     if (meetingDocument.exists()) {
                         val meetingData = meetingDocument.toObject(MeetingData::class.java)
                         if (meetingData != null) {
-                            val meetingDayOfWeek = getDayOfWeekFromString(meetingData.day)
+                            meetingData.id = meetingDocument.id // Set the ID explicitly
 
+                            Log.d("CalendarActivity", "Meeting data fetched: $meetingData") // Log to verify
+
+                            val meetingDayOfWeek = getDayOfWeekFromString(meetingData.day)
                             if (selectedDayOfWeek == meetingDayOfWeek) {
                                 meetingsForDate.add(meetingData)
                             }
+                        } else {
+                            Log.e("CalendarActivity", "Error converting meeting document to MeetingData object")
                         }
+                    } else {
+                        Log.e("CalendarActivity", "Meeting document with ID $meetingId does not exist")
                     }
                     // Update the UI after each meeting is fetched
                     meetingAdapter.updateMeetings(meetingsForDate)

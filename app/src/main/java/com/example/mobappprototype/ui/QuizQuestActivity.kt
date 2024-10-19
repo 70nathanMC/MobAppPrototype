@@ -16,6 +16,5 @@ class QuizQuestActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-
     }
 }

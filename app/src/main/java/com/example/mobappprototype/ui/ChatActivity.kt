@@ -1,8 +1,10 @@
 package com.example.mobappprototype.ui
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+import android.view.TouchDelegate
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mobappprototype.Adapter.ChatAdapter
@@ -37,14 +39,19 @@ class ChatActivity : AppCompatActivity() {
 
         val userUid = auth.currentUser?.uid
 
+        binding.linearLayout6.post {
+            val rect = Rect()
+            binding.btnHome.getHitRect(rect)
+            rect.inset(-50, -50) // Expand the touch area by 50 pixels on each side
+            binding.linearLayout6.touchDelegate = TouchDelegate(rect, binding.btnHome)
+        }
+
         binding.btnHome.setOnClickListener{
             Intent(this, InboxActivity::class.java).also {
                 startActivity(it)
             }
         }
 
-        binding.tvTutorNameTitle
-        // change this to the name of the Subject - Branch
 
         val meetingId = intent.getStringExtra("meetingId")
         if (meetingId != null) {
@@ -81,6 +88,18 @@ class ChatActivity : AppCompatActivity() {
                     sendMessage(meetingId, messageContent)
                 }
             }
+            firestoreDb.collection("meetings").document(meetingId)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val subject = document.getString("subject")
+                        val branch = document.getString("branch")
+                        binding.tvTutorNameTitle.text = "$subject - $branch"
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Error getting meeting details", e)
+                }
         } else {
             Log.e(TAG, "Meeting ID not found in Intent")
         }
