@@ -73,4 +73,5 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.firebase.appcheck.safetynet)
+    implementation (libs.androidx.core.splashscreen)
 }
