@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.mobappprototype.Adapter.MeetingDataAdapter
+import com.example.mobappprototype.R
 import com.example.mobappprototype.ViewModel.UserViewModel
 import com.example.mobappprototype.databinding.ActivityTutorSchedAndSubsListBinding
 import com.example.mobappprototype.model.MeetingData
@@ -37,6 +38,8 @@ class TutorSchedAndSubsListActivity : AppCompatActivity() {
         meetingDataAdapter = MeetingDataAdapter(meetingList)
         binding.rvMeetings.layoutManager = LinearLayoutManager(this)
         binding.rvMeetings.adapter = meetingDataAdapter
+
+        binding.bottomNavigationBar.selectedItemId = -1
 
         val userUID = auth.currentUser?.uid
         if (userUID != null) {
@@ -77,6 +80,33 @@ class TutorSchedAndSubsListActivity : AppCompatActivity() {
         binding.ibtnHomeFTutorSchedAndSubsList.setOnClickListener {
             Intent(this, StudentMainActivity::class.java).also {
                 startActivity(it)
+            }
+        }
+
+        binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.home -> {
+                    // Handle Home item click
+                    val intent = Intent(this, StudentMainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+                R.id.messages -> {
+                    // Handle Messages item click
+                    val intent = Intent(this, InboxActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+                R.id.profile -> {
+                    // Handle Profile item click
+                    val intent = Intent(this, StudentMainProfileActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+                else -> false
             }
         }
 

@@ -265,6 +265,8 @@
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationBar"
+            app:itemActiveIndicatorStyle="@color/appGreen"
+            app:itemTextAppearanceActiveBoldEnabled="false"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_alignParentStart="true"

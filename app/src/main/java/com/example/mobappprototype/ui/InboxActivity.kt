@@ -53,6 +53,7 @@ class InboxActivity : AppCompatActivity() {
 
         fetchChatRooms()
         listenForNewMessages()
+        binding.bottomNavigationBar.selectedItemId = R.id.messages
 
         binding.btnHome.setOnClickListener{
             val currentUserId = auth.currentUser?.uid ?: return@setOnClickListener

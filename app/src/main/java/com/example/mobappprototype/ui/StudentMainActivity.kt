@@ -67,6 +67,7 @@ class StudentMainActivity : AppCompatActivity() {
             }
         }
         setupClickListeners()
+        binding.bottomNavigationBar.selectedItemId = R.id.home
     }
 
     private fun fetchTodaysMeetings() {
@@ -189,18 +190,18 @@ class StudentMainActivity : AppCompatActivity() {
         binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.home -> {
-                    val intent = Intent(this, StudentMainActivity::class.java)
-                    startActivity(intent)
                     true
                 }
                 R.id.messages -> {
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
+                    finish()
                     true
                 }
                 R.id.profile -> {
                     val intent = Intent(this, StudentMainProfileActivity::class.java)
                     startActivity(intent)
+                    finish()
                     true
                 }
                 else -> false
@@ -209,10 +210,12 @@ class StudentMainActivity : AppCompatActivity() {
         binding.ivArrowNext.setOnClickListener{
             val intent = Intent(this, CalendarActivity::class.java)
             startActivity(intent)
+            finish()
         }
         binding.tvAgendaForToday.setOnClickListener {
             val intent = Intent(this, CalendarActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
     private fun updateUIWithUserData(user: User) {

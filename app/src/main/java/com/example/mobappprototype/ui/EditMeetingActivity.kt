@@ -43,6 +43,8 @@ class EditMeetingActivity : AppCompatActivity() {
         setTimePickerTime(binding.tpEndTime, meeting.endTime)
         binding.etSlots.setText(String.format(Locale.getDefault(), "%d", meeting.slots))
 
+        binding.bottomNavigationBar.selectedItemId = -1
+
         binding.btnSave.setOnClickListener {
             val subject = binding.spinnerSubject.selectedItem.toString() ?: ""
             val branch = binding.etBranch.text.toString() ?: ""
@@ -212,17 +214,19 @@ class EditMeetingActivity : AppCompatActivity() {
                     val intent = Intent(this, TutorMainActivity::class.java)
                     // if role = Student, go to StudentMainActivity
                     startActivity(intent)
+                    finish()
                     true
                 }
                 R.id.messages -> {
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
+                    finish()
                     true
                 }
                 R.id.profile -> {
                     val intent = Intent(this, TutorMainProfileActivity::class.java)
-                    // if role = Student, go to StudentMainProfileActivity
                     startActivity(intent)
+                    finish()
                     true
                 }
                 else -> false

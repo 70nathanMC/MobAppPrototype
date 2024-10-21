@@ -44,6 +44,7 @@ class TutorProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "Error: Tutor not found", Toast.LENGTH_SHORT).show()
         }
         setupClickListeners()
+        binding.bottomNavigationBar.selectedItemId = -1
     }
 
     private fun fetchTutorDataAndPopulateUI(tutorUid: String) {
@@ -121,18 +122,21 @@ class TutorProfileActivity : AppCompatActivity() {
                     // Handle Home item click
                     val intent = Intent(this, StudentMainActivity::class.java)
                     startActivity(intent)
+                    finish()
                     true
                 }
                 R.id.messages -> {
                     // Handle Messages item click
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
+                    finish()
                     true
                 }
                 R.id.profile -> {
                     // Handle Profile item click
                     val intent = Intent(this, StudentMainProfileActivity::class.java)
                     startActivity(intent)
+                    finish()
                     true
                 }
                 else -> false

@@ -81,6 +81,8 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationBar"
+        app:itemActiveIndicatorStyle="@color/appGreen"
+        app:itemTextAppearanceActiveBoldEnabled="false"
         android:layout_width="0dp"
         android:layout_height="70dp"
         app:layout_constraintBottom_toBottomOf="parent"

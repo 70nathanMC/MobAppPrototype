@@ -82,25 +82,24 @@ class TutorMainActivity : AppCompatActivity() {
         meetingsAdapter = MeetingsAdapter(emptyList())
         rvMeetings.adapter = meetingsAdapter
 
+        binding.bottomNavigationBar.selectedItemId = R.id.home
+
 
         binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.home -> {
-                    // Handle Home item click
-                    val intent = Intent(this, TutorMainActivity::class.java)
-                    startActivity(intent)
                     true
                 }
                 R.id.messages -> {
-                    // Handle Messages item click
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
+                    finish()
                     true
                 }
                 R.id.profile -> {
-                    // Handle Profile item click
                     val intent = Intent(this, TutorMainProfileActivity::class.java)
                     startActivity(intent)
+                    finish()
                     true
                 }
                 else -> false

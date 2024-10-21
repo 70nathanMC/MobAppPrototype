@@ -33,7 +33,7 @@ class CreateMeetingActivity : AppCompatActivity() {
 
         fetchSubjectsFromFirestore(binding.spinnerSubject)
 
-
+        binding.bottomNavigationBar.selectedItemId = -1
 
         binding.btnCreate.setOnClickListener {
 
@@ -166,16 +166,19 @@ class CreateMeetingActivity : AppCompatActivity() {
                 R.id.home -> {
                     val intent = Intent(this, TutorMainActivity::class.java)
                     startActivity(intent)
+                    finish()
                     true
                 }
                 R.id.messages -> {
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
+                    finish()
                     true
                 }
                 R.id.profile -> {
                     val intent = Intent(this, TutorMainProfileActivity::class.java)
                     startActivity(intent)
+                    finish()
                     true
                 }
                 else -> false

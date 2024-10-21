@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mobappprototype.Adapter.SubjectChipAdapter
 import com.example.mobappprototype.Adapter.TutorListAdapter
+import com.example.mobappprototype.R
 import com.example.mobappprototype.ViewModel.UserViewModel
 import com.example.mobappprototype.databinding.ActivityTutorListBinding
 import com.example.mobappprototype.model.TutorListData
@@ -79,6 +80,8 @@ class TutorListActivity : AppCompatActivity() {
             searchTutors(searchQuery)
         }
 
+        binding.bottomNavigationBar.selectedItemId = -1
+
         binding.ibtnHomeFTutorList.setOnClickListener {
             Intent(this, StudentMainActivity::class.java).also {
                 startActivity(it)
@@ -88,6 +91,30 @@ class TutorListActivity : AppCompatActivity() {
         binding.ivStudentProfile.setOnClickListener {
             Intent(this, StudentMainProfileActivity::class.java).also {
                 startActivity(it)
+            }
+        }
+
+        binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.home -> {
+                    val intent = Intent(this, StudentMainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+                R.id.messages -> {
+                    val intent = Intent(this, InboxActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+                R.id.profile -> {
+                    val intent = Intent(this, StudentMainProfileActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+                else -> false
             }
         }
     }
