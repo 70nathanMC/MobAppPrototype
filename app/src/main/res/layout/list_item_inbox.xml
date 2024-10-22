@@ -2,13 +2,12 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/appGrayE"
-    android:orientation="horizontal"
-    app:cardBackgroundColor="@color/appWhite"
-    app:cardCornerRadius="16dp"
-    android:layout_margin="16dp">
+    android:background="@color/white"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardElevation="0dp"
+    android:orientation="horizontal">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,10 +17,15 @@
             android:id="@+id/tvTutorNameAndSubject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginEnd="60dp"
             android:text="Subject - Branch"
-            android:textStyle="bold"
+            android:textColor="@color/appBlack"
+            android:textSize="15sp"
+           android:fontFamily="@font/extra_bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,12 +33,15 @@
             android:id="@+id/tvLastMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginBottom="15dp"
+            android:fontFamily="@font/light"
+            android:textColor="@color/appGray8"
             android:text="Last message content..."
-            android:layout_marginEnd="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvUnreadCount"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTutorNameAndSubject"
@@ -44,13 +51,23 @@
             android:id="@+id/tvUnreadCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
             android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
+            android:text="0"
             android:textColor="@color/appGreen"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <View
+            android:id="@+id/topLine"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/appGrayE"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

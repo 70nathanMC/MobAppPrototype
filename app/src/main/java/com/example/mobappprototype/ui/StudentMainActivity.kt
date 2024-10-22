@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +29,8 @@ class StudentMainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var userViewModel: UserViewModel
     private lateinit var meetingAdapter: MeetingAdapter
+    private var dotsCount: Int = 0
+    private lateinit var dots: Array<ImageView?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +71,7 @@ class StudentMainActivity : AppCompatActivity() {
             }
         }
         setupClickListeners()
+        setupHorizontalScrollView()
         binding.bottomNavigationBar.selectedItemId = R.id.home
     }
 
@@ -130,6 +135,42 @@ class StudentMainActivity : AppCompatActivity() {
                     }
                 }
         }
+    }
+
+    private fun setupHorizontalScrollView() {
+        val scrollView = binding.hsvDashboard
+        val linearLayout = binding.layoutDots
+        val subjectsPerPage = 4 // Number of subjects per page
+
+        // Calculate the number of dots dynamically
+        val totalSubjects = (scrollView.getChildAt(0) as LinearLayout).childCount
+        dotsCount = (totalSubjects + subjectsPerPage - 1) / subjectsPerPage // Ceiling division
+
+        dots = arrayOfNulls(dotsCount)
+
+        for (i in 0 until dotsCount) {
+            dots[i] = ImageView(this)
+            dots[i]?.setImageDrawable(resources.getDrawable(R.drawable.ic_non_active_dot))
+
+            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            params.setMargins(8, 0, 8, 0)
+            linearLayout.addView(dots[i], params)
+        }
+
+        dots[0]?.setImageDrawable(resources.getDrawable(R.drawable.ic_active_dot))
+
+        scrollView.setOnScrollChangeListener { _, scrollX, _, _, _ ->
+            val viewWidth = scrollView.width
+            val page = (scrollX + (viewWidth / 2)) / viewWidth
+            updateDots(page)
+        }
+    }
+
+    private fun updateDots(currentPage: Int) {
+        for (i in 0 until dotsCount) {
+            dots[i]?.setImageDrawable(resources.getDrawable(R.drawable.ic_non_active_dot))
+        }
+        dots[currentPage]?.setImageDrawable(resources.getDrawable(R.drawable.ic_active_dot))
     }
 
     private fun setupClickListeners() {

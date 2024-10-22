@@ -135,7 +135,7 @@
             android:fontFamily="@font/light"
             android:text="slots"
             android:textColor="@color/appGray6"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/tvMeetingSlots"
@@ -148,19 +148,20 @@
             android:fontFamily="@font/light"
             android:text="3"
             android:textColor="@color/appGray6"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnJoinMeeting"
             android:layout_width="80dp"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_below="@+id/llMeetingInfo"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:backgroundTint="@color/appGreen"
-            android:maxHeight="50dp"
+            android:maxHeight="40dp"
+            android:paddingTop="4dp"
             android:text="Join"
             android:textColor="@color/white"
             android:textSize="16sp"
