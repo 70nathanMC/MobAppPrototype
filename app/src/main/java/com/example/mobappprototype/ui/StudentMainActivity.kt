@@ -107,6 +107,15 @@ class StudentMainActivity : AppCompatActivity() {
                                             todaysMeetings.add(meetingData)
                                         }
                                     }
+
+                                    if (todaysMeetings.isEmpty()) {  // Check if the list is empty
+                                        binding.tvNoMeetings.visibility = View.VISIBLE
+                                        binding.rvMeetingsToday.visibility = View.GONE
+                                    } else {
+                                        binding.tvNoMeetings.visibility = View.GONE
+                                        binding.rvMeetingsToday.visibility = View.VISIBLE
+                                    }
+
                                     // Update adapter
                                     binding.loadingLayout.visibility = View.VISIBLE
                                     meetingAdapter.meetings = todaysMeetings
