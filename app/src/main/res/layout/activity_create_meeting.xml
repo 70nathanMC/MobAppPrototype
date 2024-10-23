@@ -8,102 +8,298 @@
     android:background="@color/white"
     tools:context=".ui.CreateMeetingActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <Spinner
-            android:id="@+id/spinnerSubject"
-            android:layout_width="0dp"
-            android:tooltipText="Select Subject"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:paddingTop="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/bottomNavigationBar">
 
-        <EditText
-            android:id="@+id/etBranch"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Branch (e.g., Algebra)"
-            app:layout_constraintTop_toBottomOf="@id/spinnerSubject"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <ImageView
+                android:id="@+id/ivBackFCreateMeeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_back_login" />
 
-        <Spinner
-            android:id="@+id/spinnerDay"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:tooltipText="Select Day"
-            app:layout_constraintTop_toBottomOf="@id/etBranch"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:entries="@array/days_of_week" />
+            <LinearLayout
+                android:id="@+id/llCreateMeeting"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivBackFCreateMeeting">
 
-        <TimePicker
-            android:id="@+id/tpStartTime"
-            android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:timePickerMode="spinner"
-            app:layout_constraintTop_toBottomOf="@id/spinnerDay"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <TextView
+                    android:id="@+id/tvCreateMeeting"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/bold"
+                    android:gravity="center"
+                    android:text="Create Meeting"
+                    android:textSize="32sp" />
 
-        <TimePicker
-            android:id="@+id/tpEndTime"
-            android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:timePickerMode="spinner"
-            app:layout_constraintTop_toBottomOf="@id/tpStartTime"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            </LinearLayout>
 
-        <EditText
-            android:id="@+id/etSlots"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Number of Slots"
-            android:inputType="number"
-            app:layout_constraintTop_toBottomOf="@id/tpEndTime"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilProgram"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:focusable="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="20dp"
+                android:focusableInTouchMode="false"
+                app:layout_constraintTop_toBottomOf="@+id/llCreateMeeting">
 
-        <EditText
-            android:id="@+id/etMeetingLink"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Meeting Link"
-            android:inputType="number"
-            app:layout_constraintTop_toBottomOf="@id/etSlots"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <AutoCompleteTextView
+                    android:id="@+id/actvSubjectName"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/default_options_border_bg_gray"
+                    android:inputType="none"
+                    android:paddingStart="15dp"
+                    android:text="Subject Name"
+                    android:textColor="@color/appGray8"
+                    android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/btnCreate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create Meeting"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/etSlots"
-            />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationBar"
-        app:itemActiveIndicatorStyle="@color/appGreen"
-        app:itemTextAppearanceActiveBoldEnabled="false"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@color/white"
-        app:menu="@menu/bottom_nav">
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tilProgram">
 
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <EditText
+                        android:id="@+id/etBranch"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/default_options_border_bg_gray"
+                        android:ems="10"
+                        android:hint="Subject Branch (e.g., Limits)"
+                        android:inputType="text"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="@color/appGray8"
+                        android:textColorHint="@color/appGray8"
+                        android:textSize="16sp"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilDay"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:focusable="true"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:focusableInTouchMode="false"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actvDay"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/default_options_border_bg_gray"
+                    android:inputType="none"
+                    android:text="Select Day of Meeting"
+                    android:paddingStart="15dp"
+                    android:textColor="@color/appGray8"
+                    android:textSize="16sp" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tvMeetingScheduleStart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Start Time of Meeting:"
+                android:textSize="16sp"
+                android:textColor="@color/appGray8"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="38dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tilDay" />
+
+            <TimePicker
+                android:id="@+id/tpStartTime"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:timePickerMode="spinner"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textColor="@color/appGray8"
+                app:layout_constraintTop_toBottomOf="@+id/tvMeetingScheduleStart" />
+
+            <TextView
+                android:id="@+id/tvMeetingScheduleEnd"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="38dp"
+                android:text="End Time of Meeting:"
+                android:textColor="@color/appGray8"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tpStartTime" />
+
+            <TimePicker
+                android:id="@+id/tpEndTime"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:timePickerMode="spinner"
+                android:textColor="@color/appGray8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvMeetingScheduleEnd" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tpEndTime">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <EditText
+                        android:id="@+id/etSlots"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/default_options_border_bg_gray"
+                        android:ems="10"
+                        android:hint="Amount of Slots"
+                        android:inputType="number"
+                        android:textColorHint="@color/appGray8"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="@color/appGray8"
+                        android:textSize="16sp"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <EditText
+                        android:id="@+id/etMeetingLink"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/default_options_border_bg_gray"
+                        android:ems="10"
+                        android:hint="Meeting Link"
+                        android:inputType="text"
+                        android:textColorHint="@color/appGray8"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="@color/appGray8"
+                        android:textSize="16sp"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCreateMeeting"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="40dp"
+                android:backgroundTint="@color/appGreen"
+                android:fontFamily="@font/semibold"
+                android:text="Create Meeting"
+                android:textColor="@color/appWhite"
+                android:textSize="15sp"
+                app:cornerRadius="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

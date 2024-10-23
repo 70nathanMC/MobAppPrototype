@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,8 @@ class EditMeetingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditMeetingBinding
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
+    private lateinit var actvDay: AutoCompleteTextView
+    private lateinit var actvSubjectName: AutoCompleteTextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,20 +38,34 @@ class EditMeetingActivity : AppCompatActivity() {
         val meetingId = intent.getStringExtra("meetingId")
             ?: throw IllegalArgumentException("Meeting ID is missing")
         Log.d("EditMeetingActivity", "Meeting ID: $meetingId")
+
+
         // Populate views with meeting data
-        fetchSubjectsFromFirestore(binding.spinnerSubject, meeting.subject)
+        val daysList = resources.getStringArray(R.array.days_of_week)
+        val arrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, daysList)
+        actvDay = findViewById(R.id.actvDay)
+        actvDay.setAdapter(arrayAdapter)
+        actvDay.setText(meeting.day, false)
+        actvDay.dropDownVerticalOffset = actvDay.height
+
+        actvSubjectName = findViewById(R.id.actvSubjectName)
+        fetchSubjectsFromFirestore(actvSubjectName, meeting)
+
+
         binding.etBranch.setText(meeting.branch)
-        setSpinnerDaySelection(binding.spinnerDay, meeting.day)
         setTimePickerTime(binding.tpStartTime, meeting.startTime)
         setTimePickerTime(binding.tpEndTime, meeting.endTime)
         binding.etSlots.setText(String.format(Locale.getDefault(), "%d", meeting.slots))
 
-        binding.bottomNavigationBar.selectedItemId = -1
+        binding.ivBackFEditMeeting.setOnClickListener {
+            val intent = Intent(this, TutorMainActivity::class.java)
+            startActivity(intent)
+        }
 
         binding.btnSave.setOnClickListener {
-            val subject = binding.spinnerSubject.selectedItem.toString() ?: ""
+            val subject = binding.actvSubjectName.text.toString() ?: ""
             val branch = binding.etBranch.text.toString() ?: ""
-            val day = binding.spinnerDay.selectedItem.toString() ?: ""
+            val day = binding.actvDay.text.toString() ?: ""
             val startTimeHour = binding.tpStartTime.hour
             val startTimeMinute = binding.tpStartTime.minute
             val endTimeHour = binding.tpEndTime.hour
@@ -121,7 +138,7 @@ class EditMeetingActivity : AppCompatActivity() {
                             "meetingLink" to meetingLink
                         )
 
-                        val newSubject = binding.spinnerSubject.selectedItem.toString()
+                        val newSubject = binding.actvSubjectName.text.toString()
                         db.collection("meetings").document(meetingId)
                             .update(updatedMeetingData as Map<String, Any>)
                             .addOnSuccessListener {
@@ -129,6 +146,33 @@ class EditMeetingActivity : AppCompatActivity() {
                                 Toast.makeText(this, "Meeting updated!", Toast.LENGTH_SHORT).show()
                                 val userId = auth.currentUser?.uid ?: return@addOnSuccessListener
                                 val oldSubject = meeting.subject
+
+                                db.collection("users").document(userId)
+                                    .collection("tutorData")
+                                    .document("data")
+                                    .get()
+                                    .addOnSuccessListener { documentSnapshot ->
+                                        if (documentSnapshot.exists()) {
+                                            val meetingsArray = documentSnapshot.get("meetings") as? List<String> ?: emptyList()
+
+                                            // 2. Check if the meetingId is already in the meetings array
+                                            if (!meetingsArray.contains(meetingId)) {
+                                                // 3. If not present, add the meetingId to the array
+                                                documentSnapshot.reference.update("meetings", FieldValue.arrayUnion(meetingId))
+                                                    .addOnSuccessListener {
+                                                        Log.d(TAG, "Meeting ID added to tutor's document: $meetingId")
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        Log.w(TAG, "Error adding meeting ID to tutor's document: ${e.message}")
+                                                    }
+                                            } else {
+                                                Log.d(TAG, "Meeting ID already exists in tutor's document: $meetingId")
+                                            }
+                                        }
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.w(TAG, "Error getting tutor's data document: ${e.message}")
+                                    }
 
                                 if (newSubject != oldSubject) {
                                     // 1. Add tutorUID to the new subject's relatedTutors array
@@ -208,33 +252,8 @@ class EditMeetingActivity : AppCompatActivity() {
             }
         }
 
-        binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.home -> {
-                    val intent = Intent(this, TutorMainActivity::class.java)
-                    // if role = Student, go to StudentMainActivity
-                    startActivity(intent)
-                    finish()
-                    true
-                }
-                R.id.messages -> {
-                    val intent = Intent(this, InboxActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                    true
-                }
-                R.id.profile -> {
-                    val intent = Intent(this, TutorMainProfileActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                    true
-                }
-                else -> false
-            }
-        }
-
     }
-    private fun fetchSubjectsFromFirestore(spinner: Spinner, selectedSubject: String) {
+    private fun fetchSubjectsFromFirestore(autoCompleteTextView: AutoCompleteTextView, meeting: MeetingForTutor) {
         db.collection("subjects")
             .get()
             .addOnSuccessListener { documents ->
@@ -243,30 +262,18 @@ class EditMeetingActivity : AppCompatActivity() {
                     val subjectName = document.getString("subjectName")
                     subjectName?.let { subjectList.add(it) }
                 }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, subjectList)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinner.adapter = adapter
+                val adapter = ArrayAdapter(this, R.layout.dropdown_item, subjectList)
+                autoCompleteTextView.setAdapter(adapter)
 
-                // Set the spinner selection
-                val selectedIndex = subjectList.indexOf(selectedSubject)
+                // Set the initial selection (make sure 'meeting' is accessible in this scope)
+                val selectedIndex = subjectList.indexOf(meeting.subject)
                 if (selectedIndex != -1) {
-                    spinner.setSelection(selectedIndex)
+                    autoCompleteTextView.setText(subjectList[selectedIndex], false)
                 }
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(this, "Error fetching subjects: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
-    }
-
-    private fun setSpinnerDaySelection(spinner: Spinner, selectedDay: String) {
-        val adapter = spinner.adapter
-        if (adapter is ArrayAdapter<*>) {
-            val dayList = (0..<adapter.count).map { adapter.getItem(it) as String }
-            val selectedIndex = dayList.indexOf(selectedDay)
-            if (selectedIndex != -1) {
-                spinner.setSelection(selectedIndex)
-            }
-        }
     }
 
     private fun setTimePickerTime(timePicker: android.widget.TimePicker, time: String) {

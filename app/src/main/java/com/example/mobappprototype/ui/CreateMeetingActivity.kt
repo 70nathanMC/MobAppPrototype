@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,8 @@ class CreateMeetingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCreateMeetingBinding
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
+    private lateinit var actvDay: AutoCompleteTextView
+    private lateinit var actvSubjectName: AutoCompleteTextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCreateMeetingBinding.inflate(layoutInflater)
@@ -31,15 +34,21 @@ class CreateMeetingActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
-        fetchSubjectsFromFirestore(binding.spinnerSubject)
+        supportActionBar?.hide()
+        val daysList = resources.getStringArray(R.array.days_of_week)
+        val arrayAdapter1 = ArrayAdapter(this, R.layout.dropdown_item, daysList)
+        actvDay = findViewById(R.id.actvDay)
+        actvDay.setAdapter(arrayAdapter1)
+        actvDay.dropDownVerticalOffset = actvDay.height
 
-        binding.bottomNavigationBar.selectedItemId = -1
+        actvSubjectName = findViewById(R.id.actvSubjectName)
+        fetchSubjectsFromFirestore(actvSubjectName)
 
-        binding.btnCreate.setOnClickListener {
+        binding.btnCreateMeeting.setOnClickListener {
 
-            val subject = binding.spinnerSubject.selectedItem.toString().trim()
+            val subject = binding.actvSubjectName.text.toString().trim()
             val branch = binding.etBranch.text.toString().trim()
-            val day = binding.spinnerDay.selectedItem.toString().trim()
+            val day = binding.actvDay.text.toString().trim()
             val startTimeHour = binding.tpStartTime.hour
             val startTimeMinute = binding.tpStartTime.minute
             val endTimeHour = binding.tpEndTime.hour
@@ -161,31 +170,12 @@ class CreateMeetingActivity : AppCompatActivity() {
                 }
             }
         }
-        binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.home -> {
-                    val intent = Intent(this, TutorMainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                    true
-                }
-                R.id.messages -> {
-                    val intent = Intent(this, InboxActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                    true
-                }
-                R.id.profile -> {
-                    val intent = Intent(this, TutorMainProfileActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                    true
-                }
-                else -> false
-            }
+        binding.ivBackFCreateMeeting.setOnClickListener {
+            val intent = Intent(this, TutorMainActivity::class.java)
+            startActivity(intent)
         }
     }
-    private fun fetchSubjectsFromFirestore(spinner: Spinner) {
+    private fun fetchSubjectsFromFirestore(autoCompleteTextView: AutoCompleteTextView) {
         db.collection("subjects")
             .get()
             .addOnSuccessListener { documents ->
@@ -194,9 +184,8 @@ class CreateMeetingActivity : AppCompatActivity() {
                     val subjectName = document.getString("subjectName")
                     subjectName?.let { subjectList.add(it) }
                 }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, subjectList)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinner.adapter = adapter
+                val adapter = ArrayAdapter(this, R.layout.dropdown_item, subjectList) // Use the same dropdown_item layout
+                autoCompleteTextView.setAdapter(adapter)
             }
             .addOnFailureListener { exception ->
                 // Handle any errors that occurred while fetching the subjects
