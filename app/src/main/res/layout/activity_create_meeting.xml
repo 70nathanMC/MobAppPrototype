@@ -32,7 +32,8 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_back_login" />
+                app:srcCompat="@drawable/ic_back_login"
+                android:src="@drawable/ic_back_login"/>
 
             <LinearLayout
                 android:id="@+id/llCreateMeeting"

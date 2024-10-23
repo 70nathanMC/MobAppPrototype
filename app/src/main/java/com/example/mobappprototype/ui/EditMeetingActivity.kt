@@ -265,7 +265,6 @@ class EditMeetingActivity : AppCompatActivity() {
                 val adapter = ArrayAdapter(this, R.layout.dropdown_item, subjectList)
                 autoCompleteTextView.setAdapter(adapter)
 
-                // Set the initial selection (make sure 'meeting' is accessible in this scope)
                 val selectedIndex = subjectList.indexOf(meeting.subject)
                 if (selectedIndex != -1) {
                     autoCompleteTextView.setText(subjectList[selectedIndex], false)
