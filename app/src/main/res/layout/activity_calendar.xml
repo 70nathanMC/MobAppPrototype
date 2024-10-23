@@ -35,6 +35,13 @@
         app:layout_constraintTop_toBottomOf="@id/calendarView"
         app:layout_constraintVertical_bias="0.0" />
 
+    <View
+        android:id="@+id/bottomLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/appGrayE"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationBar" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationBar"
         app:itemActiveIndicatorStyle="@color/appGreen"

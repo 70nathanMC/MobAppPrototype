@@ -334,6 +334,15 @@
 
             </LinearLayout>
         </ScrollView>
+
+        <View
+            android:id="@+id/bottomLine"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/bottomNavigationBar"
+            android:background="@color/appGrayE"
+            app:layout_constraintBottom_toTopOf="@+id/bottomNavigationBar" />
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationBar"
             android:layout_width="match_parent"
