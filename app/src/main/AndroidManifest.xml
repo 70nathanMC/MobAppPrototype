@@ -22,6 +22,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MobAppPrototype"
         tools:targetApi="33">
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_app_logo" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/appGrayE" />
+
         <activity
             android:name=".ui.QuizQuestActivity"
             android:exported="false" />
@@ -82,14 +90,6 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".PushNotificationService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
         <activity
             android:name=".ui.StudentMainProfileActivity"
             android:exported="false" />
@@ -118,6 +118,25 @@
             android:name=".ui.StudentMainActivity"
             android:exported="true">
         </activity>
+
+        <service
+            android:name=".MyFirebaseInstanceIDService"
+            android:exported="false"
+            tools:ignore="Instantiatable">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false"
+            tools:ignore="Instantiatable">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>
