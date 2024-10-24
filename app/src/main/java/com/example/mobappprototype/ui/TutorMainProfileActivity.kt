@@ -70,7 +70,7 @@ class TutorMainProfileActivity : AppCompatActivity() {
                 if (document != null && document.exists()) {
                     val bio = document.getString("bio") ?: ""
                     binding.tvTutorRating.text = document.getDouble("overallRating").toString()
-                    binding.tvFeedbackCount.text = document.getString("feedbackCount") ?:"0"
+                    binding.tvFeedbackCount.text = document.getLong("feedbackAmount")?.toString()
 
                     val viewPager = binding.viewPager
                     val tabLayout = binding.tabLayout
