@@ -239,7 +239,7 @@ class ChatActivity : AppCompatActivity() {
                                     if (recipientToken != null) {
                                         // Use Retrofit to send the notification data to your server
                                         val retrofit = Retrofit.Builder()
-                                            .baseUrl("http://192.168.31.41:3000") // Replace with your server's base URL (http://10.0.2.2:3000 for emulator)
+                                            .baseUrl("http://192.168.31.41:3000") // Replace with your server's base URL
                                             .addConverterFactory(GsonConverterFactory.create())
                                             .build()
 

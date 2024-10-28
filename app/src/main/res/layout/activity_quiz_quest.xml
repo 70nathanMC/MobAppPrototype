@@ -36,31 +36,91 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:textSize="18sp"
             android:text="Quiz Quest"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <View
+            android:id="@+id/topLine"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/appGrayE"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvQuizQuest" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/sivQuizLogo"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginBottom="-55dp"
+        android:elevation="0.001dp"
         android:src="@drawable/ic_qq_calculus"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/clQuizContainer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+        app:layout_constraintVertical_bias="1.0" />
 
-    <ImageView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clQuizContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/clTakeQuiz"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+        app:layout_constraintVertical_bias="0.56">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            app:cardBackgroundColor="@color/appGreen"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/tvSubjectName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70dp"
+                android:layout_marginBottom="50dp"
+                android:fontFamily="@font/extra_bold"
+                android:gravity="center"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:text="Calculus"
+                android:textColor="@color/appWhite"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/tvSubjectDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="150dp"
+                android:layout_marginBottom="50dp"
+                android:fontFamily="@font/light"
+                android:gravity="center"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:text="This multiple-choice quiz evaluates your knowledge of key topics such as limits, derivatives, integrals, and series in calculus. Prepare to showcase your calculus skills!"
+                android:textColor="@color/appWhite"
+                android:textSize="16sp" />
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -80,14 +140,18 @@
 
         <Button
             android:id="@+id/btnTakeQuiz"
-            android:layout_width="314dp"
-            android:layout_height="56dp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
             android:layout_marginBottom="60dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
             android:backgroundTint="@color/appGreen"
             android:fontFamily="@font/semibold"
             android:text="Take Quiz"
             android:textColor="@color/appWhite"
-            android:textSize="18sp"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:textSize="17sp"
             app:cornerRadius="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
