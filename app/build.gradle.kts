@@ -75,4 +75,8 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.firebase.appcheck.safetynet)
     implementation (libs.androidx.core.splashscreen)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.google.firebase.messaging.ktx)
+    implementation (libs.retrofit2.converter.gson)
 }

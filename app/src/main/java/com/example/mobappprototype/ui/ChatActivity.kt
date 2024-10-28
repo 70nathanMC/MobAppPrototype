@@ -14,6 +14,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
+import retrofit2.http.POST
 
 private const val TAG = "ChatActivity"
 class ChatActivity : AppCompatActivity() {
@@ -162,8 +169,29 @@ class ChatActivity : AppCompatActivity() {
                 .addOnFailureListener { exception ->
                     Log.e(TAG, "Error getting chat room participants", exception)
                 }
+            getCurrentUserName(currentUserId) { currentUserName ->
+                sendNotificationToParticipants(meetingId, messageContent, currentUserName)
+            }
         }
     }
+
+    private fun getCurrentUserName(userId: String, callback: (String) -> Unit) {
+        firestoreDb.collection("users").document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val fullName = document.getString("fullName") ?: "Unknown User"
+                    callback(fullName)
+                } else {
+                    callback("Unknown User")
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error getting user's full name", e)
+                callback("Unknown User")
+            }
+    }
+
     private fun incrementUnreadCountForParticipant(participantId: String, meetingId: String) {
         val userRef = firestoreDb.collection("users").document(participantId)
 
@@ -194,4 +222,62 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    private fun sendNotificationToParticipants(meetingId: String, messageContent: String, senderName: String) {
+        firestoreDb.collection("meetings").document(meetingId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val participants = document.get("participants") as? List<String> ?: emptyList()
+                    val currentUserId = auth.currentUser?.uid ?: return@addOnSuccessListener
+
+                    for (participantId in participants) {
+                        if (participantId != currentUserId) {
+                            firestoreDb.collection("users").document(participantId)
+                                .get()
+                                .addOnSuccessListener { document ->
+                                    val recipientToken = document.getString("fcmToken")
+                                    if (recipientToken != null) {
+                                        // Use Retrofit to send the notification data to your server
+                                        val retrofit = Retrofit.Builder()
+                                            .baseUrl("http://192.168.31.41:3000") // Replace with your server's base URL (http://10.0.2.2:3000 for emulator)
+                                            .addConverterFactory(GsonConverterFactory.create())
+                                            .build()
+
+                                        val notificationService = retrofit.create(NotificationService::class.java)
+                                        val notificationData = mapOf(
+                                            "to" to recipientToken,
+                                            "senderName" to senderName,
+                                            "messageContent" to messageContent,
+                                            "meetingId" to meetingId
+                                        )
+                                        val call = notificationService.sendNotification(notificationData)
+                                        call.enqueue(object : Callback<Void> {
+                                            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                                                Log.d(TAG, "Notification request sent successfully")
+                                            }
+
+                                            override fun onFailure(call: Call<Void>, t: Throwable) {
+                                                Log.e(TAG, "Error sending notification request", t)
+                                            }
+                                        })
+                                    } else {
+                                        Log.d(TAG, "FCM token not found for participant $participantId")
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e(TAG, "Error getting FCM token for participant $participantId", e)
+                                }
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error getting meeting participants", exception)
+            }
+    }
+
+    interface NotificationService {
+        @POST("sendNotification") // Replace with the actual endpoint
+        fun sendNotification(@Body notificationData: Map<String, String>): Call<Void>
+    }
 }

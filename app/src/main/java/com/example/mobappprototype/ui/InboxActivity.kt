@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.messaging.FirebaseMessaging
 
 import java.util.Date
 
@@ -53,6 +54,7 @@ class InboxActivity : AppCompatActivity() {
 
         fetchChatRooms()
         listenForNewMessages()
+        updateFcmToken()
         binding.bottomNavigationBar.selectedItemId = R.id.messages
 
         binding.btnHome.setOnClickListener{
@@ -237,5 +239,27 @@ class InboxActivity : AppCompatActivity() {
             }
     }
 
+    private fun updateFcmToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
 
+            // Get new FCM registration token
+            val token = task.result
+
+            val userId = auth.currentUser?.uid
+            if (userId != null && token != null) {
+                firestoreDb.collection("users").document(userId)
+                    .update("fcmToken", token)
+                    .addOnSuccessListener {
+                        Log.d(TAG, "FCM token updated successfully")
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e(TAG, "Error updating FCM token", exception)
+                    }
+            }
+        }
+    }
 }
