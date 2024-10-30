@@ -58,11 +58,6 @@ class InboxActivity : AppCompatActivity() {
         listenForNewMessages()
         updateFcmToken()
 
-        val currentUserId = auth.currentUser?.uid
-        if (currentUserId != null) {
-            listenForUnreadCountChanges(currentUserId) // Start listening for unread count changes
-        }
-
         binding.bottomNavigationBar.selectedItemId = R.id.messages
 
         binding.btnHome.setOnClickListener{
