@@ -277,7 +277,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     interface NotificationService {
-        @POST("sendNotification") // Replace with the actual endpoint
+        @POST("sendNotification")
         fun sendNotification(@Body notificationData: Map<String, String>): Call<Void>
     }
 }
