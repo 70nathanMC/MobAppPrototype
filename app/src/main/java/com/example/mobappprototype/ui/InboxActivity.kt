@@ -128,7 +128,6 @@ class InboxActivity : AppCompatActivity() {
             }
     }
 
-
     private fun fetchChatRooms() {
         Log.d(TAG, "fetchChatRooms: started")
         val currentUserId = auth.currentUser?.uid
