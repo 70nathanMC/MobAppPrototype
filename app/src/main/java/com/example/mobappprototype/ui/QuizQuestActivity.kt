@@ -28,13 +28,18 @@ class QuizQuestActivity : AppCompatActivity() {
         binding.tvSubjectName.text = subjectName
         binding.sivQuizLogo.setImageResource(quizLogo)
 
-        // Fetch and display quizDesc from Firestore based on subjectName
         fetchQuizDescription(subjectName)
 
         binding.btnTakeQuiz.setOnClickListener {
             val intent = Intent(this, QuizActivity::class.java)
             intent.putExtra("SUBJECT_NAME", subjectName)
             startActivity(intent)
+        }
+
+        binding.btnHome.setOnClickListener{
+            Intent(this, StudentMainActivity::class.java).also {
+                startActivity(it)
+            }
         }
     }
 

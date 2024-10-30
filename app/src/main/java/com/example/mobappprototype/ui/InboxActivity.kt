@@ -178,6 +178,7 @@ class InboxActivity : AppCompatActivity() {
                     runOnUiThread {
                         inboxAdapter.notifyDataSetChanged()
                     }
+                    listenForUnreadCountChanges(currentUserId)
                 }
                 .addOnFailureListener { exception ->
                     Log.e(TAG, "Error fetching chat rooms", exception)
