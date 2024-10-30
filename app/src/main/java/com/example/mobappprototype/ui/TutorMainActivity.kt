@@ -20,6 +20,7 @@ import com.example.mobappprototype.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 
 private const val TAG = "TutorMainActivity"
 class TutorMainActivity : AppCompatActivity() {
@@ -62,6 +63,7 @@ class TutorMainActivity : AppCompatActivity() {
             if (user != null) {
                 updateUIWithUserData(user)
                 fetchMeetings()
+                updateFcmToken()
                 binding.loadingLayout.visibility = View.GONE
                 binding.layoutMainActivity.visibility = View.VISIBLE
             }
@@ -171,5 +173,27 @@ class TutorMainActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Toast.makeText(this, "Error fetching meetings: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+    private fun updateFcmToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+            val userId = auth.currentUser?.uid
+            if (userId != null && token != null) {
+                db.collection("users").document(userId)
+                    .update("fcmToken", token)
+                    .addOnSuccessListener {
+                        Log.d(TAG, "FCM token updated successfully")
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e(TAG, "Error updating FCM token", exception)
+                    }
+            }
+        }
     }
 }

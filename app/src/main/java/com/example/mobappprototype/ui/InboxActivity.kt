@@ -16,6 +16,7 @@ import com.example.mobappprototype.model.LastMessage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.messaging.FirebaseMessaging
 
@@ -30,6 +31,7 @@ class InboxActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var inboxAdapter: InboxAdapter
     private val chatRooms = mutableListOf<ChatRoom>()
+    private val messageListeners = mutableMapOf<String, ListenerRegistration>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +57,12 @@ class InboxActivity : AppCompatActivity() {
         fetchChatRooms()
         listenForNewMessages()
         updateFcmToken()
+
+        val currentUserId = auth.currentUser?.uid
+        if (currentUserId != null) {
+            listenForUnreadCountChanges(currentUserId) // Start listening for unread count changes
+        }
+
         binding.bottomNavigationBar.selectedItemId = R.id.messages
 
         binding.btnHome.setOnClickListener{
@@ -139,18 +147,34 @@ class InboxActivity : AppCompatActivity() {
                     documents.forEach { document ->
                         val chatRoom = document.toObject(ChatRoom::class.java)
                         if (chatRoom != null) {
-                            fetchUnreadCountForChatRoom(currentUserId, chatRoom.meetingID) { unreadCount ->
-                                chatRoom.unreadCount = unreadCount
-                                chatRooms.add(chatRoom)
-                                // Update lastMessage only once after adding the chatRoom
-                                updateLastMessage(chatRoom.meetingID)
-                                runOnUiThread {
-                                    inboxAdapter.notifyDataSetChanged()
+                            chatRooms.add(chatRoom)
+
+                            // Add SnapshotListener for real-time last message updates
+                            val listener = firestoreDb.collection("chats")
+                                .document(chatRoom.meetingID)
+                                .collection("messages")
+                                .orderBy("timestamp", Query.Direction.DESCENDING)
+                                .limit(1)
+                                .addSnapshotListener { snapshot, exception ->
+                                    if (exception != null) {
+                                        Log.e(TAG, "Error listening for new messages", exception)
+                                        return@addSnapshotListener
+                                    }
+                                    if (snapshot != null && !snapshot.isEmpty) {
+                                        val lastMessageContent = snapshot.documents[0].getString("content") ?: ""
+                                        val lastMessage = LastMessage(content = lastMessageContent)
+                                        val chatRoomIndex = chatRooms.indexOfFirst { it.meetingID == chatRoom.meetingID }
+                                        if (chatRoomIndex != -1) {
+                                            chatRooms[chatRoomIndex] = chatRooms[chatRoomIndex].copy(lastMessage = lastMessage)
+                                            runOnUiThread {
+                                                inboxAdapter.notifyItemChanged(chatRoomIndex)
+                                            }
+                                        }
+                                    }
                                 }
-                            }
+                            messageListeners[chatRoom.meetingID] = listener // Store the listener
                         }
                     }
-
                     runOnUiThread {
                         inboxAdapter.notifyDataSetChanged()
                     }
@@ -161,33 +185,29 @@ class InboxActivity : AppCompatActivity() {
         }
     }
 
+    private fun listenForUnreadCountChanges(userId: String) {
+        firestoreDb.collection("users").document(userId)
+            .addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    Log.e(TAG, "Error listening for unread count changes", exception)
+                    return@addSnapshotListener
+                }
 
-    private fun updateLastMessage(meetingID: String) {
-        firestoreDb.collection("chats")
-            .document(meetingID)
-            .collection("messages")
-            .orderBy("timestamp", Query.Direction.DESCENDING)
-            .limit(1)
-            .get()
-            .addOnSuccessListener { messages ->
-                if (!messages.isEmpty) {
-                    val lastMessageContent = messages.documents[0].getString("content") ?: ""
-                    val lastMessage = LastMessage(content = lastMessageContent)
-
-                    val chatRoomIndex = chatRooms.indexOfFirst { it.meetingID == meetingID }
-                    if (chatRoomIndex != -1) {
-                        chatRooms[chatRoomIndex] = chatRooms[chatRoomIndex].copy(lastMessage = lastMessage)
-
+                if (snapshot != null && snapshot.exists()) {
+                    val lastSeenChats = snapshot.get("lastSeenChats") as? Map<String, Any>
+                    if (lastSeenChats != null) {
+                        for (chatRoom in chatRooms) {
+                            val unreadCount = (lastSeenChats[chatRoom.meetingID] as? Map<String, Any>)?.get("unreadCount") as? Long ?: 0
+                            chatRoom.unreadCount = unreadCount
+                        }
                         runOnUiThread {
-                            inboxAdapter.notifyItemChanged(chatRoomIndex)
+                            inboxAdapter.notifyDataSetChanged()
                         }
                     }
                 }
             }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Error fetching last message", exception)
-            }
     }
+
     private fun listenForNewMessages() {
         Log.d(TAG, "listenForNewMessages: started")
         val currentUserId = auth.currentUser?.uid
@@ -218,25 +238,6 @@ class InboxActivity : AppCompatActivity() {
                     }
                 }
         }
-    }
-    private fun fetchUnreadCountForChatRoom(userId: String, meetingId: String, callback: (Long) -> Unit) {
-        Log.d(TAG, "fetchUnreadCountForChatRoom: started for meeting $meetingId")
-        firestoreDb.collection("users").document(userId)
-            .get()
-            .addOnSuccessListener { userDocument ->
-                if (userDocument.exists()) {
-                    val lastSeenChats = userDocument.get("lastSeenChats") as? Map<String, Any>
-                    val unreadCount = (lastSeenChats?.get(meetingId) as? Map<String, Any>)?.get("unreadCount") as? Long ?: 0
-                    callback(unreadCount)
-                    Log.d(TAG, "fetchUnreadCountForChatRoom: unreadCount = $unreadCount for meeting $meetingId")
-                } else {
-                    callback(0) // User document not found, default to 0
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Error fetching unread count", exception)
-                callback(0) // Error fetching, default to 0
-            }
     }
 
     private fun updateFcmToken() {

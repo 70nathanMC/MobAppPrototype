@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
+import com.google.firebase.messaging.FirebaseMessaging
 
 private const val TAG = "MainActivity"
 
@@ -68,6 +69,7 @@ class StudentMainActivity : AppCompatActivity() {
             if (user != null) {
                 updateUIWithUserData(user)
                 fetchTodaysMeetings()
+                updateFcmToken()
             }
         }
         setupClickListeners()
@@ -175,52 +177,28 @@ class StudentMainActivity : AppCompatActivity() {
 
     private fun setupClickListeners() {
         binding.ivGenMath.setOnClickListener {
-            Intent(this@StudentMainActivity, QuizActivity::class.java).also {
-                it.putExtra("SUBJECT_NAME", "Gen Math")
-                startActivity(it)
-            }
+            startQuizQuestActivity("Gen Math", R.drawable.ic_qq_gen_math)
         }
         binding.ivPhysics.setOnClickListener{
-            Intent(this@StudentMainActivity, QuizActivity::class.java).also {
-                it.putExtra("SUBJECT_NAME", "Physics")
-                startActivity(it)
-            }
+            startQuizQuestActivity("Physics", R.drawable.ic_qq_physics)
         }
         binding.ivCalculus.setOnClickListener{
-            Intent(this@StudentMainActivity, QuizActivity::class.java).also {
-                it.putExtra("SUBJECT_NAME", "Calculus")
-                startActivity(it)
-            }
+            startQuizQuestActivity("Calculus", R.drawable.ic_qq_calculus)
         }
         binding.ivScience.setOnClickListener{
-            Intent(this@StudentMainActivity, QuizActivity::class.java).also {
-                it.putExtra("SUBJECT_NAME", "Science")
-                startActivity(it)
-            }
+            startQuizQuestActivity("Science", R.drawable.ic_qq_science)
         }
         binding.ivHistory.setOnClickListener{
-            Intent(this@StudentMainActivity, QuizActivity::class.java).also {
-                it.putExtra("SUBJECT_NAME", "History")
-                startActivity(it)
-            }
+            startQuizQuestActivity("History", R.drawable.ic_qq_history)
         }
         binding.ivLiterature.setOnClickListener{
-            Intent(this@StudentMainActivity, QuizActivity::class.java).also {
-                it.putExtra("SUBJECT_NAME", "Literature")
-                startActivity(it)
-            }
+            startQuizQuestActivity("Literature", R.drawable.ic_qq_literature)
         }
         binding.ivStatistics.setOnClickListener{
-            Intent(this@StudentMainActivity, QuizActivity::class.java).also {
-                it.putExtra("SUBJECT_NAME", "Statistics")
-                startActivity(it)
-            }
+            startQuizQuestActivity("Statistics", R.drawable.ic_qq_statistics)
         }
         binding.ivPhilosophy.setOnClickListener{
-            Intent(this@StudentMainActivity, QuizActivity::class.java).also {
-                it.putExtra("SUBJECT_NAME", "Philosophy")
-                startActivity(it)
-            }
+            startQuizQuestActivity("Philosophy", R.drawable.ic_qq_philosophy)
         }
         binding.ivReadyToLearn.setOnClickListener{
             Intent(this@StudentMainActivity, TutorSearchActivity::class.java).also {
@@ -272,5 +250,34 @@ class StudentMainActivity : AppCompatActivity() {
         binding.tvUserFirstNameDashboard.text = user.firstName
         Glide.with(this).load(user.profilePic).into(binding.ivUserImageDashboard)
         // Update other UI elements if needed
+    }
+    private fun startQuizQuestActivity(subjectName: String, quizLogo: Int) {
+        Intent(this, QuizQuestActivity::class.java).also {
+            it.putExtra("SUBJECT_NAME", subjectName)
+            it.putExtra("QUIZ_LOGO", quizLogo)
+            startActivity(it)
+        }
+    }
+    private fun updateFcmToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+            val userId = auth.currentUser?.uid
+            if (userId != null && token != null) {
+                firestoreDb.collection("users").document(userId)
+                    .update("fcmToken", token)
+                    .addOnSuccessListener {
+                        Log.d(TAG, "FCM token updated successfully")
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e(TAG, "Error updating FCM token", exception)
+                    }
+            }
+        }
     }
 }
