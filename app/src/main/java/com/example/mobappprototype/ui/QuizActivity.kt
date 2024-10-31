@@ -2,9 +2,11 @@ package com.example.mobappprototype.ui
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
+import android.view.TouchDelegate
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -33,6 +35,16 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
         binding = ActivityQuestionsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.layoutMainActivity.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+
+        binding.flImageButtonBack.post {
+            val rect = Rect()
+            binding.ibtnHomeFQuiz.getHitRect(rect)
+            rect.inset(-50, -50) // Expand the touch area by 50 pixels on each side
+            binding.flImageButtonBack.touchDelegate = TouchDelegate(rect, binding.ibtnHomeFQuiz)
+        }
+
         subjectName = intent.getStringExtra("SUBJECT_NAME") ?: ""
 
         Constants.getQuestions(subjectName) { questions ->
@@ -42,6 +54,8 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
                 showNextQuestion()
             } else {
                 Toast.makeText(this, "Failed to load quiz", Toast.LENGTH_SHORT).show()
+                binding.loadingLayout.visibility = View.GONE
+                binding.layoutMainActivity.visibility = View.VISIBLE
             }
         }
 
@@ -55,7 +69,10 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
 
         binding.ibtnHomeFQuiz.setOnClickListener{
             Intent(this, StudentMainActivity::class.java).also {
+                binding.layoutMainActivity.visibility = View.GONE
+                binding.loadingLayout.visibility = View.VISIBLE
                 startActivity(it)
+                finish()
             }
         }
     }
@@ -74,6 +91,9 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
             binding.tvOptionTwo.text = question.choices[1]
             binding.tvOptionThree.text = question.choices[2]
             binding.tvOptionFour.text = question.choices[3]
+
+            binding.loadingLayout.visibility = View.GONE
+            binding.layoutMainActivity.visibility = View.VISIBLE
         }
         else {
             binding.btnNext.text = "FINISH"
@@ -81,6 +101,7 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
                 it.putExtra(Constants.SCORE, score)
                 it.putExtra(Constants.TOTAL_QUESTIONS, questionsList.size)
                 startActivity(it)
+                finish()
             }
         }
         questionsCounter++
@@ -126,6 +147,8 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
                         checkAnswer()
                     }
                 } else {
+                    binding.layoutMainActivity.visibility = View.GONE
+                    binding.loadingLayout.visibility = View.VISIBLE
                     showNextQuestion()
                 }
                 selectedAnswer = 0

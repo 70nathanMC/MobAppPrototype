@@ -173,6 +173,7 @@ class CreateMeetingActivity : AppCompatActivity() {
         binding.ivBackFCreateMeeting.setOnClickListener {
             val intent = Intent(this, TutorMainActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
     private fun fetchSubjectsFromFirestore(autoCompleteTextView: AutoCompleteTextView) {

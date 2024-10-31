@@ -1,8 +1,10 @@
 package com.example.mobappprototype.ui
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+import android.view.TouchDelegate
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +34,7 @@ class TutorProfileActivity : AppCompatActivity() {
         binding = ActivityTutorProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        Log.d(TAG, "onCreate() called")
         binding.layoutMainActivity.visibility = View.GONE
         binding.loadingLayout.visibility = View.VISIBLE
 
@@ -47,6 +50,14 @@ class TutorProfileActivity : AppCompatActivity() {
             Log.e(TAG, "Tutor UID not found in Intent")
             Toast.makeText(this, "Error: Tutor not found", Toast.LENGTH_SHORT).show()
         }
+
+        binding.linearLayout6.post {
+            val rect = Rect()
+            binding.btnHomeFTutorProfile.getHitRect(rect)
+            rect.inset(-50, -50) // Expand the touch area by 50 pixels on each side
+            binding.linearLayout6.touchDelegate = TouchDelegate(rect, binding.btnHomeFTutorProfile)
+        }
+
         setupClickListeners()
         binding.bottomNavigationBar.selectedItemId = -1
     }
@@ -105,6 +116,8 @@ class TutorProfileActivity : AppCompatActivity() {
 
         binding.btnBook.setOnClickListener {
             Intent(this, TutorSchedAndSubsListActivity::class.java).also {
+                binding.layoutMainActivity.visibility = View.GONE
+                binding.loadingLayout.visibility = View.VISIBLE
                 val tutorUid = intent.getStringExtra("TUTOR_UID")
                 it.putExtra("TUTOR_UID", tutorUid)
                 Log.d(TAG, "Tutor UID being passed to TutorSchedAndSubsListActivity: $tutorUid")
@@ -114,6 +127,8 @@ class TutorProfileActivity : AppCompatActivity() {
 
         binding.btnHomeFTutorProfile.setOnClickListener {
             Intent(this, TutorListActivity::class.java).also {
+                binding.layoutMainActivity.visibility = View.GONE
+                binding.loadingLayout.visibility = View.VISIBLE
                 startActivity(it)
             }
         }
@@ -132,14 +147,12 @@ class TutorProfileActivity : AppCompatActivity() {
                     // Handle Home item click
                     val intent = Intent(this, StudentMainActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 R.id.messages -> {
                     // Handle Messages item click
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 R.id.profile -> {
@@ -189,7 +202,21 @@ class TutorProfileActivity : AppCompatActivity() {
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error checking for existing review", exception)
-                // ... (handle the error, e.g., show a toast)
             }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val tutorUid = intent.getStringExtra("TUTOR_UID")
+        Log.d(TAG, "Received tutor UID onResume: $tutorUid")
+        if (tutorUid != null) {
+            fetchTutorDataAndPopulateUI(tutorUid) // Call here instead
+        } else {
+            // Handle the case where tutorUid is null
+            Log.e(TAG, "Tutor UID not found in Intent")
+            Toast.makeText(this, "Error: Tutor not found", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+
     }
 }

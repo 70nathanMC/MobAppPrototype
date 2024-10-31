@@ -27,143 +27,137 @@
         android:layout_height="match_parent"
         android:visibility="visible">
 
-        <ScrollView
+        <LinearLayout
+            android:id="@+id/linearLayout7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0">
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivUserImageDashboard"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="32dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/roundedImage"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/light"
+                    android:text="Welcome!"
+                    android:textColor="@color/appBlack"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="@+id/tvUserFirstNameDashboard"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvUserFirstNameDashboard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="-10dp"
+                    android:fontFamily="@font/bold"
+                    android:text="Sarah"
+                    android:textColor="@color/appBlack"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toEndOf="@+id/ivUserImageDashboard"
+                    app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/ivReadyToLearn"
+                    android:layout_width="350dp"
+                    android:layout_height="170dp"
+                    android:background="@drawable/ic_ready_to_tutor"
+                    android:clickable="true"
+                    android:clipToOutline="true"
+                    android:cropToPadding="true"
+                    android:focusable="true"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/btnCreateMeeting"
+                    android:layout_width="160dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="55dp"
+                    android:layout_marginBottom="13dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:fontFamily="@font/regular"
+                    android:src="@drawable/ic_create_meeting_button"
+                    android:text="Create Meeting"
+                    android:textColor="@color/appGray8"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
-                android:orientation="vertical">
+                android:layout_marginTop="20dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/ivUserImageDashboard"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="32dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="ContentDescription"
-                        android:clickable="true"
-                        android:focusable="true"
-                        app:shapeAppearanceOverlay="@style/roundedImage"/>
-
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="@font/light"
-                        android:text="Welcome!"
-                        android:textColor="@color/appBlack"
-                        android:textSize="15sp"
-                        app:layout_constraintStart_toStartOf="@+id/tvUserFirstNameDashboard"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tvUserFirstNameDashboard"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="-10dp"
-                        android:fontFamily="@font/bold"
-                        android:text="Sarah"
-                        android:textColor="@color/appBlack"
-                        android:textSize="15sp"
-                        app:layout_constraintStart_toEndOf="@+id/ivUserImageDashboard"
-                        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:id="@+id/ivReadyToLearn"
-                        android:layout_width="350dp"
-                        android:layout_height="170dp"
-                        android:background="@drawable/ic_ready_to_tutor"
-                        android:clickable="true"
-                        android:clipToOutline="true"
-                        android:cropToPadding="true"
-                        android:focusable="true"
-                        android:scaleType="centerCrop"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/btnCreateMeeting"
-                        android:layout_width="160dp"
-                        android:layout_height="32dp"
-                        android:layout_marginBottom="13dp"
-                        android:layout_marginStart="55dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:text="Create Meeting"
-                        android:src="@drawable/ic_create_meeting_button"
-                        android:fontFamily="@font/regular"
-                        android:textColor="@color/appGray8"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="1.0" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tvAgendaForToday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
                     android:layout_marginTop="20dp"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/tvAgendaForToday"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="20dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:fontFamily="@font/bold"
-                        android:text="All Meetings"
-                        android:textSize="20sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </LinearLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvMeetings"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:layout_marginTop="20dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:fontFamily="@font/bold"
+                    android:text="All Meetings"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
             </LinearLayout>
-        </ScrollView>
+
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottomNavigationBar"
+            android:layout_below="@+id/linearLayout7">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvMeetings"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:id="@+id/bottomLine"

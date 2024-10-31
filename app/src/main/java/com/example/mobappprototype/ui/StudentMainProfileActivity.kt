@@ -48,6 +48,8 @@ class StudentMainProfileActivity : AppCompatActivity() {
                     }
                 } else {
                     Log.d(TAG, "User document does not exist")
+                    binding.loadingLayout.visibility = View.GONE
+                    binding.layoutMainActivity.visibility = View.VISIBLE
                 }
             }
         }
@@ -55,8 +57,6 @@ class StudentMainProfileActivity : AppCompatActivity() {
             if (user != null) {
                 updateUIWithUserData(user)
                 fetchTutorDataAndPopulateUI(userUID.toString())
-                binding.loadingLayout.visibility = View.GONE
-                binding.layoutMainActivity.visibility = View.VISIBLE
             }
         }
         setupClickListeners()
@@ -87,10 +87,14 @@ class StudentMainProfileActivity : AppCompatActivity() {
                     Log.e(TAG, "Tutor document not found")
                     Toast.makeText(this, "Error: Tutor data not found", Toast.LENGTH_SHORT).show()
                 }
+                binding.loadingLayout.visibility = View.GONE
+                binding.layoutMainActivity.visibility = View.VISIBLE
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error getting tutor document", exception)
                 Toast.makeText(this, "Error: Failed to fetch tutor data", Toast.LENGTH_SHORT).show()
+                binding.loadingLayout.visibility = View.GONE
+                binding.layoutMainActivity.visibility = View.VISIBLE
             }
     }
 
@@ -98,24 +102,20 @@ class StudentMainProfileActivity : AppCompatActivity() {
         binding.tvStudentFullName.text = user.fullName
         Glide.with(this).load(user.profilePic).into(binding.sivStudentProfilePic)
         binding.tvStudentDegree.text = "Bachelor of Science in ${user.program}"
-        // Update other UI elements if needed
     }
     private fun setupClickListeners() {
-        binding.ivLogout.setOnClickListener{
-            auth.signOut()
-            Intent(this, WelcomeActivity::class.java).also {
-                startActivity(it)
-            }
-        }
         binding.ivLogout.setOnClickListener {
             Log.i(TAG, "User wants to logout")
             val builder = AlertDialog.Builder(this@StudentMainProfileActivity)
             builder.setTitle("Log Out")
             builder.setMessage("Are you sure you want to log out?")
             builder.setPositiveButton("Logout") { dialog, _ ->
-                FirebaseAuth.getInstance().signOut()
+                auth.signOut()
                 Intent(this@StudentMainProfileActivity, WelcomeActivity::class.java).also {
+                    binding.layoutMainActivity.visibility = View.GONE
+                    binding.loadingLayout.visibility = View.VISIBLE
                     startActivity(it)
+                    finish()
                 }
                 dialog.dismiss()
             }
@@ -141,13 +141,11 @@ class StudentMainProfileActivity : AppCompatActivity() {
                 R.id.home -> {
                     val intent = Intent(this, StudentMainActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 R.id.messages -> {
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 R.id.profile -> {
@@ -156,5 +154,10 @@ class StudentMainProfileActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.bottomNavigationBar.selectedItemId = R.id.profile
     }
 }

@@ -58,6 +58,7 @@ class CreateNewPasswordActivity : AppCompatActivity() {
         binding.ivBackFNewPassword.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 }

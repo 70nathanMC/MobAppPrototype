@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.mobappprototype.R
 import com.example.mobappprototype.databinding.ActivityWelcomeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -30,6 +31,8 @@ class WelcomeActivity : AppCompatActivity() {
 
         binding.btnRegister.setOnClickListener{
             Intent(this@WelcomeActivity, RegisterActivity::class.java).also {
+                binding.layoutMainActivity.visibility = View.GONE
+                binding.loadingLayout.visibility = View.VISIBLE
                 startActivity(it)
             }
         }
@@ -120,5 +123,10 @@ class WelcomeActivity : AppCompatActivity() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
+    }
+    override fun onResume() {
+        super.onResume()
+        binding.layoutMainActivity.visibility = View.VISIBLE
+        binding.loadingLayout.visibility = View.GONE
     }
 }

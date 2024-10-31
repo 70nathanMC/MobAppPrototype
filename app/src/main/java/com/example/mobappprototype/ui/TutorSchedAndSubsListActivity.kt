@@ -84,6 +84,7 @@ class TutorSchedAndSubsListActivity : AppCompatActivity() {
         binding.ibtnHomeFTutorSchedAndSubsList.setOnClickListener {
             Intent(this, StudentMainActivity::class.java).also {
                 startActivity(it)
+                finish()
             }
         }
 
@@ -100,21 +101,18 @@ class TutorSchedAndSubsListActivity : AppCompatActivity() {
                     // Handle Home item click
                     val intent = Intent(this, StudentMainActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 R.id.messages -> {
                     // Handle Messages item click
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 R.id.profile -> {
                     // Handle Profile item click
                     val intent = Intent(this, StudentMainProfileActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 else -> false
@@ -172,5 +170,11 @@ class TutorSchedAndSubsListActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error getting tutor document", exception)
             }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.loadingLayout.visibility = View.GONE
+        binding.rvMeetings.visibility = View.VISIBLE
     }
 }

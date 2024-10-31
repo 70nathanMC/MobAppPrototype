@@ -8,78 +8,101 @@
     android:background="@color/appGreen"
     tools:context=".ui.ResultActivity">
 
-    <ImageButton
-    android:id="@+id/ibtnHomeFResult"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="40dp" android:layout_marginTop="40dp"
-    android:background="@color/white" app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="70dp"
-    app:layout_constraintVertical_bias="1.0" android:backgroundTint="@color/appGreen"
-    app:srcCompat="@drawable/x" />
-
-    <TextView
-        android:id="@+id/tvScoreResult"
+    <RelativeLayout
+        android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/extra_bold"
-        android:gravity="center_horizontal"
-        android:text="6/10"
-        android:textColor="@color/appWhite"
-        android:textSize="42sp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="invisible">
 
-    <ImageView
-        android:id="@+id/imageView2"
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutMainActivity"
         android:layout_width="match_parent"
-        android:layout_height="294dp"
+        android:layout_height="match_parent"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_trophy"
-        tools:srcCompat="@drawable/ic_trophy" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/tvCongratulations"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/extra_bold"
-        android:gravity="center_horizontal"
-        android:text="Congratulations!"
-        android:textColor="@color/appWhite"
-        android:textSize="25sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        <ImageButton
+        android:id="@+id/ibtnHomeFResult"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="40dp" android:layout_marginTop="40dp"
+        android:background="@color/white" app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="70dp"
+        app:layout_constraintVertical_bias="1.0" android:backgroundTint="@color/appGreen"
+        app:srcCompat="@drawable/x" />
 
-    <TextView
-        android:id="@+id/tvCongratulations2"
-        android:layout_width="match_parent"
-        android:layout_height="19dp"
-        android:fontFamily="@font/regular"
-        android:gravity="center_horizontal"
-        android:text="Delve deeper for more\nknowledge"
-        android:textColor="@color/appWhite"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCongratulations" />
+        <TextView
+            android:id="@+id/tvScoreResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/extra_bold"
+            android:gravity="center_horizontal"
+            android:text="6/10"
+            android:textColor="@color/appWhite"
+            android:textSize="42sp"
+            app:layout_constraintBottom_toTopOf="@+id/imageView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/tvCongratulations3"
-        android:layout_width="match_parent"
-        android:layout_height="19dp"
-        android:gravity="center_horizontal"
-        android:text="knowledge"
-        android:textColor="@color/appWhite"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCongratulations2" />
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="294dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_trophy"
+            tools:srcCompat="@drawable/ic_trophy" />
 
+        <TextView
+            android:id="@+id/tvCongratulations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/extra_bold"
+            android:gravity="center_horizontal"
+            android:text="Congratulations!"
+            android:textColor="@color/appWhite"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
+        <TextView
+            android:id="@+id/tvCongratulations2"
+            android:layout_width="match_parent"
+            android:layout_height="19dp"
+            android:fontFamily="@font/regular"
+            android:gravity="center_horizontal"
+            android:text="Delve deeper for more\nknowledge"
+            android:textColor="@color/appWhite"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCongratulations" />
+
+        <TextView
+            android:id="@+id/tvCongratulations3"
+            android:layout_width="match_parent"
+            android:layout_height="19dp"
+            android:gravity="center_horizontal"
+            android:text="knowledge"
+            android:textColor="@color/appWhite"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCongratulations2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

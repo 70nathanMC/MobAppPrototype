@@ -28,7 +28,7 @@ class TutorMainProfileActivity : AppCompatActivity() {
         binding = ActivityTutorMainProfileBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        binding.layoutMainActivity.visibility = View.INVISIBLE
+        binding.layoutMainActivity.visibility = View.GONE
         binding.loadingLayout.visibility = View.VISIBLE
 
         auth = FirebaseAuth.getInstance()
@@ -52,13 +52,10 @@ class TutorMainProfileActivity : AppCompatActivity() {
 
         userViewModel.user.observe(this) { user ->
             if (user != null) {
-                fetchTutorDataAndPopulateUI(userUID.toString())
                 updateUIWithUserData(user)
-                binding.loadingLayout.visibility = View.GONE
-                binding.layoutMainActivity.visibility = View.VISIBLE
+                fetchTutorDataAndPopulateUI(userUID.toString())
             }
         }
-        fetchTutorDataAndPopulateUI(userUID.toString())
         setupClickListeners()
         binding.bottomNavigationBar.selectedItemId = R.id.profile
 
@@ -91,6 +88,8 @@ class TutorMainProfileActivity : AppCompatActivity() {
                     Log.e(TAG, "Tutor document not found")
                     Toast.makeText(this, "Error: Tutor data not found", Toast.LENGTH_SHORT).show()
                 }
+                binding.loadingLayout.visibility = View.GONE
+                binding.layoutMainActivity.visibility = View.VISIBLE
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error getting tutor document", exception)
@@ -112,7 +111,10 @@ class TutorMainProfileActivity : AppCompatActivity() {
             builder.setPositiveButton("Logout") { dialog, _ ->
                 FirebaseAuth.getInstance().signOut()
                 Intent(this@TutorMainProfileActivity, WelcomeActivity::class.java).also {
+                    binding.layoutMainActivity.visibility = View.GONE
+                    binding.loadingLayout.visibility = View.VISIBLE
                     startActivity(it)
+                    finish()
                 }
                 dialog.dismiss()
             }
@@ -137,13 +139,11 @@ class TutorMainProfileActivity : AppCompatActivity() {
                 R.id.home -> {
                     val intent = Intent(this, TutorMainActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 R.id.messages -> {
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 R.id.profile -> {
@@ -152,6 +152,10 @@ class TutorMainProfileActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        binding.bottomNavigationBar.selectedItemId = R.id.profile
     }
 }

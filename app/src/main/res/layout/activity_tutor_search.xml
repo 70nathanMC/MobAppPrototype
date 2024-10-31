@@ -33,17 +33,26 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <FrameLayout
+        android:id="@+id/flImageButtonBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="43dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
     <ImageButton
         android:id="@+id/ibtnHomeFFindTutorSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
         android:background="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/svSearchTutor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.65"
         app:srcCompat="@drawable/baseline_arrow_back_ios_24" />
+
+    </FrameLayout>
 
     <SearchView
         android:id="@+id/svSearchTutor"

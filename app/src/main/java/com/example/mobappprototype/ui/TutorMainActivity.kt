@@ -64,18 +64,20 @@ class TutorMainActivity : AppCompatActivity() {
                 updateUIWithUserData(user)
                 fetchMeetings()
                 updateFcmToken()
-                binding.loadingLayout.visibility = View.GONE
-                binding.layoutMainActivity.visibility = View.VISIBLE
             }
         }
 
 
         binding.btnCreateMeeting.setOnClickListener {
             val intent = Intent(this, CreateMeetingActivity::class.java)
+            binding.layoutMainActivity.visibility = View.GONE
+            binding.loadingLayout.visibility = View.VISIBLE
             startActivity(intent)
         }
         binding.ivUserImageDashboard.setOnClickListener{
             val intent = Intent(this, TutorMainProfileActivity::class.java)
+            binding.layoutMainActivity.visibility = View.GONE
+            binding.loadingLayout.visibility = View.VISIBLE
             startActivity(intent)
         }
 
@@ -95,13 +97,11 @@ class TutorMainActivity : AppCompatActivity() {
                 R.id.messages -> {
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 R.id.profile -> {
                     val intent = Intent(this, TutorMainProfileActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 else -> false
@@ -123,6 +123,7 @@ class TutorMainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         fetchMeetings()
+        binding.bottomNavigationBar.selectedItemId = R.id.home
     }
     private fun fetchMeetings() {
         val userId = auth.currentUser?.uid ?: return
@@ -168,6 +169,9 @@ class TutorMainActivity : AppCompatActivity() {
 
                     meetingsAdapter.meetings = meetings
                     meetingsAdapter.notifyDataSetChanged()
+
+                    binding.loadingLayout.visibility = View.GONE
+                    binding.layoutMainActivity.visibility = View.VISIBLE
                 }
             }
             .addOnFailureListener { exception ->

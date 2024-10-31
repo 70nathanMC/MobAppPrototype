@@ -14,8 +14,10 @@ import com.example.mobappprototype.model.ChatMessage
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,6 +36,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var chatAdapter: ChatAdapter
     private val messages = mutableListOf<ChatMessage>()
     private val participantDetailsMap = mutableMapOf<String, Pair<String, String>>()
+    private var messageListener: ListenerRegistration? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +50,8 @@ class ChatActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         chatAdapter = ChatAdapter(messages)
 
-        binding.rvChatMessages.layoutManager = LinearLayoutManager(this)
-        binding.rvChatMessages.adapter = chatAdapter
+//        binding.rvChatMessages.layoutManager = LinearLayoutManager(this)
+//        binding.rvChatMessages.adapter = chatAdapter
 
 
         val userUid = auth.currentUser?.uid
@@ -62,6 +65,8 @@ class ChatActivity : AppCompatActivity() {
 
         binding.btnHome.setOnClickListener{
             Intent(this, InboxActivity::class.java).also {
+                binding.layoutMainActivity.visibility = View.GONE
+                binding.loadingLayout.visibility = View.VISIBLE
                 startActivity(it)
             }
         }
@@ -122,6 +127,7 @@ class ChatActivity : AppCompatActivity() {
     private fun fetchMessages(meetingId: String) {
         Log.d(TAG, "Starting fetchMessages for meetingId: $meetingId") // Log entry point
 
+        binding.rvChatMessages.layoutManager = LinearLayoutManager(this)
         binding.rvChatMessages.adapter = chatAdapter
 
         val messagesFetchTask = firestoreDb.collection("chats")
@@ -363,5 +369,101 @@ class ChatActivity : AppCompatActivity() {
     interface NotificationService {
         @POST("sendNotification")
         fun sendNotification(@Body notificationData: Map<String, String>): Call<Void>
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        binding.layoutMainActivity.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+
+        val meetingId = intent.getStringExtra("meetingId")
+        if (meetingId != null) {
+            fetchMessages(meetingId) // Fetch initial messages
+
+            val userUid = auth.currentUser?.uid
+            val userRef = firestoreDb.collection("users").document(userUid!!)
+            userRef.get().addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    // Reset the unread count for this meeting
+                    val updatedLastSeenData = mapOf("unreadCount" to 0, "timestamp" to FieldValue.serverTimestamp())
+                    userRef.update("lastSeenChats.${meetingId}", updatedLastSeenData)
+                        .addOnSuccessListener {
+                            Log.d(TAG, "Successfully updated last seen chat time for meeting: $meetingId")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e(TAG, "Error updating last seen chat time", e)
+                        }
+                }
+            }
+            val updates = hashMapOf(
+                "lastSeenChats.${meetingId}.unreadCount" to 0,
+                "lastSeenChats.${meetingId}.timestamp" to FieldValue.serverTimestamp()
+            )
+            userRef.update(updates)
+                .addOnSuccessListener {
+                    Log.d(TAG, "Successfully reset unread count for meeting: $meetingId")
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Error resetting unread count", e)
+                }
+
+            binding.btnSendMessage.setOnClickListener {
+                val messageContent = binding.etMessage.text.toString()
+                if (messageContent.isNotBlank()) {
+                    sendMessage(meetingId, messageContent)
+                }
+            }
+            firestoreDb.collection("meetings").document(meetingId)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val subject = document.getString("subject")
+                        val branch = document.getString("branch")
+                        binding.tvTutorNameTitle.text = "$subject - $branch"
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Error getting meeting details", e)
+                }
+
+            // Set up the real-time message listener
+            messageListener = firestoreDb.collection("chats")
+                .document(meetingId)
+                .collection("messages")
+                .orderBy("timestamp", Query.Direction.ASCENDING)
+                .addSnapshotListener { snapshots, e ->
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e)
+                        return@addSnapshotListener
+                    }
+
+                    if (snapshots != null) {
+                        for (dc in snapshots.documentChanges) {
+                            when (dc.type) {
+                                DocumentChange.Type.ADDED -> {
+                                    val message = dc.document.toObject(ChatMessage::class.java)
+                                    messages.add(message)
+                                    chatAdapter.notifyItemInserted(messages.size - 1)
+                                    binding.rvChatMessages.smoothScrollToPosition(messages.size - 1)
+                                }
+                                else -> {}
+                            }
+                        }
+                    }
+                }
+        } else {
+            Log.e(TAG, "Meeting ID not found in Intent")
+            finish()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        messageListener?.remove()
+        messageListener = null
+        binding.rvChatMessages.postDelayed({
+            binding.layoutMainActivity.visibility = View.GONE
+        }, 100)
     }
 }

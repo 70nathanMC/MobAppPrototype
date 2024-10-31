@@ -76,10 +76,12 @@ class InboxActivity : AppCompatActivity() {
                     if (document.exists()) {
                         val role = document.getString("role")
                         val intent = if (role == "Student") {
-                            Intent(this, TutorListActivity::class.java)
+                            Intent(this, StudentMainActivity::class.java)
                         } else {
                             Intent(this, TutorMainActivity::class.java)
                         }
+                        binding.layoutMainActivity.visibility = View.GONE
+                        binding.loadingLayout.visibility = View.VISIBLE
                         startActivity(intent)
                     }
                 }
@@ -98,6 +100,8 @@ class InboxActivity : AppCompatActivity() {
                         } else {
                             Intent(this, TutorMainActivity::class.java)
                         }
+                        binding.layoutMainActivity.visibility = View.GONE
+                        binding.loadingLayout.visibility = View.VISIBLE
                         startActivity(intent)
                     }
                     true
@@ -112,6 +116,8 @@ class InboxActivity : AppCompatActivity() {
                         } else {
                             Intent(this, TutorMainProfileActivity::class.java)
                         }
+                        binding.layoutMainActivity.visibility = View.GONE
+                        binding.loadingLayout.visibility = View.VISIBLE
                         startActivity(intent)
                     }
                     true
@@ -330,4 +336,13 @@ class InboxActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        val currentUserId = auth.currentUser!!.uid
+        listenForUnreadCountChanges(currentUserId)
+        listenForNewMessages()
+        binding.bottomNavigationBar.selectedItemId = R.id.messages
+    }
+
 }

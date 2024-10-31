@@ -32,6 +32,7 @@ class TutorListActivity : AppCompatActivity() {
     private lateinit var subjectChipAdapter: SubjectChipAdapter
     private val subjectList = mutableListOf<String>()
     private lateinit var userViewModel: UserViewModel
+    private var isFirstResume = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,12 +89,14 @@ class TutorListActivity : AppCompatActivity() {
         binding.ibtnHomeFTutorList.setOnClickListener {
             Intent(this, StudentMainActivity::class.java).also {
                 startActivity(it)
+                finish()
             }
 
         }
         binding.ivStudentProfile.setOnClickListener {
             Intent(this, StudentMainProfileActivity::class.java).also {
                 startActivity(it)
+                finish()
             }
         }
 
@@ -108,19 +111,16 @@ class TutorListActivity : AppCompatActivity() {
                 R.id.home -> {
                     val intent = Intent(this, StudentMainActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 R.id.messages -> {
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 R.id.profile -> {
                     val intent = Intent(this, StudentMainProfileActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 else -> false
@@ -301,5 +301,12 @@ class TutorListActivity : AppCompatActivity() {
                 binding.rvTutorList.visibility = View.VISIBLE
             }
     }
-
+    override fun onResume() {
+        super.onResume()
+        if (isFirstResume) {
+            isFirstResume = false  // Set the flag to false after the first onResume()
+        } else {
+            fetchAllTutors()
+        }
+    }
 }

@@ -60,6 +60,7 @@ class EditMeetingActivity : AppCompatActivity() {
         binding.ivBackFEditMeeting.setOnClickListener {
             val intent = Intent(this, TutorMainActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
         binding.btnSave.setOnClickListener {

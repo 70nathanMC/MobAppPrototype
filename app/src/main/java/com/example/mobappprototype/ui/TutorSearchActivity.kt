@@ -3,10 +3,12 @@ package com.example.mobappprototype.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.TouchDelegate
 import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
@@ -48,6 +50,14 @@ class TutorSearchActivity : AppCompatActivity() {
         binding.rvSearchHistory.adapter = searchHistoryAdapter
 
         loadSearchHistory()
+
+        binding.flImageButtonBack.post {
+            val rect = Rect()
+            binding.ibtnHomeFFindTutorSearch.getHitRect(rect)
+            rect.inset(-50, -50) // Expand the touch area by 50 pixels on each side
+            binding.flImageButtonBack.touchDelegate = TouchDelegate(rect, binding.ibtnHomeFFindTutorSearch)
+        }
+
 
         tutorSearchAdapter = TutorSearchAdapter(tutorList)
         binding.rvTutorSearch.layoutManager = LinearLayoutManager(this)
@@ -93,6 +103,7 @@ class TutorSearchActivity : AppCompatActivity() {
         binding.ibtnHomeFFindTutorSearch.setOnClickListener{
             Intent(this, StudentMainActivity::class.java).also {
                 startActivity(it)
+                finish()
             }
         }
     }

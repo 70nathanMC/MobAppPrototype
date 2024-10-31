@@ -169,4 +169,10 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
+    override fun onResume() {
+        super.onResume()
+        binding.loadingLayout.visibility = View.GONE
+        binding.layoutMainActivity.visibility = View.VISIBLE
+    }
 }

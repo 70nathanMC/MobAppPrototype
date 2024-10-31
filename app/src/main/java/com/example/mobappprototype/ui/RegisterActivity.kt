@@ -3,6 +3,7 @@ package com.example.mobappprototype.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +16,6 @@ import com.google.firebase.auth.FirebaseAuthException
 private const val TAG = "RegisterActivity"
 class RegisterActivity : AppCompatActivity() {
     lateinit var registerActivityBinding : ActivityRegisterBinding
-
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +25,6 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(view)
 
         supportActionBar?.hide()
-
         auth = FirebaseAuth.getInstance()
 
         registerActivityBinding.etEmailRegister.setOnFocusChangeListener { _, hasFocus ->
@@ -62,24 +61,33 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         registerActivityBinding.btnRegisterReal.setOnClickListener {
+            registerActivityBinding.layoutMainActivity.visibility = View.GONE
+            registerActivityBinding.loadingLayout.visibility = View.VISIBLE
             val email = registerActivityBinding.etEmailRegister.text.toString()
             val password = registerActivityBinding.etPasswordRegister.text.toString()
             val confirmPassword = registerActivityBinding.etConfirmPasswordRegister.text.toString()
             if (email.isBlank() || password.isBlank()) {
                 Toast.makeText(this, "Email/password cannot be empty", Toast.LENGTH_SHORT).show()
+                registerActivityBinding.loadingLayout.visibility = View.GONE
+                registerActivityBinding.layoutMainActivity.visibility = View.VISIBLE
                 return@setOnClickListener
             }
             if (password == confirmPassword){
                 register(email, password)
             } else {
                 Toast.makeText(this, "Password does not match", Toast.LENGTH_SHORT).show()
+                registerActivityBinding.loadingLayout.visibility = View.GONE
+                registerActivityBinding.layoutMainActivity.visibility = View.VISIBLE
                 return@setOnClickListener
             }
         }
 
         registerActivityBinding.ivBackFRegister.setOnClickListener {
             val intent = Intent(this, WelcomeActivity::class.java)
+            registerActivityBinding.layoutMainActivity.visibility = View.GONE
+            registerActivityBinding.loadingLayout.visibility = View.VISIBLE
             startActivity(intent)
+            finish()
         }
 
     }
@@ -96,6 +104,8 @@ class RegisterActivity : AppCompatActivity() {
                     finish()
                 } else {
                     Log.w(TAG, "createUserWithEmail: failure", task.exception)
+                    registerActivityBinding.loadingLayout.visibility = View.GONE
+                    registerActivityBinding.layoutMainActivity.visibility = View.VISIBLE
 
                     if (task.exception is FirebaseAuthException
                         && task.exception?.message == "The email address is already in use by another account.") {
@@ -110,6 +120,16 @@ class RegisterActivity : AppCompatActivity() {
                         Toast.makeText(baseContext, "Registration failed", Toast.LENGTH_SHORT).show()
                     }
                 }
+            }.addOnFailureListener {
+                Toast.makeText(baseContext, "Something went wrong, Registration Failed", Toast.LENGTH_SHORT).show()
+                registerActivityBinding.loadingLayout.visibility = View.GONE
+                registerActivityBinding.layoutMainActivity.visibility = View.VISIBLE
             }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerActivityBinding.loadingLayout.visibility = View.GONE
+        registerActivityBinding.layoutMainActivity.visibility = View.VISIBLE
     }
 }

@@ -202,16 +202,22 @@ class StudentMainActivity : AppCompatActivity() {
         }
         binding.ivReadyToLearn.setOnClickListener{
             Intent(this@StudentMainActivity, TutorSearchActivity::class.java).also {
+                binding.layoutMainActivity.visibility = View.GONE
+                binding.loadingLayout.visibility = View.VISIBLE
                 startActivity(it)
             }
         }
         binding.btnFindTutor.setOnClickListener {
             Intent(this@StudentMainActivity, TutorSearchActivity::class.java).also {
+                binding.layoutMainActivity.visibility = View.GONE
+                binding.loadingLayout.visibility = View.VISIBLE
                 startActivity(it)
             }
         }
         binding.ivUserImageDashboard.setOnClickListener{
             Intent(this@StudentMainActivity, StudentMainProfileActivity::class.java).also {
+                binding.layoutMainActivity.visibility = View.GONE
+                binding.loadingLayout.visibility = View.VISIBLE
                 startActivity(it)
             }
         }
@@ -223,13 +229,11 @@ class StudentMainActivity : AppCompatActivity() {
                 R.id.messages -> {
                     val intent = Intent(this, InboxActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 R.id.profile -> {
                     val intent = Intent(this, StudentMainProfileActivity::class.java)
                     startActivity(intent)
-                    finish()
                     true
                 }
                 else -> false
@@ -237,13 +241,15 @@ class StudentMainActivity : AppCompatActivity() {
         }
         binding.ivArrowNext.setOnClickListener{
             val intent = Intent(this, CalendarActivity::class.java)
+            binding.layoutMainActivity.visibility = View.GONE
+            binding.loadingLayout.visibility = View.VISIBLE
             startActivity(intent)
-            finish()
         }
         binding.tvAgendaForToday.setOnClickListener {
             val intent = Intent(this, CalendarActivity::class.java)
+            binding.layoutMainActivity.visibility = View.GONE
+            binding.loadingLayout.visibility = View.VISIBLE
             startActivity(intent)
-            finish()
         }
     }
     private fun updateUIWithUserData(user: User) {
@@ -253,6 +259,8 @@ class StudentMainActivity : AppCompatActivity() {
     }
     private fun startQuizQuestActivity(subjectName: String, quizLogo: Int) {
         Intent(this, QuizQuestActivity::class.java).also {
+            binding.layoutMainActivity.visibility = View.GONE
+            binding.loadingLayout.visibility = View.VISIBLE
             it.putExtra("SUBJECT_NAME", subjectName)
             it.putExtra("QUIZ_LOGO", quizLogo)
             startActivity(it)
@@ -279,5 +287,12 @@ class StudentMainActivity : AppCompatActivity() {
                     }
             }
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        binding.layoutMainActivity.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+        fetchTodaysMeetings()
+        binding.bottomNavigationBar.selectedItemId = R.id.home
     }
 }

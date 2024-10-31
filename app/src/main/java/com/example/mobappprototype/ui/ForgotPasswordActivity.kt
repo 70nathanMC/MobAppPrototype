@@ -46,6 +46,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
         binding.ivBackFForgotPass.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
         binding.etEmailForgot.setOnFocusChangeListener { _, hasFocus ->
