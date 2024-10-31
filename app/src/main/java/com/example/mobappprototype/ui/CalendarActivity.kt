@@ -26,6 +26,10 @@ class CalendarActivity : AppCompatActivity() {
         binding = ActivityCalendarBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.rvMeetingsForDate.visibility = View.GONE
+        binding.tvNoMeetings.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+
         firestoreDb = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
@@ -74,6 +78,10 @@ class CalendarActivity : AppCompatActivity() {
             "Fetching meetings for date: ${selectedDate.time}"
         )
 
+        binding.rvMeetingsForDate.visibility = View.GONE
+        binding.tvNoMeetings.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+
         val userUID = auth.currentUser?.uid
         if (userUID != null) {
             firestoreDb.collection("studentMeetings").document(userUID)
@@ -90,14 +98,16 @@ class CalendarActivity : AppCompatActivity() {
                         } else {
                             Log.d("CalendarActivity", "No meetings found for user $userUID")
                             // If no meetingIds are found, show "No meetings" message
-                            binding.tvNoMeetings.visibility = View.VISIBLE
                             binding.rvMeetingsForDate.visibility = View.GONE
+                            binding.loadingLayout.visibility = View.GONE
+                            binding.tvNoMeetings.visibility = View.VISIBLE
                         }
                     } else {
                         Log.d("CalendarActivity", "No meetings found for user $userUID")
                         // If no meetingIds are found, show "No meetings" message
-                        binding.tvNoMeetings.visibility = View.VISIBLE
                         binding.rvMeetingsForDate.visibility = View.GONE
+                        binding.loadingLayout.visibility = View.GONE
+                        binding.tvNoMeetings.visibility = View.VISIBLE
                     }
                 }
                 .addOnFailureListener { exception ->
@@ -110,6 +120,7 @@ class CalendarActivity : AppCompatActivity() {
     private fun fetchMeetingsByIds(meetingIds: List<String>, selectedDate: Calendar) {
         val meetingsForDate = mutableListOf<MeetingData>()
         val selectedDayOfWeek = selectedDate.get(Calendar.DAY_OF_WEEK)
+        var meetingsFetched = 0 // Counter for fetched meetings
 
         for (meetingId in meetingIds) {
             Log.d("CalendarActivity", "Fetching meeting with ID: $meetingId")
@@ -120,9 +131,9 @@ class CalendarActivity : AppCompatActivity() {
                     if (meetingDocument.exists()) {
                         val meetingData = meetingDocument.toObject(MeetingData::class.java)
                         if (meetingData != null) {
-                            meetingData.id = meetingDocument.id // Set the ID explicitly
+                            meetingData.id = meetingDocument.id
 
-                            Log.d("CalendarActivity", "Meeting data fetched: $meetingData") // Log to verify
+                            Log.d("CalendarActivity", "Meeting data fetched: $meetingData")
 
                             val meetingDayOfWeek = getDayOfWeekFromString(meetingData.day)
                             if (selectedDayOfWeek == meetingDayOfWeek) {
@@ -134,23 +145,41 @@ class CalendarActivity : AppCompatActivity() {
                     } else {
                         Log.e("CalendarActivity", "Meeting document with ID $meetingId does not exist")
                     }
-                    // Update the UI after each meeting is fetched
-                    meetingAdapter.updateMeetings(meetingsForDate)
-                    if (meetingsForDate.isEmpty()) {
-                        binding.tvNoMeetings.visibility = View.VISIBLE
-                        binding.rvMeetingsForDate.visibility = View.GONE
-                    } else {
-                        binding.tvNoMeetings.visibility = View.GONE
-                        binding.rvMeetingsForDate.visibility = View.VISIBLE
+
+                    meetingsFetched++ // Increment the counter
+
+                    // Update the UI only after ALL meetings are fetched
+                    if (meetingsFetched == meetingIds.size) {
+                        meetingAdapter.updateMeetings(meetingsForDate)
+                        if (meetingsForDate.isEmpty()) {
+                            binding.rvMeetingsForDate.visibility = View.GONE
+                            binding.tvNoMeetings.visibility = View.VISIBLE
+                        } else {
+                            binding.tvNoMeetings.visibility = View.GONE
+                            binding.rvMeetingsForDate.visibility = View.VISIBLE
+                        }
+                        binding.loadingLayout.visibility = View.GONE
                     }
                 }
                 .addOnFailureListener { exception ->
                     Log.e("CalendarActivity", "Error fetching meeting with ID $meetingId", exception)
-                    // Handle the error
+
+                    meetingsFetched++ // Increment the counter even in case of error
+
+                    // Update the UI only after ALL meetings are fetched
+                    if (meetingsFetched == meetingIds.size) {
+                        meetingAdapter.updateMeetings(meetingsForDate)
+                        if (meetingsForDate.isEmpty()) {
+                            binding.rvMeetingsForDate.visibility = View.GONE
+                            binding.tvNoMeetings.visibility = View.VISIBLE
+                        } else {
+                            binding.tvNoMeetings.visibility = View.GONE
+                            binding.rvMeetingsForDate.visibility = View.VISIBLE
+                        }
+                        binding.loadingLayout.visibility = View.GONE
+                    }
                 }
         }
-
-
     }
 
     private fun getDayOfWeekFromString(day: String): Int {

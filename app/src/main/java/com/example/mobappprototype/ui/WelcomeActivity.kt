@@ -1,8 +1,11 @@
 package com.example.mobappprototype.ui
 
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -25,15 +28,22 @@ class WelcomeActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-
         binding.btnRegister.setOnClickListener{
             Intent(this@WelcomeActivity, RegisterActivity::class.java).also {
                 startActivity(it)
             }
         }
         binding.btnLogin.setOnClickListener {
+            binding.layoutMainActivity.visibility = View.GONE
+            binding.loadingLayout.visibility = View.VISIBLE
             if (auth.currentUser != null) {
-                checkUserRole()
+                if (isNetworkAvailable()) {
+                    checkUserRole()
+                } else {
+                    binding.loadingLayout.visibility = View.GONE
+                    binding.layoutMainActivity.visibility = View.VISIBLE
+                    Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+                }
             } else {
                 goLoginActivity()
             }
@@ -69,11 +79,23 @@ class WelcomeActivity : AppCompatActivity() {
             }.addOnFailureListener { exception ->
                 Log.e(TAG, "Error getting user document", exception)
                 Toast.makeText(this, "Error: Failed to fetch user data", Toast.LENGTH_SHORT).show()
+                binding.loadingLayout.visibility = View.GONE
+                binding.layoutMainActivity.visibility = View.VISIBLE
             }
         } else {
             Log.e(TAG, "currentUser is null after successful login")
             Toast.makeText(this, "Error: User not found", Toast.LENGTH_SHORT).show()
+            binding.loadingLayout.visibility = View.GONE
+            binding.layoutMainActivity.visibility = View.VISIBLE
         }
+    }
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+
     }
     private fun goStudentMainActivity() {
         Log.i(TAG, "goStudentMainActivity")

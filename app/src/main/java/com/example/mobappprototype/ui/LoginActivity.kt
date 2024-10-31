@@ -1,8 +1,11 @@
 package com.example.mobappprototype.ui
 
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -25,8 +28,15 @@ class LoginActivity : AppCompatActivity() {
         supportActionBar?.hide()
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
+
         if (auth.currentUser != null) {
-            checkUserRole()
+            if (isNetworkAvailable()) {
+                binding.layoutMainActivity.visibility = View.GONE
+                binding.loadingLayout.visibility = View.VISIBLE
+                checkUserRole()
+            } else {
+                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.tvRegisterNow.setOnClickListener {
@@ -40,26 +50,36 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnLoginReal.setOnClickListener {
-            binding.btnLoginReal.isEnabled = false
+
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
             if (email.isBlank() || password.isBlank()) {
                 Toast.makeText(this, "Email/password cannot be empty", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
-            }
-            // Firebase authentication check
-            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener{task ->
-                binding.btnLoginReal.isEnabled = true
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "Sucess!", Toast.LENGTH_SHORT).show()
-                    checkUserRole()
             } else {
-                Log.e(TAG, "signInWithEmail failed", task.exception)
-                Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
-            }
-            }
+                binding.layoutMainActivity.visibility = View.GONE
+                binding.loadingLayout.visibility = View.VISIBLE
 
+                if (isNetworkAvailable()) {
+                    auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            checkUserRole()
+                            Toast.makeText(this, "Sucess!", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Log.e(TAG, "signInWithEmail failed", task.exception)
+                            Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
+                            binding.loadingLayout.visibility = View.GONE
+                            binding.layoutMainActivity.visibility = View.VISIBLE
+                        }
+                    }
+                } else {
+                    binding.loadingLayout.visibility = View.GONE
+                    binding.layoutMainActivity.visibility = View.VISIBLE
+                    Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
+
         binding.ivBackFLogin.setOnClickListener {
             val intent = Intent(this, WelcomeActivity::class.java)
             startActivity(intent)
@@ -86,6 +106,16 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+
+    }
+
     private fun checkUserRole() {
         val user = auth.currentUser
         if (user != null) {
@@ -136,12 +166,6 @@ class LoginActivity : AppCompatActivity() {
     private fun goTutorMainActivity() {
         Log.i(TAG, "goTutorMainActivity")
         val intent = Intent(this, TutorMainActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-    private fun goLoginActivity() {
-        Log.i(TAG, "goToLoginActivity")
-        val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }

@@ -89,7 +89,7 @@
                             android:layout_gravity="center"
                             android:padding="6dp"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/james"
+                            android:src="@drawable/ic_profile_default"
                             app:shapeAppearanceOverlay="@style/roundedImage"
                             app:strokeColor="@color/appGreen"
                             app:strokeWidth="4dp" />

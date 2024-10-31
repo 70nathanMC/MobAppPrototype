@@ -5,11 +5,14 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.TouchDelegate
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mobappprototype.Adapter.ChatAdapter
 import com.example.mobappprototype.databinding.ActivityChatBinding
 import com.example.mobappprototype.model.ChatMessage
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -30,11 +33,15 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var chatAdapter: ChatAdapter
     private val messages = mutableListOf<ChatMessage>()
+    private val participantDetailsMap = mutableMapOf<String, Pair<String, String>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.layoutMainActivity.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
 
         firestoreDb = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
@@ -113,24 +120,101 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun fetchMessages(meetingId: String) {
-        firestoreDb.collection("chats")
+        Log.d(TAG, "Starting fetchMessages for meetingId: $meetingId") // Log entry point
+
+        binding.rvChatMessages.adapter = chatAdapter
+
+        val messagesFetchTask = firestoreDb.collection("chats")
             .document(meetingId)
             .collection("messages")
             .orderBy("timestamp", Query.Direction.ASCENDING)
-            .addSnapshotListener { snapshot, exception ->
-                if (exception != null) {
-                    Log.e(TAG, "Error fetching messages", exception)
-                    return@addSnapshotListener
-                }
-
-                snapshot?.documentChanges?.forEach { change ->
-                    if (change.type == com.google.firebase.firestore.DocumentChange.Type.ADDED) {
-                        val message = change.document.toObject(ChatMessage::class.java)
-                        messages.add(message)
+            .get()
+            .continueWithTask { task ->
+                if (task.isSuccessful) {
+                    val snapshot = task.result
+                    snapshot?.documents?.forEach { document ->
+                        val message = document.toObject(ChatMessage::class.java)
+                        messages.add(message!!)
                     }
+                    Log.d(TAG, "Messages fetched successfully: $messages") // Log fetched messages
+                } else {
+                    Log.e(TAG, "Error fetching messages", task.exception)
                 }
+                Tasks.forResult(null)
+            }
+
+        val participantDetailsTask = fetchParticipantDetails(meetingId)
+
+        Tasks.whenAll(messagesFetchTask, participantDetailsTask).addOnSuccessListener {
+            runOnUiThread {
+                Log.d(TAG, "Both messages and participant details fetched") // Log completion of both tasks
+
+                chatAdapter.updateParticipantDetails(participantDetailsMap)
+
                 chatAdapter.notifyDataSetChanged()
-                binding.rvChatMessages.smoothScrollToPosition(messages.size - 1)
+
+                binding.rvChatMessages.postDelayed({
+                    binding.rvChatMessages.scrollToPosition(messages.size - 1)
+                    
+                    runOnUiThread {
+                        binding.loadingLayout.visibility = View.GONE
+                        binding.layoutMainActivity.visibility = View.VISIBLE
+                    }
+                }, 1)
+            }
+        }
+    }
+
+    private fun fetchParticipantDetails(meetingId: String): Task<Map<String, Pair<String, String>>> {
+        Log.d(TAG, "Starting fetchParticipantDetails for meetingId: $meetingId")
+
+        return firestoreDb.collection("meetings").document(meetingId)
+            .get()
+            .continueWithTask { task ->
+                if (task.isSuccessful) {
+                    val document = task.result
+                    if (document != null && document.exists()) {
+                        val participants = document.get("participants") as? List<String> ?: emptyList()
+                        Log.d(TAG, "Participants found: $participants")
+
+                        val participantDetailsMap = mutableMapOf<String, Pair<String, String>>()
+                        val participantDetailsTasks = participants.map { participantId ->
+                            Log.d(TAG, "Fetching details for participantId: $participantId")
+
+                            firestoreDb.collection("users").document(participantId)
+                                .get()
+                                .continueWith { userTask ->
+                                    if (userTask.isSuccessful) {
+                                        val userDoc = userTask.result
+                                        if (userDoc != null && userDoc.exists()) {
+                                            val profilePicUrl = userDoc.getString("profilePic") ?: ""
+                                            val senderFullName = userDoc.getString("fullName") ?: "Unknown User"
+                                            participantDetailsMap[participantId] = Pair(senderFullName, profilePicUrl)
+                                            Log.d(TAG, "Participant details fetched successfully for $participantId: $senderFullName, $profilePicUrl")
+                                        } else {
+                                            Log.w(TAG, "Participant details not found for ID: $participantId")
+                                        }
+                                    } else {
+                                        Log.e(TAG, "Error fetching participant details for ID: $participantId", userTask.exception)
+                                    }
+                                }
+                        }
+
+                        // Return the map after all tasks are complete
+                        Tasks.whenAll(participantDetailsTasks).continueWith {
+                            this.participantDetailsMap.clear()
+                            this.participantDetailsMap.putAll(participantDetailsMap)
+                            Log.d(TAG, "All participant details fetched and map updated: $participantDetailsMap")
+                            this.participantDetailsMap // Return the map
+                        }
+                    } else {
+                        Log.w(TAG, "Meeting document not found for ID: $meetingId")
+                        Tasks.forResult(mutableMapOf()) // Return an empty map
+                    }
+                } else {
+                    Log.e(TAG, "Error fetching meeting participants", task.exception)
+                    Tasks.forResult(mutableMapOf()) // Return an empty map
+                }
             }
     }
 

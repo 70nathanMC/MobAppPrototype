@@ -3,6 +3,7 @@ package com.example.mobappprototype.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +31,9 @@ class TutorSchedAndSubsListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTutorSchedAndSubsListBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.rvMeetings.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
 
         auth = FirebaseAuth.getInstance()
         firestoreDb = FirebaseFirestore.getInstance()
@@ -63,7 +67,7 @@ class TutorSchedAndSubsListActivity : AppCompatActivity() {
         }
 
         val tutorUid = intent.getStringExtra("TUTOR_UID")
-        Log.d(TAG, "Tutor UID retrieved from TutorListActivity: $tutorUid")
+        Log.d(TAG, "Tutor UID retrieved from TutorProfileActivity: $tutorUid")
         if (tutorUid != null) {
             Log.d(TAG, "Received tutor UID: $tutorUid")
             fetchMeetings(tutorUid)
@@ -80,6 +84,13 @@ class TutorSchedAndSubsListActivity : AppCompatActivity() {
         binding.ibtnHomeFTutorSchedAndSubsList.setOnClickListener {
             Intent(this, StudentMainActivity::class.java).also {
                 startActivity(it)
+            }
+        }
+
+        binding.tvTutorNameTitle.setOnClickListener {
+            Intent(this, TutorProfileActivity::class.java).also { newIntent ->
+                newIntent.putExtra("TUTOR_UID", tutorUid)
+                startActivity(newIntent)
             }
         }
 
@@ -138,9 +149,13 @@ class TutorSchedAndSubsListActivity : AppCompatActivity() {
                     meetingList.add(meeting)
                 }
                 meetingDataAdapter.notifyDataSetChanged()
+                binding.loadingLayout.visibility = View.GONE
+                binding.rvMeetings.visibility = View.VISIBLE
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error fetching meetings: ", exception)
+                binding.loadingLayout.visibility = View.GONE
+                binding.rvMeetings.visibility = View.VISIBLE
             }
     }
     private fun fetchTutorName(tutorUid: String) {

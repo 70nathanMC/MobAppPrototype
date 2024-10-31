@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.TouchDelegate
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mobappprototype.Adapter.InboxAdapter
@@ -13,6 +14,9 @@ import com.example.mobappprototype.R
 import com.example.mobappprototype.databinding.ActivityInboxBinding
 import com.example.mobappprototype.model.ChatRoom
 import com.example.mobappprototype.model.LastMessage
+import com.example.mobappprototype.model.MeetingData
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
@@ -38,6 +42,9 @@ class InboxActivity : AppCompatActivity() {
         binding = ActivityInboxBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.layoutMainActivity.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+
         Log.d(TAG, "onCreate: started") // Add this log
 
         firestoreDb = FirebaseFirestore.getInstance()
@@ -57,6 +64,7 @@ class InboxActivity : AppCompatActivity() {
         fetchChatRooms()
         listenForNewMessages()
         updateFcmToken()
+
 
         binding.bottomNavigationBar.selectedItemId = R.id.messages
 
@@ -130,6 +138,7 @@ class InboxActivity : AppCompatActivity() {
 
     private fun fetchChatRooms() {
         Log.d(TAG, "fetchChatRooms: started")
+
         val currentUserId = auth.currentUser?.uid
         if (currentUserId != null) {
             firestoreDb.collection("chats")
@@ -138,12 +147,43 @@ class InboxActivity : AppCompatActivity() {
                 .addOnSuccessListener { documents ->
                     Log.d(TAG, "fetchChatRooms: ${documents.size()} chat rooms found")
                     chatRooms.clear()
+
+                    val fetchTasks = mutableListOf<Task<Void>>()
+
                     documents.forEach { document ->
                         val chatRoom = document.toObject(ChatRoom::class.java)
                         if (chatRoom != null) {
-                            chatRooms.add(chatRoom)
+                            // Add chatRoom with a placeholder lastMessage
+                            val placeholderLastMessage = LastMessage(content = "")
+                            chatRooms.add(chatRoom.copy(lastMessage = placeholderLastMessage))
 
-                            // Add SnapshotListener for real-time last message updates
+                            val fetchTask = firestoreDb.collection("chats")
+                                .document(chatRoom.meetingID)
+                                .collection("messages")
+                                .orderBy("timestamp", Query.Direction.DESCENDING)
+                                .limit(1)
+                                .get()
+                                .continueWithTask<Void> { task ->
+                                    if (task.isSuccessful) {
+                                        val snapshot = task.result
+                                        if (snapshot != null && !snapshot.isEmpty) {
+                                            val lastMessageContent = snapshot.documents[0].getString("content") ?: ""
+                                            val lastMessage = LastMessage(content = lastMessageContent)
+
+                                            // Update the lastMessage in the existing chatRoom
+                                            val chatRoomIndex = chatRooms.indexOfFirst { it.meetingID == chatRoom.meetingID }
+                                            if (chatRoomIndex != -1) {
+                                                chatRooms[chatRoomIndex] = chatRooms[chatRoomIndex].copy(lastMessage = lastMessage)
+                                            }
+                                        }
+                                    } else {
+                                        Log.e(TAG, "Error fetching last message", task.exception)
+                                    }
+                                    Tasks.forResult(null)
+                                }
+                            fetchTasks.add(fetchTask)
+
+                            // Set up the SnapshotListener outside the continueWithTask
                             val listener = firestoreDb.collection("chats")
                                 .document(chatRoom.meetingID)
                                 .collection("messages")
@@ -151,7 +191,7 @@ class InboxActivity : AppCompatActivity() {
                                 .limit(1)
                                 .addSnapshotListener { snapshot, exception ->
                                     if (exception != null) {
-                                        Log.e(TAG, "Error listening for new messages", exception)
+                                        Log.e(TAG, "Error listening for new messages in SnapshotListener", exception)
                                         return@addSnapshotListener
                                     }
                                     if (snapshot != null && !snapshot.isEmpty) {
@@ -166,13 +206,45 @@ class InboxActivity : AppCompatActivity() {
                                         }
                                     }
                                 }
-                            messageListeners[chatRoom.meetingID] = listener // Store the listener
+                            messageListeners[chatRoom.meetingID] = listener
                         }
                     }
-                    runOnUiThread {
-                        inboxAdapter.notifyDataSetChanged()
+
+                    // Fetch meeting details for all chat rooms
+                    val meetingDetailsTasks = mutableListOf<Task<Void>>()
+                    val meetingDetailsMap = mutableMapOf<String, Pair<String, String>>()
+
+                    chatRooms.forEach { chatRoom ->
+                        val meetingDetailsTask = firestoreDb.collection("meetings").document(chatRoom.meetingID)
+                            .get()
+                            .continueWithTask<Void> { task ->
+                                if (task.isSuccessful) {
+                                    val document = task.result
+                                    if (document != null && document.exists()) {
+                                        val meetingData = document.toObject(MeetingData::class.java)
+                                        if (meetingData != null) {
+                                            meetingDetailsMap[chatRoom.meetingID] = Pair(meetingData.subject, meetingData.branch)
+                                        }
+                                    }
+                                } else {
+                                    Log.e(TAG, "Error fetching meeting details", task.exception)
+                                }
+                                Tasks.forResult(null)
+                            }
+                        meetingDetailsTasks.add(meetingDetailsTask)
                     }
-                    listenForUnreadCountChanges(currentUserId)
+
+                    // Wait for all tasks to complete (fetching last messages and meeting details)
+                    Tasks.whenAll(fetchTasks + meetingDetailsTasks).addOnSuccessListener {
+                        runOnUiThread {
+                            // Update UI with chat rooms and meeting details
+                            inboxAdapter.updateMeetingDetails(meetingDetailsMap)
+                            inboxAdapter.notifyDataSetChanged()
+                            listenForUnreadCountChanges(currentUserId)
+                            binding.loadingLayout.visibility = View.GONE
+                            binding.layoutMainActivity.visibility = View.VISIBLE
+                        }
+                    }
                 }
                 .addOnFailureListener { exception ->
                     Log.e(TAG, "Error fetching chat rooms", exception)

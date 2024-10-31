@@ -3,6 +3,7 @@ package com.example.mobappprototype.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -30,6 +31,9 @@ class TutorProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTutorProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.layoutMainActivity.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
 
         firestoreDb = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
@@ -81,14 +85,20 @@ class TutorProfileActivity : AppCompatActivity() {
                             .load(profilePicUrl)
                             .into(binding.sivTutorProfilePic)
                     }
+                    binding.loadingLayout.visibility = View.GONE
+                    binding.layoutMainActivity.visibility = View.VISIBLE
                 } else {
                     Log.e(TAG, "Tutor document not found")
                     Toast.makeText(this, "Error: Tutor data not found", Toast.LENGTH_SHORT).show()
+                    binding.loadingLayout.visibility = View.GONE
+                    binding.layoutMainActivity.visibility = View.VISIBLE
                 }
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error getting tutor document", exception)
                 Toast.makeText(this, "Error: Failed to fetch tutor data", Toast.LENGTH_SHORT).show()
+                binding.loadingLayout.visibility = View.GONE
+                binding.layoutMainActivity.visibility = View.VISIBLE
             }
     }
     private fun setupClickListeners() {

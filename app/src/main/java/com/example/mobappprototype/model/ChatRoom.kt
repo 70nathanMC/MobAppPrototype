@@ -9,7 +9,7 @@ data class ChatRoom(
     val documentId: String = "",
     val meetingID: String = "",
     val participants: List<String> = listOf(),
-    val lastMessage: LastMessage? = null,
+    var lastMessage: LastMessage? = null,
     var unreadCount: Long = 0 // I just added this recently to prepare for the unreadCount feature
 )
 

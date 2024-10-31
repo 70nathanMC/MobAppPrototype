@@ -38,6 +38,9 @@ class TutorListActivity : AppCompatActivity() {
         binding = ActivityTutorListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.rvTutorList.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+
         firestoreDb = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
@@ -94,6 +97,12 @@ class TutorListActivity : AppCompatActivity() {
             }
         }
 
+        binding.tvFindTutor.setOnClickListener {
+            Intent(this, TutorSearchActivity::class.java).also {
+                startActivity(it)
+            }
+        }
+
         binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.home -> {
@@ -124,6 +133,9 @@ class TutorListActivity : AppCompatActivity() {
     }
 
     private fun fetchAllTutors() {
+        binding.rvTutorList.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+
         tutorList.clear()
 
         firestoreDb.collection("users")
@@ -134,19 +146,31 @@ class TutorListActivity : AppCompatActivity() {
                     val fullName = document.getString("fullName") ?: ""
                     val profilePicUrl = document.getString("profilePic") ?: ""
                     val program = document.getString("program") ?: ""
-                    val overallRating = document.getDouble("overallRating") ?: 0.0 // Assuming you have a rating field
-                    val tutor = TutorListData(profilePicUrl, fullName, program, overallRating.toFloat(), document.id) // Include document.id here
+                    val overallRating = document.getDouble("overallRating") ?: 0.0
+                    val tutor = TutorListData(profilePicUrl, fullName, program, overallRating.toFloat(), document.id)
                     tutorList.add(tutor)
                 }
 
                 tutorListAdapter.notifyDataSetChanged()
+                binding.loadingLayout.visibility = View.GONE
+                binding.rvTutorList.visibility = View.VISIBLE
+
+                if (tutorList.isEmpty()) {
+                    Toast.makeText(this, "No tutors found.", Toast.LENGTH_SHORT).show()
+                }
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting tutors: ", exception)
                 Toast.makeText(this, "Error fetching tutors", Toast.LENGTH_SHORT).show()
+                binding.loadingLayout.visibility = View.GONE
+                binding.rvTutorList.visibility = View.VISIBLE
             }
     }
+
     private fun searchTutors(query: String) {
+        binding.rvTutorList.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+
         tutorList.clear() // Clear previous results
 
         firestoreDb.collection("users")
@@ -163,17 +187,25 @@ class TutorListActivity : AppCompatActivity() {
 
                     // Check if the first name or last name starts with the query
                     if (firstName.lowercase().startsWith(query.lowercase()) ||
-                        lastName.lowercase().startsWith(query.lowercase())) {
+                        lastName.lowercase().startsWith(query.lowercase())
+                    ) {
                         val tutor = TutorListData(profilePicUrl, fullName, program, overallRating.toFloat(), document.id)
                         tutorList.add(tutor)
                     }
                 }
                 tutorListAdapter.notifyDataSetChanged()
+                binding.loadingLayout.visibility = View.GONE
+                binding.rvTutorList.visibility = View.VISIBLE
 
+                if (tutorList.isEmpty()) {
+                    Toast.makeText(this, "No tutors found matching the query.", Toast.LENGTH_SHORT).show()
+                }
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting tutors: ", exception)
                 Toast.makeText(this, "Error fetching tutors", Toast.LENGTH_SHORT).show()
+                binding.loadingLayout.visibility = View.GONE
+                binding.rvTutorList.visibility = View.VISIBLE
             }
     }
 
@@ -207,6 +239,9 @@ class TutorListActivity : AppCompatActivity() {
     }
 
     fun fetchTutorsBySubject(subjectName: String) {
+        binding.rvTutorList.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+
         tutorList.clear()
         firestoreDb.collection("subjects").whereEqualTo("subjectName", subjectName)
             .get()
@@ -214,6 +249,8 @@ class TutorListActivity : AppCompatActivity() {
                 if (documents.isEmpty) {
                     Toast.makeText(this, "No subject found with the name $subjectName", Toast.LENGTH_SHORT).show()
                     tutorListAdapter.notifyDataSetChanged()
+                    binding.loadingLayout.visibility = View.GONE
+                    binding.rvTutorList.visibility = View.VISIBLE
                     return@addOnSuccessListener
                 }
                 val subjectDocumentId = documents.documents[0].id
@@ -223,6 +260,8 @@ class TutorListActivity : AppCompatActivity() {
                     Toast.makeText(this, "No tutors found for $subjectName", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "Subject document ID: $subjectDocumentId")
                     tutorListAdapter.notifyDataSetChanged()
+                    binding.loadingLayout.visibility = View.GONE
+                    binding.rvTutorList.visibility = View.VISIBLE
                     return@addOnSuccessListener
                 } else {
                     Log.d(TAG, "Subject document ID: $subjectDocumentId")
@@ -243,10 +282,14 @@ class TutorListActivity : AppCompatActivity() {
                                 if (userDocuments.size == relatedTutors.size) {
                                     tutorList.addAll(userDocuments)
                                     tutorListAdapter.notifyDataSetChanged()
+                                    binding.loadingLayout.visibility = View.GONE
+                                    binding.rvTutorList.visibility = View.VISIBLE
                                 }
                             }
                             .addOnFailureListener { exception ->
                                 Log.w(TAG, "Error getting tutor details: ", exception)
+                                binding.loadingLayout.visibility = View.GONE
+                                binding.rvTutorList.visibility = View.VISIBLE
                             }
                     }
                 }
@@ -254,6 +297,8 @@ class TutorListActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting subjects: ", exception)
                 Toast.makeText(this, "Error fetching subjects", Toast.LENGTH_SHORT).show()
+                binding.loadingLayout.visibility = View.GONE
+                binding.rvTutorList.visibility = View.VISIBLE
             }
     }
 

@@ -8,48 +8,38 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mobappprototype.databinding.ListItemInboxBinding
 import com.example.mobappprototype.model.ChatRoom
-import com.example.mobappprototype.model.MeetingData
 import com.example.mobappprototype.ui.ChatActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 private const val TAG = "InboxAdapter"
 
 class InboxAdapter(private val chatRooms: List<ChatRoom>) :
     RecyclerView.Adapter<InboxAdapter.InboxViewHolder>() {
 
-    private lateinit var firestoreDb: FirebaseFirestore
-    private lateinit var auth: FirebaseAuth
+    private val meetingDetailsMap = mutableMapOf<String, Pair<String, String>>()
+
+    fun updateMeetingDetails(meetingDetails: Map<String, Pair<String, String>>) {
+        meetingDetailsMap.clear()
+        meetingDetailsMap.putAll(meetingDetails)
+    }
 
     inner class InboxViewHolder(val binding: ListItemInboxBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InboxViewHolder {
         val binding = ListItemInboxBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        firestoreDb = FirebaseFirestore.getInstance()
-        auth = FirebaseAuth.getInstance()
         return InboxViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: InboxViewHolder, position: Int) {
         val chatRoom = chatRooms[position]
-        val meetingID = chatRoom.meetingID
 
-        firestoreDb.collection("meetings").document(meetingID)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document != null && document.exists()) {
-                    val meetingData = document.toObject(MeetingData::class.java)
-                    if (meetingData != null) {
-                        val subject = meetingData.subject
-                        val branch = meetingData.branch
-                        holder.binding.tvTutorNameAndSubject.text = "$subject - $branch"
-                    }
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "Error fetching meeting details", e)
-                holder.binding.tvTutorNameAndSubject.text = "Error loading meeting details"
-            }
+        // Access meeting details from the map
+        val meetingDetails = meetingDetailsMap[chatRoom.meetingID]
+        if (meetingDetails != null) {
+            val (subject, branch) = meetingDetails
+            holder.binding.tvTutorNameAndSubject.text = "$subject - $branch"
+        } else {
+            holder.binding.tvTutorNameAndSubject.text = "Error loading meeting details"
+        }
 
         // Display last message if available
         if (chatRoom.lastMessage != null) {
@@ -64,7 +54,7 @@ class InboxAdapter(private val chatRooms: List<ChatRoom>) :
         if (unreadCount > 0) {
             holder.binding.tvUnreadCount.visibility = View.VISIBLE
         } else {
-            holder.binding.tvUnreadCount.visibility = View.GONE // Hide the TextView
+            holder.binding.tvUnreadCount.visibility = View.GONE
         }
 
         holder.itemView.setOnClickListener {
@@ -75,12 +65,6 @@ class InboxAdapter(private val chatRooms: List<ChatRoom>) :
             chatRoom.unreadCount = 0
             notifyItemChanged(position)
 
-            holder.itemView.context.startActivity(intent)
-        }
-
-        holder.itemView.setOnClickListener {
-            val intent = Intent(holder.itemView.context, ChatActivity::class.java)
-            intent.putExtra("meetingId", chatRoom.meetingID)
             holder.itemView.context.startActivity(intent)
         }
     }

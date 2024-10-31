@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.example.mobappprototype.R
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +25,7 @@ class ReviewFragment : Fragment() {
     private lateinit var firestoreDb: FirebaseFirestore
     private lateinit var reviewAdapter: ReviewAdapter
     private lateinit var auth: FirebaseAuth
+    private lateinit var loadingLayout: ConstraintLayout
     private val reviews = mutableListOf<Review>()
 
     override fun onCreateView(
@@ -31,6 +33,7 @@ class ReviewFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_review, container, false)
+        loadingLayout = view.findViewById(R.id.loadingLayout)
         rvReviews = view.findViewById(R.id.rvReviews)
         firestoreDb = FirebaseFirestore.getInstance()
         reviewAdapter = ReviewAdapter(reviews)
@@ -42,6 +45,9 @@ class ReviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        rvReviews.visibility = View.GONE
+        loadingLayout.visibility = View.VISIBLE
 
         val tutorUid = activity?.intent?.getStringExtra("TUTOR_UID")
         val userUID = auth.currentUser?.uid
@@ -66,6 +72,7 @@ class ReviewFragment : Fragment() {
     }
 
     private fun fetchReviews(tutorUid: String) {
+
         firestoreDb.collection("reviews")
             .whereEqualTo("tutorUID", tutorUid)
             .get()
@@ -76,9 +83,13 @@ class ReviewFragment : Fragment() {
                     reviews.add(review)
                 }
                 reviewAdapter.notifyDataSetChanged()
+                loadingLayout.visibility = View.GONE
+                rvReviews.visibility = View.VISIBLE
             }
             .addOnFailureListener { e ->
                 Log.e(TAG, "Error fetching reviews", e)
+                loadingLayout.visibility = View.GONE
+                rvReviews.visibility = View.VISIBLE
             }
     }
 
