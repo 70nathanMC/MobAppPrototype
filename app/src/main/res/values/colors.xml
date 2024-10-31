@@ -13,4 +13,5 @@
     <color name="incorrect">#E65252</color>
     <color name="correct">#8DDD61</color>
     <color name="stars">#ffde59</color>
+    <color name="red">#ff0000</color>
 </resources>

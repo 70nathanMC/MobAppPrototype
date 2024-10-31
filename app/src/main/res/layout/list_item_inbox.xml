@@ -54,7 +54,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginTop="10dp"
             android:text="0"
-            android:textColor="@color/appGreen"
+            android:textColor="@color/incorrect"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
