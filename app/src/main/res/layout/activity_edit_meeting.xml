@@ -259,12 +259,12 @@
 
 
                     <EditText
-                        android:id="@+id/etMeetingLink"
+                        android:id="@+id/etMeetingSite"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:background="@drawable/default_options_border_bg_gray"
                         android:ems="10"
-                        android:hint="Meeting Link"
+                        android:hint="Meeting Site (e.g., Google Meet)"
                         android:inputType="text"
                         android:textColorHint="@color/appGray8"
                         android:paddingStart="16dp"

@@ -77,7 +77,7 @@ class EditMeetingActivity : AppCompatActivity() {
             val endTimeAmPm = if (endTimeHour < 12) "AM" else "PM"
             val startTime = String.format("%02d:%02d %s", formattedStartTimeHour, startTimeMinute, startTimeAmPm)
             val endTime = String.format("%02d:%02d %s", formattedEndTimeHour, endTimeMinute, endTimeAmPm)
-            val meetingLink = binding.etMeetingLink.text.toString().trim()
+            val meetingSite = binding.etMeetingSite.text.toString().trim()
 
 
             val slots = binding.etSlots.text.toString().toIntOrNull() ?: 0
@@ -136,7 +136,7 @@ class EditMeetingActivity : AppCompatActivity() {
                             "date" to com.google.firebase.Timestamp(dateCalendar.time),
                             "tutorFullName" to userFullName,
                             "tutorProfilePic" to profilePic,
-                            "meetingLink" to meetingLink
+                            "meetingSite" to meetingSite
                         )
 
                         val newSubject = binding.actvSubjectName.text.toString()

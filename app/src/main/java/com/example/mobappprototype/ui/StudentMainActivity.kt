@@ -68,7 +68,7 @@ class StudentMainActivity : AppCompatActivity() {
         userViewModel.user.observe(this) { user ->
             if (user != null) {
                 updateUIWithUserData(user)
-                fetchTodaysMeetings()
+                fetchThisWeeksMeetings()
                 updateFcmToken()
             }
         }
@@ -77,7 +77,7 @@ class StudentMainActivity : AppCompatActivity() {
         binding.bottomNavigationBar.selectedItemId = R.id.home
     }
 
-    private fun fetchTodaysMeetings() {
+    private fun fetchThisWeeksMeetings() {
         val userUID = auth.currentUser?.uid
         if (userUID != null) {
             firestoreDb.collection("studentMeetings").document(userUID)
@@ -86,36 +86,59 @@ class StudentMainActivity : AppCompatActivity() {
                     if (studentMeetingsDocument.exists()) {
                         val meetingIds = studentMeetingsDocument.get("meetingIds") as? List<String>
                         if (meetingIds != null) {
-                            val today = Calendar.getInstance()
-                            val todaysMeetings = mutableListOf<MeetingData>()
-                            val todayDayOfWeek = today.get(Calendar.DAY_OF_WEEK) // e.g., Calendar.MONDAY
+                            // Calculate the date range for the next 7 days
+                            val calendar = Calendar.getInstance()
+                            calendar.add(Calendar.DAY_OF_MONTH, 7) // Add 7 days to get the end date
+                            val endDate = calendar.time
 
+                            val weekMeetings = mutableListOf<MeetingData>()
+
+                            // First query: Get meeting documents
                             firestoreDb.collection("meetings")
                                 .whereIn(FieldPath.documentId(), meetingIds)
                                 .get()
                                 .addOnSuccessListener { meetingsQuerySnapshot ->
+
+                                    // Second query: Filter by date in memory and calculate upcoming date
                                     for (meetingDocument in meetingsQuerySnapshot) {
                                         val meetingData = meetingDocument.toObject(MeetingData::class.java)
                                         meetingData.id = meetingDocument.id
 
-                                        // Get day of the week from meetingData.day (String)
-                                        val meetingDayOfWeek = when (meetingData.day.lowercase()) {
-                                            "monday" -> Calendar.MONDAY
-                                            "tuesday" -> Calendar.TUESDAY
-                                            "wednesday" -> Calendar.WEDNESDAY
-                                            "thursday" -> Calendar.THURSDAY
-                                            "friday" -> Calendar.FRIDAY
-                                            "saturday" -> Calendar.SATURDAY
-                                            "sunday" -> Calendar.SUNDAY
-                                            else -> -1 // Handle invalid day input
-                                        }
+                                        try {
+                                            // Calculate the upcoming meeting date
+                                            val meetingDayOfWeek = when (meetingData.day.lowercase()) {
+                                                "monday" -> Calendar.MONDAY
+                                                "tuesday" -> Calendar.TUESDAY
+                                                "wednesday" -> Calendar.WEDNESDAY
+                                                "thursday" -> Calendar.THURSDAY
+                                                "friday" -> Calendar.FRIDAY
+                                                "saturday" -> Calendar.SATURDAY
+                                                "sunday" -> Calendar.SUNDAY
+                                                else -> throw IllegalArgumentException("Invalid day of the week: ${meetingData.day}")
+                                            }
 
-                                        if (meetingDayOfWeek == todayDayOfWeek) {
-                                            todaysMeetings.add(meetingData)
+                                            val todayCalendar = Calendar.getInstance()
+                                            val todayDayOfWeek = todayCalendar.get(Calendar.DAY_OF_WEEK)
+                                            val daysUntilMeetingDay = if (meetingDayOfWeek >= todayDayOfWeek) {
+                                                meetingDayOfWeek - todayDayOfWeek
+                                            } else {
+                                                meetingDayOfWeek - todayDayOfWeek + 7
+                                            }
+                                            todayCalendar.add(Calendar.DAY_OF_MONTH, daysUntilMeetingDay)
+                                            meetingData.upcomingDate = todayCalendar.time
+
+                                            if (meetingData.date.toDate() <= endDate) {
+                                                weekMeetings.add(meetingData)
+                                            }
+                                        } catch (e: IllegalArgumentException) {
+                                            Log.e(TAG, "Error calculating meeting date: ${e.message}")
                                         }
                                     }
 
-                                    if (todaysMeetings.isEmpty()) {  // Check if the list is empty
+                                    // Sort meetings by upcomingDate
+                                    weekMeetings.sortBy { it.upcomingDate }
+
+                                    if (weekMeetings.isEmpty()) {
                                         binding.tvNoMeetings.visibility = View.VISIBLE
                                         binding.rvMeetingsToday.visibility = View.GONE
                                     } else {
@@ -123,9 +146,8 @@ class StudentMainActivity : AppCompatActivity() {
                                         binding.rvMeetingsToday.visibility = View.VISIBLE
                                     }
 
-                                    // Update adapter
                                     binding.loadingLayout.visibility = View.VISIBLE
-                                    meetingAdapter.meetings = todaysMeetings
+                                    meetingAdapter.meetings = weekMeetings
                                     meetingAdapter.notifyDataSetChanged()
                                     binding.loadingLayout.visibility = View.GONE
                                     binding.layoutMainActivity.visibility = View.VISIBLE
@@ -292,7 +314,7 @@ class StudentMainActivity : AppCompatActivity() {
         super.onResume()
         binding.layoutMainActivity.visibility = View.GONE
         binding.loadingLayout.visibility = View.VISIBLE
-        fetchTodaysMeetings()
+        fetchThisWeeksMeetings()
         binding.bottomNavigationBar.selectedItemId = R.id.home
     }
 }

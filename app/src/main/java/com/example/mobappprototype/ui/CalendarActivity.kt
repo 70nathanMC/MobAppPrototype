@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.mobappprototype.Adapter.CalendarMeetingAdapter
 import com.example.mobappprototype.Adapter.MeetingAdapter
 import com.example.mobappprototype.R
 
@@ -19,7 +20,7 @@ class CalendarActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCalendarBinding
     private lateinit var firestoreDb: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
-    private lateinit var meetingAdapter: MeetingAdapter
+    private lateinit var meetingAdapter: CalendarMeetingAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +40,7 @@ class CalendarActivity : AppCompatActivity() {
             }
             fetchMeetingsForDate(selectedDate)
         }
-        meetingAdapter = MeetingAdapter(listOf())
+        meetingAdapter = CalendarMeetingAdapter(listOf())
         binding.rvMeetingsForDate.adapter = meetingAdapter
         binding.rvMeetingsForDate.layoutManager = LinearLayoutManager(this)
 
@@ -92,19 +93,17 @@ class CalendarActivity : AppCompatActivity() {
                         Log.d(
                             "CalendarActivity",
                             "Meeting IDs: $meetingIds"
-                        ) // Log the retrieved meeting IDs
+                        )
                         if (meetingIds != null) {
                             fetchMeetingsByIds(meetingIds, selectedDate)
                         } else {
                             Log.d("CalendarActivity", "No meetings found for user $userUID")
-                            // If no meetingIds are found, show "No meetings" message
                             binding.rvMeetingsForDate.visibility = View.GONE
                             binding.loadingLayout.visibility = View.GONE
                             binding.tvNoMeetings.visibility = View.VISIBLE
                         }
                     } else {
                         Log.d("CalendarActivity", "No meetings found for user $userUID")
-                        // If no meetingIds are found, show "No meetings" message
                         binding.rvMeetingsForDate.visibility = View.GONE
                         binding.loadingLayout.visibility = View.GONE
                         binding.tvNoMeetings.visibility = View.VISIBLE
@@ -112,7 +111,6 @@ class CalendarActivity : AppCompatActivity() {
                 }
                 .addOnFailureListener { exception ->
                     Log.e("CalendarActivity", "Error fetching meeting IDs", exception)
-                    // Handle the error (e.g., show an error message to the user)
                 }
         }
     }
@@ -120,7 +118,7 @@ class CalendarActivity : AppCompatActivity() {
     private fun fetchMeetingsByIds(meetingIds: List<String>, selectedDate: Calendar) {
         val meetingsForDate = mutableListOf<MeetingData>()
         val selectedDayOfWeek = selectedDate.get(Calendar.DAY_OF_WEEK)
-        var meetingsFetched = 0 // Counter for fetched meetings
+        var meetingsFetched = 0
 
         for (meetingId in meetingIds) {
             Log.d("CalendarActivity", "Fetching meeting with ID: $meetingId")
@@ -130,25 +128,28 @@ class CalendarActivity : AppCompatActivity() {
                 .addOnSuccessListener { meetingDocument ->
                     if (meetingDocument.exists()) {
                         val meetingData = meetingDocument.toObject(MeetingData::class.java)
-                        if (meetingData != null) {
-                            meetingData.id = meetingDocument.id
+                        meetingData?.let {
+                            val meetingDayOfWeek = getDayOfWeekFromString(it.day)
 
-                            Log.d("CalendarActivity", "Meeting data fetched: $meetingData")
+                            // Check if the meeting is on the selectedDayOfWeek
+                            if (meetingDayOfWeek == selectedDayOfWeek) {
+                                // Calculate upcomingDate relative to selectedDate
+                                val meetingCalendar = Calendar.getInstance()
+                                meetingCalendar.time = selectedDate.time
+                                meetingCalendar.set(Calendar.DAY_OF_WEEK, meetingDayOfWeek)
+                                if (meetingCalendar.timeInMillis < selectedDate.timeInMillis) {
+                                    meetingCalendar.add(Calendar.DAY_OF_MONTH, 7)
+                                }
+                                it.upcomingDate = meetingCalendar.time
 
-                            val meetingDayOfWeek = getDayOfWeekFromString(meetingData.day)
-                            if (selectedDayOfWeek == meetingDayOfWeek) {
-                                meetingsForDate.add(meetingData)
+                                meetingsForDate.add(it)
                             }
-                        } else {
-                            Log.e("CalendarActivity", "Error converting meeting document to MeetingData object")
                         }
                     } else {
                         Log.e("CalendarActivity", "Meeting document with ID $meetingId does not exist")
                     }
 
-                    meetingsFetched++ // Increment the counter
-
-                    // Update the UI only after ALL meetings are fetched
+                    meetingsFetched++
                     if (meetingsFetched == meetingIds.size) {
                         meetingAdapter.updateMeetings(meetingsForDate)
                         if (meetingsForDate.isEmpty()) {
@@ -164,9 +165,7 @@ class CalendarActivity : AppCompatActivity() {
                 .addOnFailureListener { exception ->
                     Log.e("CalendarActivity", "Error fetching meeting with ID $meetingId", exception)
 
-                    meetingsFetched++ // Increment the counter even in case of error
-
-                    // Update the UI only after ALL meetings are fetched
+                    meetingsFetched++
                     if (meetingsFetched == meetingIds.size) {
                         meetingAdapter.updateMeetings(meetingsForDate)
                         if (meetingsForDate.isEmpty()) {

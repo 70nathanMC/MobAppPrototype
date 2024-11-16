@@ -60,7 +60,7 @@ class CreateMeetingActivity : AppCompatActivity() {
             val startTime = String.format("%02d:%02d %s", formattedStartTimeHour, startTimeMinute, startTimeAmPm)
             val endTime = String.format("%02d:%02d %s", formattedEndTimeHour, endTimeMinute, endTimeAmPm)
             val slots = binding.etSlots.text.toString().toIntOrNull() ?: 0
-            val meetingLink = binding.etMeetingLink.text.toString().trim()
+            val meetingSite = binding.etMeetingSite.text.toString().trim()
 
             if (subject.isBlank() || branch.isBlank() || day.isBlank() ||
                 startTime.isBlank() || endTime.isBlank() || slots <= 0) {
@@ -118,7 +118,7 @@ class CreateMeetingActivity : AppCompatActivity() {
                             "date" to com.google.firebase.Timestamp(dateCalendar.time),
                             "tutorFullName" to userFullName,
                             "tutorProfilePic" to profilePic,
-                            "meetingLink" to meetingLink
+                            "meetingSite" to meetingSite
                         )
 
                         db.collection("meetings")

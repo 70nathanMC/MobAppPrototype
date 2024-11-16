@@ -2,7 +2,9 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="@color/appWhite"
+    app:cardBackgroundColor="@color/appGreen"
+    app:cardCornerRadius="20dp"
+    android:layout_marginBottom="10dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,17 +12,59 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/listTutorImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+        <View
+            android:id="@+id/topLine"
+            android:layout_width="0.6dp"
+            android:layout_height="78dp"
+            android:background="@color/white"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="90dp" />
+
+        <TextView
+            android:id="@+id/tvMeetingDay"
+            android:layout_width="95dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/james"
-            app:shapeAppearanceOverlay="@style/roundedImage" />
+            android:gravity="center"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="320dp"
+            android:fontFamily="@font/medium"
+            android:text="Mon"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvMeetingDate"
+            android:layout_width="95dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvMeetingDay"
+            android:gravity="center"
+            android:layout_marginTop="-9dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="320dp"
+            android:fontFamily="@font/bold"
+            android:text="16"
+            android:textColor="@color/white"
+            android:textSize="28sp" />
+
+        <TextView
+            android:id="@+id/tvMeetingMonth"
+            android:layout_width="95dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvMeetingDate"
+            android:gravity="center"
+            android:layout_marginTop="-13dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="320dp"
+            android:layout_marginBottom="14dp"
+            android:fontFamily="@font/medium"
+            android:text="Sept"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+
 
         <TextView
             android:id="@+id/tvMeetingSubjectAndBranch"
@@ -28,42 +72,43 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="70dp"
+            android:layout_marginStart="110dp"
             android:layout_marginTop="14dp"
-            android:layout_marginEnd="92dp"
-            android:fontFamily="@font/medium"
+            android:layout_marginEnd="30dp"
+            android:fontFamily="@font/bold"
             android:text="Calculus - Limits"
-            android:textColor="@color/appBlack"
-            android:textSize="15sp" />
+            android:textColor="@color/white"
+            android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/tvTutorFullName"
+            android:id="@+id/tvMeetingSite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvMeetingSubjectAndBranch"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="70dp"
-            android:layout_marginEnd="14dp"
-            android:layout_marginBottom="14dp"
-            android:layout_toStartOf="@+id/tvMeetingDay"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="110dp"
+            android:layout_marginEnd="30dp"
             android:fontFamily="@font/light"
-            android:text="John Bautista"
-            android:textColor="@color/appBlack"
+            android:text="Google Meet"
+            android:textColor="@color/white"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
-            android:id="@+id/tvMeetingDay"
+            android:id="@+id/tvMeetingTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvMeetingSubjectAndBranch"
+            android:layout_below="@+id/tvMeetingSite"
+            android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="0dp"
-            android:layout_marginEnd="20dp"
             android:fontFamily="@font/light"
-            android:text="StartTime"
-            android:textColor="@color/appBlack"
-            android:textSize="13sp"
+            android:text="StartTime - EndTime"
+            android:layout_marginStart="110dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="14dp"
+            android:textColor="@color/white"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent" />
 
     </RelativeLayout>

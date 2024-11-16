@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/appGrayF"
+    app:cardCornerRadius="10dp"
+    android:layout_marginBottom="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="90dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/topLine"
+            android:layout_width="4dp"
+            android:layout_height="wrap_content"
+            android:background="@color/appGreen" />
+
+        <TextView
+            android:id="@+id/tvMeetingSubjectAndBranch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="30dp"
+            android:fontFamily="@font/bold"
+            android:text="Calculus - Limits"
+            android:textColor="@color/appBlack"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvMeetingSite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvMeetingSubjectAndBranch"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:fontFamily="@font/light"
+            android:text="Google Meet"
+            android:textColor="@color/appBlack"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_marginStart="30dp"
+            android:src="@drawable/time_circle"
+            android:layout_below="@+id/tvMeetingSite"/>
+
+        <TextView
+            android:id="@+id/tvMeetingTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvMeetingSite"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:fontFamily="@font/light"
+            android:text="StartTime - EndTime"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="14dp"
+            android:textColor="@color/appBlack"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
