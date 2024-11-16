@@ -17,11 +17,14 @@ import com.example.mobappprototype.R
 import com.example.mobappprototype.databinding.ActivityQuestionsBinding
 import com.example.mobappprototype.model.Question
 import com.example.mobappprototype.utils.Constants
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 private const val TAG = "QuestionsActivity"
 class QuizActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityQuestionsBinding
-
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
     private var questionsCounter: Int = 0
     private var questionsList: MutableList<Question> = mutableListOf()
     private var subjectName: String = ""
@@ -37,6 +40,9 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
 
         binding.layoutMainActivity.visibility = View.GONE
         binding.loadingLayout.visibility = View.VISIBLE
+
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
         binding.flImageButtonBack.post {
             val rect = Rect()
@@ -68,12 +74,7 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
         binding.btnNext.setOnClickListener(this)
 
         binding.ibtnHomeFQuiz.setOnClickListener{
-            Intent(this, StudentMainActivity::class.java).also {
-                binding.layoutMainActivity.visibility = View.GONE
-                binding.loadingLayout.visibility = View.VISIBLE
-                startActivity(it)
-                finish()
-            }
+            checkUserRole()
         }
     }
 
@@ -242,5 +243,45 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
                 )
             }
         }
+    }
+
+    private fun checkUserRole() {
+        val user = auth.currentUser
+        if (user != null) {
+            val userUid = user.uid
+            val usersRef = db.collection("users").document(userUid)
+
+            usersRef.get().addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val role = document.getString("role")
+                    when (role) {
+                        "Student" -> {
+                            goStudentMainActivity()
+                        }
+
+                        "Tutor" -> {
+                            goTutorMainActivity()
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private fun goStudentMainActivity() {
+        Log.i(TAG, "goStudentMainActivity")
+        val intent = Intent(this, StudentMainActivity::class.java)
+        binding.layoutMainActivity.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+        startActivity(intent)
+        finish()
+    }
+
+    private fun goTutorMainActivity() {
+        Log.i(TAG, "goTutorMainActivity")
+        val intent = Intent(this, TutorMainActivity::class.java)
+        binding.layoutMainActivity.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+        startActivity(intent)
+        finish()
     }
 }

@@ -209,7 +209,7 @@
                             android:id="@+id/ivHistory"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="40dp"
+                            android:layout_marginStart="35dp"
                             android:layout_weight="1"
                             app:srcCompat="@drawable/ic_history" />
 
@@ -263,7 +263,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="30dp"
-                        android:layout_marginTop="30dp"
+                        android:layout_marginTop="20dp"
                         android:layout_marginEnd="50dp"
                         android:layout_marginBottom="30dp"
                         app:cardBackgroundColor="@color/appWhite"
@@ -283,6 +283,7 @@
                                 android:focusable="true"
                                 android:fontFamily="@font/bold"
                                 android:text="Agenda"
+                                android:textColor="@color/appBlack"
                                 android:textSize="20sp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
