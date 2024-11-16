@@ -222,13 +222,6 @@ class StudentMainActivity : AppCompatActivity() {
         binding.ivPhilosophy.setOnClickListener{
             startQuizQuestActivity("Philosophy", R.drawable.ic_qq_philosophy)
         }
-        binding.ivReadyToLearn.setOnClickListener{
-            Intent(this@StudentMainActivity, TutorSearchActivity::class.java).also {
-                binding.layoutMainActivity.visibility = View.GONE
-                binding.loadingLayout.visibility = View.VISIBLE
-                startActivity(it)
-            }
-        }
         binding.btnFindTutor.setOnClickListener {
             Intent(this@StudentMainActivity, TutorSearchActivity::class.java).also {
                 binding.layoutMainActivity.visibility = View.GONE

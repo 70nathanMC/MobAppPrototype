@@ -137,10 +137,11 @@ class CalendarActivity : AppCompatActivity() {
                                 val meetingCalendar = Calendar.getInstance()
                                 meetingCalendar.time = selectedDate.time
                                 meetingCalendar.set(Calendar.DAY_OF_WEEK, meetingDayOfWeek)
-                                if (meetingCalendar.timeInMillis < selectedDate.timeInMillis) {
+                                if (meetingCalendar.before(selectedDate)) {
                                     meetingCalendar.add(Calendar.DAY_OF_MONTH, 7)
                                 }
                                 it.upcomingDate = meetingCalendar.time
+                                it.id = meetingDocument.id // Set the ID here
 
                                 meetingsForDate.add(it)
                             }
@@ -148,23 +149,11 @@ class CalendarActivity : AppCompatActivity() {
                     } else {
                         Log.e("CalendarActivity", "Meeting document with ID $meetingId does not exist")
                     }
-
-                    meetingsFetched++
-                    if (meetingsFetched == meetingIds.size) {
-                        meetingAdapter.updateMeetings(meetingsForDate)
-                        if (meetingsForDate.isEmpty()) {
-                            binding.rvMeetingsForDate.visibility = View.GONE
-                            binding.tvNoMeetings.visibility = View.VISIBLE
-                        } else {
-                            binding.tvNoMeetings.visibility = View.GONE
-                            binding.rvMeetingsForDate.visibility = View.VISIBLE
-                        }
-                        binding.loadingLayout.visibility = View.GONE
-                    }
                 }
                 .addOnFailureListener { exception ->
                     Log.e("CalendarActivity", "Error fetching meeting with ID $meetingId", exception)
-
+                }
+                .addOnCompleteListener {
                     meetingsFetched++
                     if (meetingsFetched == meetingIds.size) {
                         meetingAdapter.updateMeetings(meetingsForDate)

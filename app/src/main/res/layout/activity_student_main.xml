@@ -47,7 +47,8 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="-30dp">
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/ivUserImageDashboard"
@@ -98,10 +99,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="170dp"
                         android:background="@drawable/ic_ready_to_learn_1"
-                        android:clickable="true"
                         android:clipToOutline="true"
                         android:cropToPadding="true"
-                        android:focusable="true"
                         android:scaleType="centerCrop"
                         android:layout_marginStart="30dp"
                         android:layout_marginEnd="30dp"
@@ -305,7 +304,7 @@
                                 android:id="@+id/rvMeetingsToday"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="20dp"
+                                android:layout_marginTop="10dp"
                                 android:layout_marginStart="20dp"
                                 android:layout_marginEnd="15dp"
                                 android:layout_marginBottom="20dp"
