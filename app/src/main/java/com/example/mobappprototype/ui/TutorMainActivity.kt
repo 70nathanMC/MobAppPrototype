@@ -70,7 +70,7 @@ class TutorMainActivity : AppCompatActivity() {
             }
         }
 
-        setupHorizontalScrollView()
+//        setupHorizontalScrollView()
         binding.bottomNavigationBar.selectedItemId = R.id.home
 
         binding.btnCreateMeeting.setOnClickListener {
@@ -90,30 +90,30 @@ class TutorMainActivity : AppCompatActivity() {
         meetingsAdapter = MeetingsAdapter(emptyList())
         binding.rvMeetings.adapter = meetingsAdapter
 
-        binding.ivGenMath.setOnClickListener {
-            startQuizQuestActivity("Gen Math", R.drawable.ic_qq_gen_math)
-        }
-        binding.ivPhysics.setOnClickListener{
-            startQuizQuestActivity("Physics", R.drawable.ic_qq_physics)
-        }
-        binding.ivCalculus.setOnClickListener{
-            startQuizQuestActivity("Calculus", R.drawable.ic_qq_calculus)
-        }
-        binding.ivScience.setOnClickListener{
-            startQuizQuestActivity("Science", R.drawable.ic_qq_science)
-        }
-        binding.ivHistory.setOnClickListener{
-            startQuizQuestActivity("History", R.drawable.ic_qq_history)
-        }
-        binding.ivLiterature.setOnClickListener{
-            startQuizQuestActivity("Literature", R.drawable.ic_qq_literature)
-        }
-        binding.ivStatistics.setOnClickListener{
-            startQuizQuestActivity("Statistics", R.drawable.ic_qq_statistics)
-        }
-        binding.ivPhilosophy.setOnClickListener{
-            startQuizQuestActivity("Philosophy", R.drawable.ic_qq_philosophy)
-        }
+//        binding.ivGenMath.setOnClickListener {
+//            startQuizQuestActivity("Gen Math", R.drawable.ic_qq_gen_math)
+//        }
+//        binding.ivPhysics.setOnClickListener{
+//            startQuizQuestActivity("Physics", R.drawable.ic_qq_physics)
+//        }
+//        binding.ivCalculus.setOnClickListener{
+//            startQuizQuestActivity("Calculus", R.drawable.ic_qq_calculus)
+//        }
+//        binding.ivScience.setOnClickListener{
+//            startQuizQuestActivity("Science", R.drawable.ic_qq_science)
+//        }
+//        binding.ivHistory.setOnClickListener{
+//            startQuizQuestActivity("History", R.drawable.ic_qq_history)
+//        }
+//        binding.ivLiterature.setOnClickListener{
+//            startQuizQuestActivity("Literature", R.drawable.ic_qq_literature)
+//        }
+//        binding.ivStatistics.setOnClickListener{
+//            startQuizQuestActivity("Statistics", R.drawable.ic_qq_statistics)
+//        }
+//        binding.ivPhilosophy.setOnClickListener{
+//            startQuizQuestActivity("Philosophy", R.drawable.ic_qq_philosophy)
+//        }
 
 
         binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
@@ -146,34 +146,34 @@ class TutorMainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupHorizontalScrollView() {
-        val scrollView = binding.hsvDashboard
-        val linearLayout = binding.layoutDots
-        val subjectsPerPage = 4 // Number of subjects per page
-
-        // Calculate the number of dots dynamically
-        val totalSubjects = (scrollView.getChildAt(0) as LinearLayout).childCount
-        dotsCount = (totalSubjects + subjectsPerPage - 1) / subjectsPerPage // Ceiling division
-
-        dots = arrayOfNulls(dotsCount)
-
-        for (i in 0 until dotsCount) {
-            dots[i] = ImageView(this)
-            dots[i]?.setImageDrawable(resources.getDrawable(R.drawable.ic_non_active_dot))
-
-            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            params.setMargins(8, 0, 8, 0)
-            linearLayout.addView(dots[i], params)
-        }
-
-        dots[0]?.setImageDrawable(resources.getDrawable(R.drawable.ic_active_dot))
-
-        scrollView.setOnScrollChangeListener { _, scrollX, _, _, _ ->
-            val viewWidth = scrollView.width
-            val page = (scrollX + (viewWidth / 2)) / viewWidth
-            updateDots(page)
-        }
-    }
+//    private fun setupHorizontalScrollView() {
+//        val scrollView = binding.hsvDashboard
+//        val linearLayout = binding.layoutDots
+//        val subjectsPerPage = 4 // Number of subjects per page
+//
+//        // Calculate the number of dots dynamically
+//        val totalSubjects = (scrollView.getChildAt(0) as LinearLayout).childCount
+//        dotsCount = (totalSubjects + subjectsPerPage - 1) / subjectsPerPage // Ceiling division
+//
+//        dots = arrayOfNulls(dotsCount)
+//
+//        for (i in 0 until dotsCount) {
+//            dots[i] = ImageView(this)
+//            dots[i]?.setImageDrawable(resources.getDrawable(R.drawable.ic_non_active_dot))
+//
+//            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+//            params.setMargins(8, 0, 8, 0)
+//            linearLayout.addView(dots[i], params)
+//        }
+//
+//        dots[0]?.setImageDrawable(resources.getDrawable(R.drawable.ic_active_dot))
+//
+//        scrollView.setOnScrollChangeListener { _, scrollX, _, _, _ ->
+//            val viewWidth = scrollView.width
+//            val page = (scrollX + (viewWidth / 2)) / viewWidth
+//            updateDots(page)
+//        }
+//    }
 
     private fun updateDots(currentPage: Int) {
         for (i in 0 until dotsCount) {
