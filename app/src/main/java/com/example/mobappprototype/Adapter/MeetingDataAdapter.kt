@@ -1,5 +1,6 @@
 package com.example.mobappprototype.Adapter
 
+import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -57,57 +58,93 @@ class MeetingDataAdapter(private val meetings: List<MeetingData>) :
         holder.binding.tvMeetingScheduleStart.text = meeting.startTime
         holder.binding.tvMeetingScheduleEnd.text = meeting.endTime
         holder.btnJoinMeeting.setOnClickListener {
-            val meetingId = meeting.id
-            val userUID = auth.currentUser?.uid
 
-            if (meetingId != null && userUID != null) {
-                val meetingRef = firestoreDb.collection("meetings").document(meetingId)
-                meetingRef.get().addOnSuccessListener { meetingDocument ->
-                    val slots = meetingDocument.getLong("slots")?.toInt() ?: 0
-                    val participants = meetingDocument.get("participants") as? List<String> ?: emptyList()
+            val builder = AlertDialog.Builder(holder.itemView.context)
+            builder.setTitle("Disclaimer")
+            builder.setMessage(
+                """
+                By joining this meeting, you acknowledge and agree to the following:
+            
+                *   Respectful Communication: All interactions should be courteous and professional. Avoid offensive language, personal attacks, or any form of harassment.
+                *   Privacy: Respect the privacy of other participants. Do not share personal information or meeting content outside of the session without consent.
+                *   Active Participation: Be prepared to engage in the learning process. Contribute constructively and avoid disruptive behavior.
+                *   Confidentiality: Any materials shared during the meeting are for educational purposes and should not be distributed or reproduced without permission.
+                *   In-Person Meetings: If you choose to meet with a tutor in person, you do so at your own risk. We are not responsible for any incidents or issues that may occur during such meetings. Please exercise caution and good judgment when arranging and attending in-person sessions.
+            
+                Failure to adhere to these guidelines may result in removal from the meeting and/or further consequences as determined by the platform administrators.
+                """.trimIndent()
+            )
+            builder.setPositiveButton("Accept") { dialog, which ->
 
-                    // Calculate slotsRemaining
-                    val slotsRemaining = slots - (participants.size - 1)
-                    if (slotsRemaining > 0) {
-                        val studentMeetingRef = firestoreDb.collection("studentMeetings").document(userUID)
+                val meetingId = meeting.id
+                val userUID = auth.currentUser?.uid
 
-                        // Check if the student already has a document in studentMeetings
-                        studentMeetingRef.get()
-                            .addOnSuccessListener { studentMeetingDocument ->
+                if (meetingId != null && userUID != null) {
+                    val meetingRef = firestoreDb.collection("meetings").document(meetingId)
+                    meetingRef.get().addOnSuccessListener { meetingDocument ->
+                        val slots = meetingDocument.getLong("slots")?.toInt() ?: 0
+                        val participants =
+                            meetingDocument.get("participants") as? List<String> ?: emptyList()
 
-                                meetingRef.update("slotsRemaining", slotsRemaining)
-                                    .addOnSuccessListener {
-                                        Log.d(TAG, "Successfully updated slotsRemaining for meeting: $meetingId")
-                                    }
-                                    .addOnFailureListener { e ->
-                                        Log.e(TAG, "Error updating slotsRemaining", e)
-                                    }
+                        // Calculate slotsRemaining
+                        val slotsRemaining = slots - (participants.size - 1)
+                        if (slotsRemaining > 0) {
+                            val studentMeetingRef =
+                                firestoreDb.collection("studentMeetings").document(userUID)
 
-                                if (studentMeetingDocument.exists()) {
-                                    // Student document exists, check if the meeting is already in the array
-                                    val meetingIds = studentMeetingDocument.get("meetingIds") as? List<String> ?: emptyList()
-                                    if (meetingIds.contains(meetingId)) {
-                                        // Student has already joined this meeting
-                                        Log.d(
-                                            TAG,
-                                            "Student $userUID has already joined meeting $meetingId"
-                                        )
-                                        Toast.makeText(
-                                            holder.itemView.context,
-                                            "You have already joined this meeting",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                            // Check if the student already has a document in studentMeetings
+                            studentMeetingRef.get()
+                                .addOnSuccessListener { studentMeetingDocument ->
 
-                                        // Launch ChatActivity here
-                                        val intent =
-                                            Intent(
-                                                holder.itemView.context,
-                                                ChatActivity::class.java
+                                    meetingRef.update("slotsRemaining", slotsRemaining)
+                                        .addOnSuccessListener {
+                                            Log.d(
+                                                TAG,
+                                                "Successfully updated slotsRemaining for meeting: $meetingId"
                                             )
-                                        intent.putExtra("meetingId", meetingId)
-                                        holder.itemView.context.startActivity(intent)
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Log.e(TAG, "Error updating slotsRemaining", e)
+                                        }
+
+                                    if (studentMeetingDocument.exists()) {
+                                        // Student document exists, check if the meeting is already in the array
+                                        val meetingIds =
+                                            studentMeetingDocument.get("meetingIds") as? List<String>
+                                                ?: emptyList()
+                                        if (meetingIds.contains(meetingId)) {
+                                            // Student has already joined this meeting
+                                            Log.d(
+                                                TAG,
+                                                "Student $userUID has already joined meeting $meetingId"
+                                            )
+                                            Toast.makeText(
+                                                holder.itemView.context,
+                                                "You have already joined this meeting",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+
+                                            // Launch ChatActivity here
+                                            val intent =
+                                                Intent(
+                                                    holder.itemView.context,
+                                                    ChatActivity::class.java
+                                                )
+                                            intent.putExtra("meetingId", meetingId)
+                                            holder.itemView.context.startActivity(intent)
+                                        } else {
+                                            // Add the meeting to the student's meetingIds array
+                                            joinMeetingAndUpdateStudentMeetings(
+                                                meetingRef,
+                                                studentMeetingRef,
+                                                userUID,
+                                                meetingId,
+                                                holder,
+                                                meeting
+                                            )
+                                        }
                                     } else {
-                                        // Add the meeting to the student's meetingIds array
+                                        // Student document doesn't exist, create it and add the meeting
                                         joinMeetingAndUpdateStudentMeetings(
                                             meetingRef,
                                             studentMeetingRef,
@@ -117,32 +154,31 @@ class MeetingDataAdapter(private val meetings: List<MeetingData>) :
                                             meeting
                                         )
                                     }
-                                } else {
-                                    // Student document doesn't exist, create it and add the meeting
-                                    joinMeetingAndUpdateStudentMeetings(
-                                        meetingRef,
-                                        studentMeetingRef,
-                                        userUID,
-                                        meetingId,
-                                        holder,
-                                        meeting
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e(
+                                        TAG,
+                                        "Error checking for existing student meeting document",
+                                        e
                                     )
                                 }
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e(
-                                    TAG,
-                                    "Error checking for existing student meeting document",
-                                    e
-                                )
-                            }
-                    } else {
-                        Toast.makeText(holder.itemView.context, "This meeting is full.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(
+                                holder.itemView.context,
+                                "This meeting is full.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }.addOnFailureListener { e ->
+                        Log.e(TAG, "Error checking slotsRemaining", e)
                     }
-                }.addOnFailureListener { e ->
-                    Log.e(TAG, "Error checking slotsRemaining", e)
-                    }
+                }
             }
+            builder.setNegativeButton("Decline") { dialog, which ->
+                // Do nothing or provide feedback
+            }
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
         }
     }
 
