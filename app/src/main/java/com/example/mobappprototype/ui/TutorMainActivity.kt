@@ -31,8 +31,6 @@ class TutorMainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var meetingsAdapter: MeetingsAdapter
     private lateinit var userViewModel: UserViewModel
-    private var dotsCount: Int = 0
-    private lateinit var dots: Array<ImageView?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityTutorMainBinding.inflate(layoutInflater)
@@ -70,7 +68,6 @@ class TutorMainActivity : AppCompatActivity() {
             }
         }
 
-//        setupHorizontalScrollView()
         binding.bottomNavigationBar.selectedItemId = R.id.home
 
         binding.btnCreateMeeting.setOnClickListener {
@@ -89,31 +86,6 @@ class TutorMainActivity : AppCompatActivity() {
         binding.rvMeetings.layoutManager = LinearLayoutManager(this)
         meetingsAdapter = MeetingsAdapter(emptyList())
         binding.rvMeetings.adapter = meetingsAdapter
-
-//        binding.ivGenMath.setOnClickListener {
-//            startQuizQuestActivity("Gen Math", R.drawable.ic_qq_gen_math)
-//        }
-//        binding.ivPhysics.setOnClickListener{
-//            startQuizQuestActivity("Physics", R.drawable.ic_qq_physics)
-//        }
-//        binding.ivCalculus.setOnClickListener{
-//            startQuizQuestActivity("Calculus", R.drawable.ic_qq_calculus)
-//        }
-//        binding.ivScience.setOnClickListener{
-//            startQuizQuestActivity("Science", R.drawable.ic_qq_science)
-//        }
-//        binding.ivHistory.setOnClickListener{
-//            startQuizQuestActivity("History", R.drawable.ic_qq_history)
-//        }
-//        binding.ivLiterature.setOnClickListener{
-//            startQuizQuestActivity("Literature", R.drawable.ic_qq_literature)
-//        }
-//        binding.ivStatistics.setOnClickListener{
-//            startQuizQuestActivity("Statistics", R.drawable.ic_qq_statistics)
-//        }
-//        binding.ivPhilosophy.setOnClickListener{
-//            startQuizQuestActivity("Philosophy", R.drawable.ic_qq_philosophy)
-//        }
 
 
         binding.bottomNavigationBar.setOnItemSelectedListener { menuItem ->
@@ -136,52 +108,6 @@ class TutorMainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startQuizQuestActivity(subjectName: String, quizLogo: Int) {
-        Intent(this, QuizQuestActivity::class.java).also {
-            binding.layoutMainActivity.visibility = View.GONE
-            binding.loadingLayout.visibility = View.VISIBLE
-            it.putExtra("SUBJECT_NAME", subjectName)
-            it.putExtra("QUIZ_LOGO", quizLogo)
-            startActivity(it)
-        }
-    }
-
-//    private fun setupHorizontalScrollView() {
-//        val scrollView = binding.hsvDashboard
-//        val linearLayout = binding.layoutDots
-//        val subjectsPerPage = 4 // Number of subjects per page
-//
-//        // Calculate the number of dots dynamically
-//        val totalSubjects = (scrollView.getChildAt(0) as LinearLayout).childCount
-//        dotsCount = (totalSubjects + subjectsPerPage - 1) / subjectsPerPage // Ceiling division
-//
-//        dots = arrayOfNulls(dotsCount)
-//
-//        for (i in 0 until dotsCount) {
-//            dots[i] = ImageView(this)
-//            dots[i]?.setImageDrawable(resources.getDrawable(R.drawable.ic_non_active_dot))
-//
-//            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-//            params.setMargins(8, 0, 8, 0)
-//            linearLayout.addView(dots[i], params)
-//        }
-//
-//        dots[0]?.setImageDrawable(resources.getDrawable(R.drawable.ic_active_dot))
-//
-//        scrollView.setOnScrollChangeListener { _, scrollX, _, _, _ ->
-//            val viewWidth = scrollView.width
-//            val page = (scrollX + (viewWidth / 2)) / viewWidth
-//            updateDots(page)
-//        }
-//    }
-
-    private fun updateDots(currentPage: Int) {
-        for (i in 0 until dotsCount) {
-            dots[i]?.setImageDrawable(resources.getDrawable(R.drawable.ic_non_active_dot))
-        }
-        dots[currentPage]?.setImageDrawable(resources.getDrawable(R.drawable.ic_active_dot))
-    }
-
     private fun updateUIWithUserData(user: User) {
         binding.tvUserFirstNameDashboard.text = user.firstName
         Glide.with(this).load(user.profilePic).into(binding.ivUserImageDashboard)
@@ -200,6 +126,7 @@ class TutorMainActivity : AppCompatActivity() {
     }
     private fun fetchMeetings() {
         val userId = auth.currentUser?.uid ?: return
+        Log.d(TAG, "Was fetch meetings run?")
 
         db.collection("users").document(userId)
             .collection("tutorData")
@@ -216,6 +143,43 @@ class TutorMainActivity : AppCompatActivity() {
                 }
 
                 if (meetingIds.isEmpty()) {
+                    Log.d(TAG, "MeetingIds are empty for $userId")
+
+                    // add logic here where we search through all the meetings in the meetings collection, then check each meetings there if the tutorId field is the same as the current userId. If it is, then add the meetingId of that meeting(which is the id of the document) to the tutorData of the current user.
+                    db.collection("meetings")
+                        .whereEqualTo("tutorId", userId)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            val newMeetingIds = mutableListOf<String>()
+                            for (meetingDoc in querySnapshot) {
+                                newMeetingIds.add(meetingDoc.id)
+                            }
+
+                            if (newMeetingIds.isNotEmpty()) {
+                                // Update tutorData with the found meetingIds
+                                db.collection("users").document(userId)
+                                    .collection("tutorData")
+                                    .document("data")
+                                    .update("meetings", newMeetingIds)
+                                    .addOnSuccessListener {
+                                        Log.d(TAG, "TutorData updated with meeting IDs")
+                                        fetchMeetings()
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.e(TAG, "Error updating tutorData", e)
+                                    }
+                            } else {
+                                Log.d(TAG, "No meetings for tutor $userId")
+                                meetingsAdapter.meetings = emptyList()
+                                meetingsAdapter.notifyDataSetChanged()
+                                return@addOnSuccessListener
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e(TAG, "Error searching for meetings", e)
+                            // Handle the error
+                        }
+
                     meetingsAdapter.meetings = emptyList() // Update the adapter with an empty list
                     meetingsAdapter.notifyDataSetChanged() // Notify the adapter of the change
                     return@addOnSuccessListener
@@ -248,6 +212,7 @@ class TutorMainActivity : AppCompatActivity() {
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(this, "Error fetching meetings: ${exception.message}", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "Failed to get tutor data for $userId")
             }
     }
     private fun updateFcmToken() {
