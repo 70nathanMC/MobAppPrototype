@@ -96,8 +96,10 @@ class TutorSearchActivity : AppCompatActivity() {
         })
 
         binding.btnSearch.setOnClickListener {
-            val query = binding.svSearchTutor.query.toString() // Get the query from SearchView
-            saveSearchQuery(query)
+            val query = binding.svSearchTutor.query.toString().trim() // Get the query from SearchView
+            if (query.isNotBlank()) {
+                saveSearchQuery(query)
+            }
             val intent = Intent(this@TutorSearchActivity, TutorListActivity::class.java)
             intent.putExtra("QUERY_TEXT", query)
             startActivity(intent)
@@ -113,6 +115,7 @@ class TutorSearchActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     private fun searchTutors(query: String) {
         tutorList.clear() // Clear previous results
+        val queryF = query.trim()
 
         firestoreDb.collection("users")
             .whereEqualTo("role", "Tutor") // Filter for tutors only
@@ -123,7 +126,7 @@ class TutorSearchActivity : AppCompatActivity() {
 
                     // Split the full name and query into words
                     val nameWords = fullName.lowercase().split(" ")
-                    val queryWords = query.lowercase().split(" ")
+                    val queryWords = queryF.lowercase().split(" ")
 
                     // Check if ANY query word matches the START of ANY name word
                     val isMatch = queryWords.any { queryWord ->

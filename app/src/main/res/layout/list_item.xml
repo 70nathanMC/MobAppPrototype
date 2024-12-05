@@ -28,11 +28,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_toEndOf="@id/listTutorImage"
             android:fontFamily="@font/medium"
-            android:text="James Bautista"
+            android:text="James Longanisa D. Bautista"
             android:textColor="@color/appBlack"
             android:textSize="18sp" />
 
@@ -40,40 +42,45 @@
             android:id="@+id/tutorDegree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/listTutorName"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="0dp"
             android:layout_toEndOf="@+id/listTutorImage"
             android:fontFamily="@font/regular"
             android:text="Computer Science"
             android:textColor="@color/appGray6"
-            android:textSize="14sp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="50dp" />
+            android:textSize="14sp" />
 
         <RatingBar
             android:id="@+id/ratingBar"
             style="@android:style/Widget.DeviceDefault.Light.RatingBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tutorDegree"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="15dp"
+            android:layout_toEndOf="@+id/listTutorImage"
             android:maxHeight="16dp"
             android:minHeight="16dp"
             android:numStars="5"
             android:progress="5"
             android:progressTint="@color/stars"
-            android:rating="4.5"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="80dp"
-            android:layout_toEndOf="@+id/listTutorImage" />
+            android:rating="4.5" />
 
         <TextView
             android:id="@+id/ratingtxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tutorDegree"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="6dp"
+            android:layout_toEndOf="@id/ratingBar"
             android:fontFamily="@font/light"
             android:text="4.5 Rating"
+            android:layout_marginBottom="15dp"
             android:textColor="@color/appBlack"
             android:textSize="13sp"
-            android:layout_toEndOf="@id/ratingBar"
             app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
             app:layout_constraintEnd_toEndOf="parent" />
 

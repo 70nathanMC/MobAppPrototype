@@ -63,7 +63,9 @@ class TutorProfileActivity : AppCompatActivity() {
     }
 
     private fun fetchTutorDataAndPopulateUI(tutorUid: String) {
-        firestoreDb.collection("users").document(tutorUid)
+        val tutorDocRef = firestoreDb.collection("users").document(tutorUid)
+
+        tutorDocRef
             .get()
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
@@ -73,6 +75,21 @@ class TutorProfileActivity : AppCompatActivity() {
                     val bio = document.getString("bio") ?: ""
                     binding.tvTutorRating.text = document.getDouble("overallRating").toString()
                     binding.tvFeedbackCount.text = document.getLong("feedbackAmount")?.toString()
+
+                    tutorDocRef.addSnapshotListener { snapshot, error ->
+                        if (error != null) {
+                            Log.e(TAG, "Error listening for tutor data updates", error)
+                            return@addSnapshotListener
+                        }
+
+                        if (snapshot != null && snapshot.exists()) {
+                            // Update tvTutorRating and tvFeedbackCount
+                            binding.tvTutorRating.text = snapshot.getDouble("overallRating").toString()
+                            binding.tvFeedbackCount.text = snapshot.getLong("feedbackAmount")?.toString()
+                        } else {
+                            Log.d(TAG, "Tutor document does not exist")
+                        }
+                    }
 
                     val viewPager = binding.viewPager
                     val tabLayout = binding.tabLayout
