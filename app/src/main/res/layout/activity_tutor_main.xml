@@ -161,6 +161,22 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/tvNoMeetings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You have no meetings scheduled."
+                android:fontFamily="@font/regular"
+                android:textSize="14sp"
+                android:visibility="gone"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View

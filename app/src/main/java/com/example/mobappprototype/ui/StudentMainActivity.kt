@@ -30,8 +30,6 @@ class StudentMainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var userViewModel: UserViewModel
     private lateinit var meetingAdapter: MeetingAdapter
-    private var dotsCount: Int = 0
-    private lateinit var dots: Array<ImageView?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +71,6 @@ class StudentMainActivity : AppCompatActivity() {
             }
         }
         setupClickListeners()
-//        setupHorizontalScrollView()
         binding.bottomNavigationBar.selectedItemId = R.id.home
     }
 
@@ -159,13 +156,6 @@ class StudentMainActivity : AppCompatActivity() {
                     }
                 }
         }
-    }
-
-    private fun updateDots(currentPage: Int) {
-        for (i in 0 until dotsCount) {
-            dots[i]?.setImageDrawable(resources.getDrawable(R.drawable.ic_non_active_dot))
-        }
-        dots[currentPage]?.setImageDrawable(resources.getDrawable(R.drawable.ic_active_dot))
     }
 
     private fun setupClickListeners() {

@@ -416,16 +416,32 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
     private fun updateSubjectsWithTutor(tutorUID: String, subjects: List<String>) {
-        for (subjectName in subjects) {
-            firestoreDb.collection("subjects").document(subjectName)
-                .update("relatedTutors", FieldValue.arrayUnion(tutorUID))
-                .addOnSuccessListener {
-                    Log.d(TAG, "Successfully added tutor $tutorUID to subject $subjectName")
+        firestoreDb.collection("subjects")
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                for (subjectDocument in querySnapshot.documents) {
+                    val subjectName = subjectDocument.getString("subjectName")
+                    if (subjectName != null && subjects.contains(subjectName)) {
+                        val relatedTutors = subjectDocument.get("relatedTutors") as? List<*> ?: emptyList<String>()
+
+                        if (!relatedTutors.contains(tutorUID)) { // Check for duplicates
+                            firestoreDb.collection("subjects").document(subjectDocument.id)
+                                .update("relatedTutors", FieldValue.arrayUnion(tutorUID))
+                                .addOnSuccessListener {
+                                    Log.d(TAG, "Successfully added tutor $tutorUID to subject $subjectName")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(TAG, "Error adding tutor $tutorUID to subject $subjectName", e)
+                                }
+                        } else {
+                            Log.d(TAG, "Tutor $tutorUID already exists in subject $subjectName")
+                        }
+                    }
                 }
-                .addOnFailureListener { e ->
-                    Log.w(TAG, "Error adding tutor $tutorUID to subject $subjectName", e)
-                }
-        }
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error getting subjects", e)
+            }
     }
     private fun goStudentMainProfileActivity() {
         Log.i(TAG, "goStudentMainProfileActivity")

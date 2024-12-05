@@ -181,6 +181,8 @@ class TutorMainActivity : AppCompatActivity() {
 
                     meetingsAdapter.meetings = emptyList() // Update the adapter with an empty list
                     meetingsAdapter.notifyDataSetChanged() // Notify the adapter of the change
+                    binding.rvMeetings.visibility = View.GONE
+                    binding.tvNoMeetings.visibility = View.VISIBLE
                     binding.loadingLayout.visibility = View.GONE
                     binding.layoutMainActivity.visibility = View.VISIBLE
                     return@addOnSuccessListener

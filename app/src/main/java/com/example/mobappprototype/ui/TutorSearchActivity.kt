@@ -71,6 +71,7 @@ class TutorSearchActivity : AppCompatActivity() {
                     runnable?.let { handler.removeCallbacks(it) }
 
                     runnable = Runnable {
+                        Log.d(TAG, "Query: $query")
                         saveSearchQuery(query) // Save the search query
                         val intent = Intent(this@TutorSearchActivity, TutorListActivity::class.java)
                         intent.putExtra("QUERY_TEXT", query)
@@ -95,9 +96,11 @@ class TutorSearchActivity : AppCompatActivity() {
         })
 
         binding.btnSearch.setOnClickListener {
-            Intent(this@TutorSearchActivity, TutorListActivity::class.java).also {
-                startActivity(it)
-            }
+            val query = binding.svSearchTutor.query.toString() // Get the query from SearchView
+            saveSearchQuery(query)
+            val intent = Intent(this@TutorSearchActivity, TutorListActivity::class.java)
+            intent.putExtra("QUERY_TEXT", query)
+            startActivity(intent)
         }
 
         binding.ibtnHomeFFindTutorSearch.setOnClickListener{
@@ -144,6 +147,7 @@ class TutorSearchActivity : AppCompatActivity() {
             }
     }
     private fun saveSearchQuery(query: String) {
+        Log.d(TAG, "Searched for $query")
         val currentUser = auth.currentUser
         if (currentUser != null) {
             val searchHistoryRef = firestoreDb.collection("users")

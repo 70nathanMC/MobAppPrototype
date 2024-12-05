@@ -56,6 +56,7 @@ class TutorListActivity : AppCompatActivity() {
         binding.rvTutorList.adapter = tutorListAdapter // Assuming you're replacing the ListView with RecyclerView
 
         val searchQuery = intent.getStringExtra("QUERY_TEXT") ?: ""
+        Log.d(TAG, "Query: $searchQuery")
 
         val userUID = auth.currentUser?.uid
         if (userUID != null) {
@@ -186,9 +187,16 @@ class TutorListActivity : AppCompatActivity() {
                     val program = document.getString("program") ?: ""
 
                     // Check if the first name or last name starts with the query
-                    if (firstName.lowercase().startsWith(query.lowercase()) ||
-                        lastName.lowercase().startsWith(query.lowercase())
-                    ) {
+                    val nameWords = fullName.lowercase().split(" ")
+                    val queryWords = query.lowercase().split(" ")
+
+                    val isMatch = queryWords.any { queryWord ->
+                        nameWords.any { nameWord ->
+                            nameWord.startsWith(queryWord)
+                        }
+                    }
+
+                    if (isMatch) {
                         val tutor = TutorListData(profilePicUrl, fullName, program, overallRating.toFloat(), document.id)
                         tutorList.add(tutor)
                     }
@@ -304,7 +312,7 @@ class TutorListActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (isFirstResume) {
-            isFirstResume = false  // Set the flag to false after the first onResume()
+            isFirstResume = false
         } else {
             fetchAllTutors()
         }
