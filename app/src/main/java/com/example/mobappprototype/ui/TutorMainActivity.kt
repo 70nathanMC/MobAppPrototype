@@ -172,7 +172,6 @@ class TutorMainActivity : AppCompatActivity() {
                                 Log.d(TAG, "No meetings for tutor $userId")
                                 meetingsAdapter.meetings = emptyList()
                                 meetingsAdapter.notifyDataSetChanged()
-                                return@addOnSuccessListener
                             }
                         }
                         .addOnFailureListener { e ->
@@ -182,6 +181,8 @@ class TutorMainActivity : AppCompatActivity() {
 
                     meetingsAdapter.meetings = emptyList() // Update the adapter with an empty list
                     meetingsAdapter.notifyDataSetChanged() // Notify the adapter of the change
+                    binding.loadingLayout.visibility = View.GONE
+                    binding.layoutMainActivity.visibility = View.VISIBLE
                     return@addOnSuccessListener
                 }
 
